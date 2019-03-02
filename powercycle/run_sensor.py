@@ -14,15 +14,14 @@ while i < 10:
         values.append(time.time())
         i+=1
 
-print(values)
+print('Sensor time values: ',values)
 
 time_values = []
 
-index = 0
-while index < 10:
-    for index, item in enumerate(values, start=0):
-        time_values.append(values[index +1] - values[index])
-        print(time_values)
+for index, item in enumerate(values, start=0):
+    time_values.append(values[index +1] - values[index])
+    if index == 8:
+        break
 
 
 print(time_values)
