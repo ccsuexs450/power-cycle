@@ -8,11 +8,23 @@ GPIO.add_event_detect(17, GPIO.FALLING)
 
 values = []
 
-i=0
+i = 0;
 while i < 10:
     if GPIO.event_detected(17):
-        value = time.time()
-        values.append(value)
+        values.append(time.time())
         i+=1
-        print(values)
+
+print(values)
+
+time_values = []
+
+index = 0
+while index < 10:
+    for index, item in enumerate(values, start=0):
+        time_values.append(values[index +1] - values[index])
+        print(time_values)
+
+
+print(time_values)
+
 
