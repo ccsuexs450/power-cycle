@@ -25,7 +25,12 @@ def edge_measure():
     return time_values
 
 def textwrite():
-    outfile = open("myOutFile.txt", "w")
+    filename = time.strftime("%Y%m%d-%H%M%S")
+    extension = ".txt"
+    dir  = "../data/sensordata/"
+    path = dir+filename+extension
+    
+    outfile = open(path, "w")
     for line in time_values:
         outfile.write(str(line))
         outfile.write("\n")
