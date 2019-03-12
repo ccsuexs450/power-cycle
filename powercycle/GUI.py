@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
-import sys
 import os
+
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -9,16 +9,22 @@ class GUI(tk.Tk):
 
         container = tk.Frame(self)
         container.pack()
-        self.geometry("800x800")
+        self.geometry("1200x800")
+        self.title("Bicycle Application")
 
         menu = Menu(self)
         self.config(menu=menu)
-        subMenu = Menu(menu, tearoff=0)
-        menu.add_cascade(label="File", menu=subMenu)
-        subMenu.add_command(label="Exit", command=self.quit)
+
+        # create home menu
+        menu.add_cascade(label="Home", command=lambda: self.show("Home"))
+
+        # create file menu
+        file_menu = Menu(menu, tearoff=0)
+        menu.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Exit", command=self.quit)
 
         self.frames = {}
-        for F in (Home, Calibrate):
+        for F in (Home, Calibrate, EnterEmail):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -26,19 +32,25 @@ class GUI(tk.Tk):
 
         self.show("Home")
 
+    # define show function
     def show(self, page):
         frame = self.frames[page]
         frame.tkraise()
 
+
+# create home page
 class Home(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Bicycle Application", font=("Courier", 44), fg="black",)
+        title = tk.Label(self, text="Welcome to Performance Cycling System !", font=("Courier", 32), fg="black",)
         title.grid(row=1, column=1)
-        calibrateButton = tk.Button(self, text="Calibrate", height=2, width=10, command=lambda: controller.show("Calibrate"))
-        calibrateButton.grid(row=2, column=1, padx=2, pady=2)
-        runButton = tk.Button(self, text="Run", height=4, width=20, command=lambda: controller.show("Calibrate"))
-        runButton.grid(row=3, column=1, padx=2, pady=2)
+
+        calibrate_button = tk.Button(self, text="Calibrate", height=2, width=10,
+                                     bg="blue", command=lambda: controller.show("Calibrate"))
+        calibrate_button.grid(row=5, column=1, padx=2, pady=2)
+        run_button = tk.Button(self, text="Run", height=4, width=20,
+                               bg="green", command=lambda: controller.show("EnterEmail"))
+        run_button.grid(row=6, column=1, padx=2, pady=2)
 
         col_count, row_count = self.grid_size()
         for col in range(col_count):
@@ -46,17 +58,18 @@ class Home(tk.Frame):
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
 
+
+# create calibration page
 class Calibrate(tk.Frame):
     def __init__(self, parent, controller):
-        def runScript():
-            os.system('python Script.py')
+        def run_script():
+            os.system('Script.py')
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
-        title.grid(row=1, column=15)
-        calibrateButton = tk.Button(self, text="Run Calibration", height=4, width=24, command=runScript)
-        calibrateButton.grid(row=2, column=15, padx=2, pady=2)
-        homeButton = tk.Button(self, text="Home", height=3, width=18, command=lambda: controller.show("Home"))
-        homeButton.grid(row=3, column=15, padx=2, pady=2)
+        title.grid(row=1, column=30)
+        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="green",
+                                     command=run_script)
+        calibrate_button.grid(row=2, column=30, padx=2, pady=2)
 
         col_count, row_count = self.grid_size()
         for col in range(col_count):
@@ -64,6 +77,27 @@ class Calibrate(tk.Frame):
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
 
-if __name__=="__main__":
+
+# create lookup by email page
+class EnterEmail(tk.Frame):
+    def __init__(self, parent, controller):
+
+        tk.Frame.__init__(self, parent)
+        title = tk.Label(self, text="Enter Email:", font=("Courier", 28), fg="black")
+        title.grid(row=19, column=40)
+        e = Entry(self)
+        e.grid(row=20, column=40, sticky="nsew")
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="blue",
+                                command=lambda: controller.show("Home"))
+        find_button.grid(row=25, column=40, padx=2, pady=2)
+
+        col_count, row_count = self.grid_size()
+        for col in range(col_count):
+            self.grid_columnconfigure(col, minsize=10)
+        for row in range(row_count):
+            self.grid_rowconfigure(row, minsize=10)
+
+
+if __name__ == "__main__":
     gui = GUI()
     gui.mainloop()
