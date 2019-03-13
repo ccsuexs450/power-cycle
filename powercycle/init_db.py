@@ -18,7 +18,7 @@ conn.execute('''CREATE TABLE user
 print ("Table created successfully");
 
 conn.execute('''CREATE TABLE text
-         (id INT PRIMARY KEY NOT NULL,
+         (id INTEGER PRIMARY KEY NOT NULL,
          user_email TEXT NOT NULL REFERENCES user(email),
          name            TEXT           NOT NULL,
          path            TEXT           NOT NULL,
@@ -27,7 +27,7 @@ conn.execute('''CREATE TABLE text
 print ("Table created successfully");
 
 conn.execute('''CREATE TABLE powersheet
-         (id INT PRIMARY KEY NOT NULL,
+         (id INTEGER PRIMARY KEY NOT NULL,
          user_email TEXT NOT NULL REFERENCES user(email),
          name            TEXT          NOT NULL,
          path            TEXT          NOT NULL,
@@ -36,7 +36,7 @@ conn.execute('''CREATE TABLE powersheet
 print ("Table created successfully");
 
 conn.execute('''CREATE TABLE calibration
-         (id INT PRIMARY KEY NOT NULL,
+         (id INTEGER PRIMARY KEY NOT NULL,
          name            TEXT          NOT NULL,
          path            TEXT          NOT NULL,
          date            TEXT          NOT NULL);''')
