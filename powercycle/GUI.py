@@ -87,7 +87,7 @@ class EnterEmail(tk.Frame):
         title.grid(row=19, column=40)
         e = Entry(self)
         e.grid(row=20, column=40, sticky="nsew")
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky bitlue",
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue",
                                 command=lambda: controller.show("Home"))
         find_button.grid(row=25, column=40, padx=2, pady=2)
 
