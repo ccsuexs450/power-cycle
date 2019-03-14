@@ -46,10 +46,10 @@ class Home(tk.Frame):
         title.grid(row=1, column=1)
 
         calibrate_button = tk.Button(self, text="Calibrate", height=2, width=10,
-                                     bg="blue", command=lambda: controller.show("Calibrate"))
+                                     bg="deep sky blue", command=lambda: controller.show("Calibrate"))
         calibrate_button.grid(row=5, column=1, padx=2, pady=2)
         run_button = tk.Button(self, text="Run", height=4, width=20,
-                               bg="green", command=lambda: controller.show("EnterEmail"))
+                               bg="sea green", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=6, column=1, padx=2, pady=2)
 
         col_count, row_count = self.grid_size()
@@ -67,7 +67,7 @@ class Calibrate(tk.Frame):
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
         title.grid(row=1, column=30)
-        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="green",
+        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="sea green",
                                      command=run_script)
         calibrate_button.grid(row=2, column=30, padx=2, pady=2)
 
@@ -87,7 +87,7 @@ class EnterEmail(tk.Frame):
         title.grid(row=19, column=40)
         e = Entry(self)
         e.grid(row=20, column=40, sticky="nsew")
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="blue",
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky bitlue",
                                 command=lambda: controller.show("Home"))
         find_button.grid(row=25, column=40, padx=2, pady=2)
 
