@@ -1,28 +1,26 @@
 
+import serial
+import io
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(17, GPIO.IN)
-GPIO.add_event_detect(17, GPIO.FALLING)
+ser=serial.Serial("/dev/ttyACM0",9600)  #change ACM number as found from ls /de$
+ser.baudrate=9600
+
 
 values = []
 time_values = []
 
-def raw_input():
-    i = 0;
-    while i < 10:
-        if GPIO.event_detected(17):
-            values.append(time.time())
-            i+=1
+def sensor_input():
+    i = 0
+    while i < 30:
+
+        input = int(ser.readline().strip())
+        values.append(str(input))
+        i+=1
+
     return values
 
-def edge_measure():
-    for index, item in enumerate(values, start=0):
-        time_values.append(values[index +1] - values[index])
-        if index == 8:
-            break
-    return time_values
 
 def textwrite():
     filename = time.strftime("%Y%m%d-%H%M%S")
@@ -31,18 +29,14 @@ def textwrite():
     path = dir+filename+extension
     
     outfile = open(path, "w")
-    for line in time_values:
+    for line in values:
         outfile.write(str(line))
         outfile.write("\n")
     outfile.close()
 
-raw_input()
+sensor_input()
 
-print('Sensor time values: ',values)
-
-edge_measure()
-
-print(time_values)
+print(values)
 
 textwrite()
 
