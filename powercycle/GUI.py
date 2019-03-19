@@ -24,7 +24,7 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Exit", command=self.quit)
 
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail):
+        for F in (Home, Calibrate, EnterEmail, Form):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -49,7 +49,7 @@ class Home(tk.Frame):
                                      bg="deep sky blue", command=lambda: controller.show("Calibrate"))
         calibrate_button.grid(row=5, column=1, padx=2, pady=2)
         run_button = tk.Button(self, text="Run", height=4, width=20,
-                               bg="sea green", command=lambda: controller.show("EnterEmail"))
+                               bg="sea green", command=lambda: controller.show("Form"))
         run_button.grid(row=6, column=1, padx=2, pady=2)
 
         col_count, row_count = self.grid_size()
@@ -97,6 +97,23 @@ class EnterEmail(tk.Frame):
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
 
+class Form(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        default = StringVar(self)
+        default.set("Choose sex")
+        Label(self, text="First Name").grid(row=0)
+        Label(self, text="Last Name").grid(row=1)
+        Label(self, text="Age").grid(row=2)
+        Label(self, text="Sex").grid(row=3)
+        entry1 = Entry(self)
+        entry2 = Entry(self)
+        entry3 = Entry(self)
+        entry4 = OptionMenu(self, default, "Male", "Female")
+        entry1.grid(row=0, column=1)
+        entry2.grid(row=1, column=1)
+        entry3.grid(row=2, column=1)
+        entry4.grid(row=3, column=1)
 
 if __name__ == "__main__":
     gui = GUI()
