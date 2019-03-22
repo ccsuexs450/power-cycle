@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import *
 import os
 
-
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -49,7 +48,7 @@ class Home(tk.Frame):
                                      bg="deep sky blue", command=lambda: controller.show("Calibrate"))
         calibrate_button.grid(row=5, column=1, padx=2, pady=2)
         run_button = tk.Button(self, text="Run", height=4, width=20,
-                               bg="sea green", command=lambda: controller.show("Form"))
+                               bg="sea green", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=6, column=1, padx=2, pady=2)
 
         col_count, row_count = self.grid_size()
@@ -67,8 +66,7 @@ class Calibrate(tk.Frame):
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
         title.grid(row=1, column=30)
-        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="sea green",
-                                     command=run_script)
+        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="sea green", command=run_script)
         calibrate_button.grid(row=2, column=30, padx=2, pady=2)
 
         col_count, row_count = self.grid_size()
@@ -100,34 +98,43 @@ class EnterEmail(tk.Frame):
 class Form(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        default = StringVar(self)
-        default.set("Choose sex")
-        Label(self, text="First Name").grid(row=0)
-        Label(self, text="Last Name").grid(row=1)
-        Label(self, text="Age").grid(row=2)
-        Label(self, text="Height").grid(row=3)
-        Label(self, text="Weight").grid(row=4)
-        Label(self, text="Sex").grid(row=5)
-        Label(self, text="Category").grid(row=6)
+        s = tk.StringVar()
+        Label(self, text="First Name", font=("Courier", 14)).grid(row=140, column = 380)
+        Label(self, text="Last Name", font=("Courier", 14)).grid(row=160, column = 380)
+        Label(self, text="Age", font=("Courier", 14)).grid(row=180, column = 380)
+        Label(self, text="Height", font=("Courier", 14)).grid(row=200, column = 380)
+        Label(self, text="Weight", font=("Courier", 14)).grid(row=220, column = 380)
+        Label(self, text="Sex", font=("Courier", 14)).grid(row=240, column = 380)
+        Label(self, text="Category", font=("Courier", 14)).grid(row=270, column = 380)
         entry1 = Entry(self)
         entry2 = Entry(self)
         entry3 = Entry(self)
         entry4 = Entry(self)
         entry5 = Entry(self)
-        entry6 = OptionMenu(self, default, "Male", "Female")
-        entry7 = Entry(self)
-        entry1.grid(row=0, column=1)
-        entry2.grid(row=1, column=1)
-        entry3.grid(row=2, column=1)
-        entry4.grid(row=3, column=1)
-        entry5.grid(row=4, column=1)
-        entry6.grid(row=5, column=1)
-        entry7.grid(row=6, column=1)
-        def submit():
-            if entry1.get() == "Test":
-                print("Success")
-        submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="sea green", command=submit)
-        submit_button.grid(row=7, column=1)
+        entry6 = tk.Radiobutton(self, text="Male", padx=20, variable=s, value="Male")
+        entry7 = tk.Radiobutton(self, text="Female", padx=20, variable=s, value="Female")
+        entry8 = Entry(self)
+        entry1.grid(row=140, column=381)
+        entry2.grid(row=160, column=381)
+        entry3.grid(row=180, column=381)
+        entry4.grid(row=200, column=381)
+        entry5.grid(row=220, column=381)
+        entry6.grid(row=240, column=381)
+        entry7.grid(row=250, column=381)
+        entry8.grid(row=270, column=381)
+
+        def submit(email, fname, lname, age, height, weight, gender, category):
+            print(email + " " + fname + " " + lname + " " + age + " " + height + " " + weight + " " + gender + " " + category)
+
+        submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit("Email", entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
+        submit_button.grid(row=290, column=381)
+
+        col_count, row_count = self.grid_size()
+        for col in range(col_count):
+            self.grid_columnconfigure(col, minsize=1)
+        for row in range(row_count):
+            self.grid_rowconfigure(row, minsize=1)
+
 if __name__ == "__main__":
     gui = GUI()
     gui.mainloop()
