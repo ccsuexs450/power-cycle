@@ -6,7 +6,7 @@ import os
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
+        self.shared = {"email": tk.StringVar()}
         container = tk.Frame(self)
         container.pack()
         self.geometry("1200x800")
@@ -81,9 +81,10 @@ class Calibrate(tk.Frame):
 class EnterEmail(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        self.controller=controller
         title = tk.Label(self, text="Enter Email:", font=("Courier", 28), fg="black")
         title.grid(row=19, column=40)
-        e = Entry(self)
+        e = tk.Entry(self, textvariable=self.controller.shared["email"])
         e.grid(row=20, column=40, sticky="nsew")
         def submit():
             search = email_search(e.get())
@@ -102,7 +103,11 @@ class EnterEmail(tk.Frame):
 class Form(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        self.controller=controller
         s = tk.StringVar()
+        email = self.controller.shared["email"].get()
+        title = tk.Label(self, text=email, font=("Courier", 28), fg="black")
+        title.grid(row=0, column=0)
         Label(self, text="First Name", font=("Courier", 14)).grid(row=140, column = 380)
         Label(self, text="Last Name", font=("Courier", 14)).grid(row=160, column = 380)
         Label(self, text="Age", font=("Courier", 14)).grid(row=180, column = 380)
@@ -131,7 +136,7 @@ class Form(tk.Frame):
             user_insert(email, fname, lname, age, height, weight, gender, category)
             controller.show("Run")
 
-        submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit("Email", entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
+        submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
         submit_button.grid(row=290, column=381)
 
         col_count, row_count = self.grid_size()
