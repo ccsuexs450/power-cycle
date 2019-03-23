@@ -1,4 +1,4 @@
-import sqllite3
+import sqlite3
 
 # create connection
 def create_connection(db_file):
@@ -44,7 +44,7 @@ def user_insert(email, fname, lname, age, height, weight, gender, category):
     conn = create_connection(database)
     with conn:
         # new user
-        user = (email, fname, lname, age, height, weight, gender, category);
+        user = (email, fname, lname, age, height, weight, gender, category)
         user_rid = create_user(conn, user)
 
 ## Called from run_sensor.py
@@ -56,7 +56,7 @@ def textfile_insert(user_email, name, path, date):
     conn = create_connection(database)
     with conn:
         # new user
-        textfile = (user_email, name, path, date);
+        textfile = (user_email, name, path, date)
         text_rid = create_textfile(conn, textfile)
 
 ## Called from GUI.py email search window

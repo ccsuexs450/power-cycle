@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from db_interaction import *
 import os
 
 class GUI(tk.Tk):
@@ -85,7 +86,11 @@ class EnterEmail(tk.Frame):
         e = Entry(self)
         e.grid(row=20, column=40, sticky="nsew")
         def submit():
-            controller.show("Form")
+            search = email_search(e.get())
+            if search == None:
+                controller.show("Form")
+            else:
+                controller.show("Run")
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
         find_button.grid(row=25, column=40, padx=2, pady=2)
         col_count, row_count = self.grid_size()
@@ -123,7 +128,7 @@ class Form(tk.Frame):
         entry8.grid(row=270, column=381)
 
         def submit(email, fname, lname, age, height, weight, gender, category):
-            print(email + " " + fname + " " + lname + " " + age + " " + height + " " + weight + " " + gender + " " + category)
+            user_insert(email, fname, lname, age, height, weight, gender, category)
             controller.show("Run")
 
         submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit("Email", entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
