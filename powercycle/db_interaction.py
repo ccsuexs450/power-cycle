@@ -56,7 +56,7 @@ def textfile_insert(user_email, name, path, date):
     conn = create_connection(database)
     with conn:
         # new user
-        textfile = (user_email, name, path, date);
+        textfile = (user_email, name, path, date)
         text_rid = create_textfile(conn, textfile)
 
 ## Called from GUI.py email search window
