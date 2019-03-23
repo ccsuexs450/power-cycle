@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from db_interaction import *
 import os
 
 class GUI(tk.Tk):
@@ -123,6 +124,7 @@ class Form(tk.Frame):
         entry8.grid(row=270, column=381)
 
         def submit(email, fname, lname, age, height, weight, gender, category):
+            user_insert(email, fname, lname, age, height, weight, gender, category)
             print(email + " " + fname + " " + lname + " " + age + " " + height + " " + weight + " " + gender + " " + category)
             controller.show("Run")
 
