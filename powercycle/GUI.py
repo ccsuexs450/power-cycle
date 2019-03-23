@@ -23,7 +23,7 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Exit", command=self.quit)
 
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form):
+        for F in (Home, Calibrate, EnterEmail, Form, Run):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -62,7 +62,7 @@ class Home(tk.Frame):
 class Calibrate(tk.Frame):
     def __init__(self, parent, controller):
         def run_script():
-            os.system('Script.py')
+            os.system('pyton Script.py')
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
         title.grid(row=1, column=30)
@@ -79,16 +79,15 @@ class Calibrate(tk.Frame):
 # create lookup by email page
 class EnterEmail(tk.Frame):
     def __init__(self, parent, controller):
-
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Enter Email:", font=("Courier", 28), fg="black")
         title.grid(row=19, column=40)
         e = Entry(self)
         e.grid(row=20, column=40, sticky="nsew")
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue",
-                                command=lambda: controller.show("Home"))
+        def submit():
+            controller.show("Form")
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
         find_button.grid(row=25, column=40, padx=2, pady=2)
-
         col_count, row_count = self.grid_size()
         for col in range(col_count):
             self.grid_columnconfigure(col, minsize=10)
@@ -125,6 +124,7 @@ class Form(tk.Frame):
 
         def submit(email, fname, lname, age, height, weight, gender, category):
             print(email + " " + fname + " " + lname + " " + age + " " + height + " " + weight + " " + gender + " " + category)
+            controller.show("Run")
 
         submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit("Email", entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
         submit_button.grid(row=290, column=381)
@@ -134,6 +134,22 @@ class Form(tk.Frame):
             self.grid_columnconfigure(col, minsize=1)
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=1)
+
+class Run(tk.Frame):
+    def __init__(self, parent, controller):
+        def run_script():
+            os.system('python Script.py')
+        tk.Frame.__init__(self, parent)
+        title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
+        title.grid(row=1, column=30)
+        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run_script)
+        run_button.grid(row=2, column=30, padx=2, pady=2)
+
+        col_count, row_count = self.grid_size()
+        for col in range(col_count):
+            self.grid_columnconfigure(col, minsize=10)
+        for row in range(row_count):
+            self.grid_rowconfigure(row, minsize=10)
 
 if __name__ == "__main__":
     gui = GUI()
