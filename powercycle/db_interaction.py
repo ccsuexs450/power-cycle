@@ -38,7 +38,7 @@ def user_insert(email, fname, lname, age, height, weight, gender, category):
     with conn:
         # new user
         user = (email, fname, lname, age, height, weight, gender, category);
-        email = create_user(conn, user)
+        user_rid = create_user(conn, user)
 
 ## Called from run_sensor.py
 def textfile_insert(user_email, name, path, date)
@@ -50,4 +50,4 @@ def textfile_insert(user_email, name, path, date)
     with conn:
         # new user
         textfile = (user_email, name, path, date);
-        email = create_textfile(conn, textfile)
+        text_rid = create_textfile(conn, textfile)
