@@ -84,10 +84,10 @@ class EnterEmail(tk.Frame):
         title.grid(row=19, column=40)
         e = Entry(self)
         e.grid(row=20, column=40, sticky="nsew")
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue",
-                                command=lambda: controller.show("Home"))
+        def submit():
+            controller.show("Form")
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
         find_button.grid(row=25, column=40, padx=2, pady=2)
-
         col_count, row_count = self.grid_size()
         for col in range(col_count):
             self.grid_columnconfigure(col, minsize=10)
@@ -124,6 +124,7 @@ class Form(tk.Frame):
 
         def submit(email, fname, lname, age, height, weight, gender, category):
             print(email + " " + fname + " " + lname + " " + age + " " + height + " " + weight + " " + gender + " " + category)
+            controller.show("Run")
 
         submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit("Email", entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
         submit_button.grid(row=290, column=381)
