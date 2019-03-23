@@ -27,8 +27,9 @@ def create_textfile(conn, textfile):
     cur = conn.cursor()
     cur.execute(sql, textfile)
     return cur.lastrowid
+
 # search email
-def email_select(conn, email)
+def email_select(conn, email):
     sql = ''' SELECT email FROM user WHERE email=? '''
     cur = conn.cursor()
     cur.execute(sql, (email,))
@@ -47,7 +48,7 @@ def user_insert(email, fname, lname, age, height, weight, gender, category):
         user_rid = create_user(conn, user)
 
 ## Called from run_sensor.py
-def textfile_insert(user_email, name, path, date)
+def textfile_insert(user_email, name, path, date):
 
     database = 'cycle.db'
 
@@ -59,7 +60,7 @@ def textfile_insert(user_email, name, path, date)
         text_rid = create_textfile(conn, textfile)
 
 ## Called from GUI.py email search window
-def email_search(email)
+def email_search(email):
    
     database = 'cycle.db'
     
@@ -68,4 +69,6 @@ def email_search(email)
     with conn:
         # search for email
         search_result = email_select(conn, email)
+
+    return search_result
 
