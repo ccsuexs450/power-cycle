@@ -105,9 +105,6 @@ class Form(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller=controller
         s = tk.StringVar()
-        email = self.controller.shared["email"].get()
-        title = tk.Label(self, text=email, font=("Courier", 28), fg="black")
-        title.grid(row=0, column=0)
         Label(self, text="First Name", font=("Courier", 14)).grid(row=140, column = 380)
         Label(self, text="Last Name", font=("Courier", 14)).grid(row=160, column = 380)
         Label(self, text="Age", font=("Courier", 14)).grid(row=180, column = 380)
