@@ -1,6 +1,7 @@
 import pyoo
 import subprocess 
 import os
+from db_interaction import *
 
 #soffice = subprocess.Popen(' '.join([
    # 'soffice',
@@ -33,7 +34,11 @@ for i in range(0,795):
     j = i + 1
     sheet[j,0].value = lines[i]
 
-doc.save('calibrateTest.ods')
+path = ""../docs/calibration/"
+filename = "calibrate_now_date_time"  # place holder
+file_path = path + filename
+doc.save(file_path)
+
 print("File Saved")
 doc.close()
 
