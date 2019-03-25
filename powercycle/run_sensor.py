@@ -1,8 +1,8 @@
 
 import serial
 import io
-import RPi.GPIO as GPIO
 import time
+from db_interaction import *
 
 ser=serial.Serial("/dev/ttyACM0",9600)  #change ACM number as found from ls /de$
 ser.baudrate=9600
@@ -33,6 +33,9 @@ def textwrite():
         outfile.write(str(line))
         outfile.write("\n")
     outfile.close()
+    user_email = "emailfromGUI" # these are place holders
+    textfile_insert(user_email, filename, path, filename)
+
 
 sensor_input()
 
