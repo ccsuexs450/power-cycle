@@ -35,10 +35,11 @@ for i in range(0,795):
     sheet[j,0].value = lines[i]
 
 path = ""../docs/calibration/"
+date = "date_time" # place holder
 filename = "calibrate_now_date_time"  # place holder
 file_path = path + filename
 doc.save(file_path)
-
+create_calibrate(filename, file_path,  date)
 print("File Saved")
 doc.close()
 
