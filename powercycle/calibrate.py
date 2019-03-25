@@ -11,8 +11,7 @@ import os
  #   '--headless'
 #]))
 #output = soffice.communicate()
-
-
+#
 #cmd = """soffice --accept="socket,host=localhost,port=2002;urp;" --norestore --nologo --nodefault --headless"""
 #os.system(cmd) 
 
