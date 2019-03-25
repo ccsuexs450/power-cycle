@@ -29,15 +29,15 @@ with open("../data/sensordata/calibrate.txt", "r") as ins:
         lines.append(line)
 
 print(lines[0:10])
-
-for i in lines[0:10]:
-    j =str(i+1)
+ 
+for i in range(0,795):
+    j = i + 1
     sheet[j,0].value = lines[i]
 
 doc.save('calibrateTest.ods')
 print("File Saved")
 doc.close()
 
-kill_cmd = "pkill soffice.bin"
+kill_cmd = "pkill soffice"
 #subprocess.Popen(kill_cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
