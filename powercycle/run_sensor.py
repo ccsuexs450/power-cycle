@@ -4,12 +4,19 @@ import io
 import time
 from db_interaction import *
 
-ser=serial.Serial("/dev/ttyACM0",9600)  #change ACM number as found from ls /de$
-ser.baudrate=9600
-
-
-values = []
+valuevalues = []
 time_values = []
+
+def running(user_email)
+    
+    ser=serial.Serial("/dev/ttyACM0",9600)  #change ACM number as found from ls /de$
+    ser.baudrate=9600
+
+    sensor_input()
+    print(values)
+
+    textwrite(user_email)
+    print('File created')
 
 def sensor_input():
     i = 0
@@ -22,7 +29,7 @@ def sensor_input():
     return values
 
 
-def textwrite():
+def textwrite(user_email):
     filename = time.strftime("%Y%m%d-%H%M%S")
     extension = ".txt"
     dir  = "../data/sensordata/"
@@ -33,16 +40,8 @@ def textwrite():
         outfile.write(str(line))
         outfile.write("\n")
     outfile.close()
-    user_email = "emailfromGUI" # these are place holders
     textfile_insert(user_email, filename, path, filename)
 
 
-sensor_input()
-
-print(values)
-
-textwrite()
-
-print('File created')
 
 
