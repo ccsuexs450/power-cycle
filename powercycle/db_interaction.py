@@ -28,6 +28,14 @@ def create_textfile(conn, textfile):
     cur.execute(sql, textfile)
     return cur.lastrowid
 
+# create calibration_file
+def create_calibrate(conn, spreedsheet):
+    sql = ''' INSERT INTO  calibration(name,path,date)
+              VALUES(?,?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, spreedsheet)
+    return cur.lastrowid
+
 # search email
 def email_select(conn, email):
     sql = ''' SELECT email FROM user WHERE email=? '''
@@ -47,6 +55,18 @@ def user_insert(email, fname, lname, age, height, weight, gender, category):
         user = (email, fname, lname, age, height, weight, gender, category)
         user_rid = create_user(conn, user)
 
+## Called from calibrate.py
+def calibrate_insert(name, path, date):
+    
+     database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # new spreedsheet
+        spreedsheet = (name, path, date)
+        calibrate_rid = create_calibrate(conn, spreedsheet)
+
 ## Called from run_sensor.py
 def textfile_insert(user_email, name, path, date):
 
@@ -55,7 +75,7 @@ def textfile_insert(user_email, name, path, date):
     # database connection
     conn = create_connection(database)
     with conn:
-        # new user
+        # new textfile
         textfile = (user_email, name, path, date)
         text_rid = create_textfile(conn, textfile)
 
