@@ -63,7 +63,7 @@ class Home(tk.Frame):
 class Calibrate(tk.Frame):
     def __init__(self, parent, controller):
         def run_script():
-            os.system('pyton Script.py')
+            os.system('python Script.py')
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
         title.grid(row=1, column=30)

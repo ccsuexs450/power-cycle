@@ -6,7 +6,7 @@ def create_connection(db_file):
     try:
         conn = sqlite3.connect(db_file)
         return conn
-    except Error as e:
+    except sqlite3.Error as e:
         print(e)
 
     return None
@@ -29,11 +29,11 @@ def create_textfile(conn, textfile):
     return cur.lastrowid
 
 # create calibration_file
-def create_calibrate(conn, spreedsheet):
+def create_calibrate(conn, spreadsheet):
     sql = ''' INSERT INTO  calibration(name,path,date)
               VALUES(?,?,?) '''
     cur = conn.cursor()
-    cur.execute(sql, spreedsheet)
+    cur.execute(sql, spreadsheet)
     return cur.lastrowid
 
 # search email
@@ -43,7 +43,7 @@ def email_select(conn, email):
     cur.execute(sql, (email,))
     return cur.fetchone()
 
-## Called from GUI.py user insertion
+# Called from GUI.py user insertion
 def user_insert(email, fname, lname, age, height, weight, gender, category):
 
     database = 'cycle.db'
@@ -55,19 +55,20 @@ def user_insert(email, fname, lname, age, height, weight, gender, category):
         user = (email, fname, lname, age, height, weight, gender, category)
         user_rid = create_user(conn, user)
 
-## Called from calibrate.py
+# Called from calibrate.py
+
 def calibrate_insert(name, path, date):
-    
-     database = 'cycle.db'
+
+    database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
-        # new spreedsheet
-        spreedsheet = (name, path, date)
-        calibrate_rid = create_calibrate(conn, spreedsheet)
+        # new spreadsheet
+        spreadsheet = (name, path, date)
+        calibrate_rid = create_calibrate(conn, spreadsheet)
 
-## Called from run_sensor.py
+# Called from run_sensor.py
 def textfile_insert(user_email, name, path, date):
 
     database = 'cycle.db'
@@ -79,7 +80,7 @@ def textfile_insert(user_email, name, path, date):
         textfile = (user_email, name, path, date)
         text_rid = create_textfile(conn, textfile)
 
-## Called from GUI.py email search window
+# Called from GUI.py email search window
 def email_search(email):
    
     database = 'cycle.db'
