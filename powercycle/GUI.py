@@ -3,6 +3,9 @@ from tkinter import *
 from db_interaction import *
 import os
 
+
+form_self = None
+
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -36,7 +39,6 @@ class GUI(tk.Tk):
     def show(self, page):
         frame = self.frames[page]
         frame.tkraise()
-
 
 # create home page
 class Home(tk.Frame):
@@ -87,6 +89,8 @@ class EnterEmail(tk.Frame):
         e = tk.Entry(self, textvariable=self.controller.shared["email"])
         e.grid(row=20, column=40, sticky="nsew")
         def submit():
+            global form_self
+            email(form_self)
             search = email_search(e.get())
             if search == None:
                 controller.show("Form")
@@ -100,11 +104,29 @@ class EnterEmail(tk.Frame):
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
 
+
+def email(self):
+    email = self.controller.shared["email"].get()
+    self.title = tk.Label(self, text=email, font=("Courier", 28), fg="black")
+    self.title.grid(row=0, column=0)
+    print(email)
+
 class Form(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        global form_self
+        form_self = self
+        global parent_val
+        parent_val = parent
+        global controller_val
+        controller_val = controller
         self.controller=controller
         s = tk.StringVar()
+        def change():
+            print(email)
+            update()
+        def update():
+            self.after(5, change)
         Label(self, text="First Name", font=("Courier", 14)).grid(row=140, column = 380)
         Label(self, text="Last Name", font=("Courier", 14)).grid(row=160, column = 380)
         Label(self, text="Age", font=("Courier", 14)).grid(row=180, column = 380)
@@ -130,8 +152,10 @@ class Form(tk.Frame):
         entry8.grid(row=270, column=381)
 
         def submit(email, fname, lname, age, height, weight, gender, category):
-            user_insert(email, fname, lname, age, height, weight, gender, category)
-            controller.show("Run")
+            #user_insert(email, fname, lname, age, height, weight, gender, category)
+            title = tk.Label(self, text=email, font=("Courier", 28), fg="black")
+            title.grid(row=0, column=0)
+            #controller.show("Run")
 
         submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
         submit_button.grid(row=290, column=381)
