@@ -3,6 +3,7 @@ from tkinter import *
 from db_interaction import *
 import os
 
+
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -18,13 +19,16 @@ class GUI(tk.Tk):
         # create home menu
         menu.add_cascade(label="Home", command=lambda: self.show("Home"))
 
+        # create search menu
+        menu.add_cascade(label="Search", command=lambda: self.show("Search"))
+
         # create file menu
         file_menu = Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="Exit", command=self.quit)
 
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, Search):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -86,6 +90,7 @@ class EnterEmail(tk.Frame):
         title.grid(row=19, column=40)
         e = tk.Entry(self, textvariable=self.controller.shared["email"])
         e.grid(row=20, column=40, sticky="nsew")
+
         def submit():
             search = email_search(e.get())
             if search == None:
@@ -99,6 +104,7 @@ class EnterEmail(tk.Frame):
             self.grid_columnconfigure(col, minsize=10)
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
+
 
 class Form(tk.Frame):
     def __init__(self, parent, controller):
@@ -142,6 +148,7 @@ class Form(tk.Frame):
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=1)
 
+
 class Run(tk.Frame):
     def __init__(self, parent, controller):
         def run_script():
@@ -157,6 +164,42 @@ class Run(tk.Frame):
             self.grid_columnconfigure(col, minsize=10)
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
+
+
+# create search page
+class Search(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller=controller
+        var1 = tk.StringVar()
+        var2 = tk.StringVar()
+        title1 = tk.Label(self, text="Search:", font=("Courier", 28), fg="black")
+        title1.grid(row=19, column=40)
+        e1 = tk.Entry(self, textvariable=var1)
+        e1.grid(row=20, column=40, sticky="nsew")
+        e2 = tk.Radiobutton(self, text="Name", font=("Courier", 16), padx=20, variable=var2, value="Name")
+        e3 = tk.Radiobutton(self, text="File", font=("Courier", 16), padx=20, variable=var2, value="File")
+        e2.grid(row=22, column=40)
+        e3.grid(row=23, column=40)
+        title2 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
+        title2.grid(row=24, column=40)
+        e4 = tk.Entry(self, textvariable=var1)
+        e4.grid(row=25, column=40, sticky="nsew")
+
+        # def submit():
+        #     search = email_search(e.get())
+        #     if search == None:
+        #         controller.show("Form")
+        #     else:
+        #         controller.show("Run")
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=lambda: controller.show("Home"))
+        find_button.grid(row=28, column=40, padx=2, pady=2)
+        col_count, row_count = self.grid_size()
+        for col in range(col_count):
+            self.grid_columnconfigure(col, minsize=10)
+        for row in range(row_count):
+            self.grid_rowconfigure(row, minsize=10)
+
 
 if __name__ == "__main__":
     gui = GUI()
