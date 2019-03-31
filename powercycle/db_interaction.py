@@ -58,7 +58,7 @@ def user_insert(email, fname, lname, age, height, weight, gender, category):
 ## Called from calibrate.py
 def calibrate_insert(name, path, date):
     
-     database = 'cycle.db'
+    database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
