@@ -139,7 +139,7 @@ class Form(tk.Frame):
             user_insert(email, fname, lname, age, height, weight, gender, category)
             controller.show("Run")
 
-        submit_button = tk.Button(self, text="Submit", height=2, width=12, command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
+        submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
         submit_button.grid(row=290, column=381)
 
         col_count, row_count = self.grid_size()
@@ -173,9 +173,10 @@ class Search(tk.Frame):
         self.controller=controller
         var1 = tk.StringVar()
         var2 = tk.StringVar()
+        var3 = tk.StringVar()
         title1 = tk.Label(self, text="Search:", font=("Courier", 28), fg="black")
         title1.grid(row=19, column=40)
-        e1 = tk.Entry(self, textvariable=var1)
+        e1 = tk.Entry(self, textvariable=var1 )
         e1.grid(row=20, column=40, sticky="nsew")
         e2 = tk.Radiobutton(self, text="Name", font=("Courier", 16), padx=20, variable=var2, value="Name")
         e3 = tk.Radiobutton(self, text="File", font=("Courier", 16), padx=20, variable=var2, value="File")
@@ -183,16 +184,16 @@ class Search(tk.Frame):
         e3.grid(row=23, column=40)
         title2 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
         title2.grid(row=24, column=40)
-        e4 = tk.Entry(self, textvariable=var1)
+        e4 = tk.Entry(self, textvariable=var3)
         e4.grid(row=25, column=40, sticky="nsew")
 
-        # def submit():
-        #     search = email_search(e.get())
-        #     if search == None:
-        #         controller.show("Form")
-        #     else:
-        #         controller.show("Run")
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=lambda: controller.show("Home"))
+        def find():
+            search = file_search(e1.get())
+            if search == None:
+                print("file name doesn't exist!!")
+            else:
+                print(search)
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
         find_button.grid(row=28, column=40, padx=2, pady=2)
         col_count, row_count = self.grid_size()
         for col in range(col_count):

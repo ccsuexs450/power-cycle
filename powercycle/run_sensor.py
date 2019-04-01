@@ -22,9 +22,9 @@ def sensor_running(user_email):
 def calibrate_input(): #placeholder until sensor is working. Reads test input from file.
 
     with open("../data/sensordata/calibrate.txt", "r") as ins:
-    for line in ins:
-        line = line.rstrip('\n')
-        values.append(line)
+        for line in ins:
+            line = line.rstrip('\n')
+            values.append(line)
 
     return values
     

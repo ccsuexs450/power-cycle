@@ -93,3 +93,24 @@ def email_search(email):
 
     return search_result
 
+
+# search fle
+def file_select(conn, name):
+    sql = ''' SELECT name FROM text WHERE name=? '''
+    cur = conn.cursor()
+    cur.execute(sql, (name,))
+    return cur.fetchone()
+
+
+# Called from GUI.py email search window
+def file_search(name):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search for email
+        search_result = file_select(conn, name)
+
+    return search_result
+
