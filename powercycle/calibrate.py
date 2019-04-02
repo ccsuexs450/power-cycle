@@ -1,20 +1,18 @@
 import pyoo
-import subprocess 
 import os
+import subprocess
 from db_interaction import *
+from time import sleep
 
-#soffice = subprocess.Popen(' '.join([
-   # 'soffice',
-   # '--accept="host=localhost,port=2002;urp;"',
-   # '--norestore',
-   # '--nologo',
-  #  '--nodefault',
- #   '--headless'
-#]))
-#output = soffice.communicate()
-#
-#cmd = """soffice --accept="socket,host=localhost,port=2002;urp;" --norestore --nologo --nodefault --headless"""
-#os.system(cmd) 
+soffice = subprocess.Popen([
+    'lxterminal',
+    '-e',
+    '/usr/bin/soffice',
+    '--accept=host=localhost,port=2002;urp;',
+    '--norestore',
+    '--nologo',
+    '--nodefault',
+    '--headless'])
 
 lines = []
 
@@ -42,9 +40,10 @@ filename = "calibrate_now_date_time.ods"  # place holder
 file_path = path + filename
 doc.save(file_path)
 calibrate_insert(filename, file_path, date)
-print("File Saved")
 doc.close()
 
-kill_cmd = "pkill soffice"
-#subprocess.Popen(kill_cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+
+#soffice.kill()
+
+print("File Saved")
 
