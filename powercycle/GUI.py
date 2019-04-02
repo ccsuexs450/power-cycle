@@ -188,11 +188,43 @@ class Search(tk.Frame):
         e4.grid(row=25, column=40, sticky="nsew")
 
         def find():
-            search = file_search(e1.get())
-            if search == None:
-                print("file name doesn't exist!!")
+            if var2.get() == "File":
+                search_file = file_search(e1.get())
+                search_file_date = file_date_search(e1.get())
+                if var1.get() == "":
+                    print("please enter a file name")
+                else:
+                    if search_file == None:
+                        print("file name doesn't exist!!")
+                    else:
+                        if var3.get() == "":
+                            print("please enter a date")
+                        else:
+                            if search_file_date == None:
+                                print("date doesn't exist, please enter a correct date")
+                            else:
+                                print(search_file_date)
+
+            elif var2.get() == "Name":
+                search_user = user_search(e1.get())
+                search_date = date_search(e4.get())
+                # search_user_date = user_search(e1.get()) & date_search(e4.get())
+                if var1.get() == "":
+                    print("please enter a user name")
+                else:
+                    if search_user == None:
+                        print("user name doesn't exist!!")
+                    else:
+                        if var3.get() == "":
+                            print("please enter a date")
+                        else:
+                            if search_date == None:
+                                print("date doesn't exist, please enter a correct date")
+                            else:
+                                print(search_user)
             else:
-                print(search)
+                print("Please select what you want to look for")
+
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
         find_button.grid(row=28, column=40, padx=2, pady=2)
         col_count, row_count = self.grid_size()

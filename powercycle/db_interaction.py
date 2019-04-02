@@ -80,6 +80,7 @@ def textfile_insert(user_email, name, path, date):
         textfile = (user_email, name, path, date)
         text_rid = create_textfile(conn, textfile)
 
+
 # Called from GUI.py email search window
 def email_search(email):
    
@@ -94,23 +95,64 @@ def email_search(email):
     return search_result
 
 
-# search fle
+# search file
 def file_select(conn, name):
-    sql = ''' SELECT name FROM text WHERE name=? '''
+    sql = ''' SELECT * FROM text WHERE name=? '''
     cur = conn.cursor()
-    cur.execute(sql, (name,))
-    return cur.fetchone()
+    cur.execute(sql, (name, ))
+    return cur.fetchall()
 
 
-# Called from GUI.py email search window
+# Called from GUI.py file search window
 def file_search(name):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
-        # search for email
+        # search for file
         search_result = file_select(conn, name)
 
     return search_result
 
+
+# search user by first name
+def user_select(conn, fname):
+    sql = ''' SELECT * FROM user WHERE fname=?'''
+    cur = conn.cursor()
+    cur.execute(sql, (fname,))
+    return cur.fetchall()
+
+
+# Called from GUI.py file search window
+def user_search(fname):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search for user
+        search_result = user_select(conn, fname)
+
+    return search_result
+
+
+# search file by date
+def file_date_select(conn, name):
+    sql = ''' SELECT * FROM text WHERE name=?'''
+    cur = conn.cursor()
+    cur.execute(sql, (name,))
+    return cur.fetchall()
+
+
+# Called from GUI.py file search window
+def file_date_search(name):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search for file by date
+        search_result = file_date_select(conn, name)
+
+    return search_result
