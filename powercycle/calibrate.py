@@ -30,13 +30,15 @@ with open("../data/sensordata/calibrate.txt", "r") as ins:
 
 print(lines[0:10])
  
-for i in range(0,795):
-    j = i + 1
-    sheet[j,0].value = lines[i]
+#for i in range(0,795):
+#    j = i + 1
+#    sheet[j,0].value = lines[i]
 
-path = ""../docs/calibration/"
+sheet[1:796,0].values = lines
+
+path = "../docs/calibration/"
 date = "date_time" # place holder
-filename = "calibrate_now_date_time"  # place holder
+filename = "calibrate_now_date_time.ods"  # place holder
 file_path = path + filename
 doc.save(file_path)
 calibrate_insert(filename, file_path, date)
