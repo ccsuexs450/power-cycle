@@ -190,7 +190,8 @@ class Search(tk.Frame):
         def find():
             if var2.get() == "File":
                 search_file = file_search(e1.get())
-                search_file_date = file_date_search(e1.get())
+                search_date = date_search(e4.get())
+                search_file_date = file_date_search(e1.get(), e4.get())
                 if var1.get() == "":
                     print("please enter a file name")
                 else:
@@ -200,7 +201,7 @@ class Search(tk.Frame):
                         if var3.get() == "":
                             print("please enter a date")
                         else:
-                            if search_file_date == None:
+                            if search_date == None:
                                 print("date doesn't exist, please enter a correct date")
                             else:
                                 print(search_file_date)
@@ -208,7 +209,7 @@ class Search(tk.Frame):
             elif var2.get() == "Name":
                 search_user = user_search(e1.get())
                 search_date = date_search(e4.get())
-                # search_user_date = user_search(e1.get()) & date_search(e4.get())
+                search_user_date = user_date_search(e1.get(), e4.get())
                 if var1.get() == "":
                     print("please enter a user name")
                 else:
@@ -221,7 +222,8 @@ class Search(tk.Frame):
                             if search_date == None:
                                 print("date doesn't exist, please enter a correct date")
                             else:
-                                print(search_user)
+                                print(search_user_date)
+
             else:
                 print("Please select what you want to look for")
 
