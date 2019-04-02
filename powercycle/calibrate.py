@@ -1,8 +1,7 @@
-import pyoo
 import os
 import subprocess
+import pyoo
 from db_interaction import *
-from time import sleep
 
 soffice = subprocess.Popen([
     'lxterminal',
@@ -28,10 +27,6 @@ with open("../data/sensordata/calibrate.txt", "r") as ins:
 
 print(lines[0:10])
  
-#for i in range(0,795):
-#    j = i + 1
-#    sheet[j,0].value = lines[i]
-
 sheet[1:796,0].values = lines
 
 path = "../docs/calibration/"
@@ -42,8 +37,7 @@ doc.save(file_path)
 calibrate_insert(filename, file_path, date)
 doc.close()
 
-
-#soffice.kill()
+soffice.kill()
 
 print("File Saved")
 
