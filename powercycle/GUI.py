@@ -3,13 +3,10 @@ from tkinter import *
 from db_interaction import *
 import os
 
-form_self = None
-results_self = None
-
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.shared = {"email": tk.StringVar()}
+        self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable()}
         container = tk.Frame(self)
         container.pack()
         self.geometry("1200x800")
@@ -87,8 +84,7 @@ class EnterEmail(tk.Frame):
         e = tk.Entry(self, textvariable=self.controller.shared["email"])
         e.grid(row=20, column=40, sticky="nsew")
         def submit():
-            global form_self
-            email(form_self)
+            email(self.controller.shared["form_self"])
             search = email_search(e.get())
             if search == None:
                 controller.show("Form")
@@ -106,8 +102,7 @@ class Form(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        global form_self
-        form_self = self
+        self.controller.shared["form_self"] = self
         s = tk.StringVar()
         Label(self, text="First Name", font=("Courier", 14)).grid(row=2, column=1, pady=2)
         Label(self, text="Last Name", font=("Courier", 14)).grid(row=3, column=1, pady=2)
@@ -171,8 +166,7 @@ class Search(tk.Frame):
                 if var1.get() == "":
                     print("please enter a file name")
                 else:
-                    global results_self
-                    results(results_self, search_file)
+                    results(self.controller.shared["results_self"], search_file)
                     controller.show("ResultsPage")
 
             elif var2.get() == "Name":
@@ -199,8 +193,7 @@ class ResultsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        global results_self
-        results_self = self
+        self.controller.shared["results_self"] = self
         email = tk.Label(self, text="Email", font=("Courier", 28), fg="black")
         email.grid(row=0, column=1, padx=20)
         name = tk.Label(self, text="Name", font=("Courier", 28), fg="black")
@@ -224,22 +217,34 @@ class Run(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
+def widgets (self):
+    list = self.winfo_children()
+    for item in list :
+        if item.winfo_children():
+            list.extend(item.winfo_children())
+    return list
+
 def email(self):
     email = self.controller.shared["email"].get()
     self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
     self.title.grid(row=1, columnspan=4)
 
 def results(self, list):
+    widget_list = widgets(self)
+    for item in widget_list[4:]:
+        item.grid_forget()
     count = 0
     for x, i in enumerate(list):
         count = count + 1
         for y, j in enumerate(i[1:]):
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
-
+    for z, k in enumerate(range(count)):
+        k = Variable()
+        Checkbutton(self, text="Send to Email?", variable=k).grid(row=z+1, column=5)
     self.grid_rowconfigure(count+1, weight=1)
     self.grid_columnconfigure(0, weight=1)
-    self.grid_columnconfigure(5, weight=1)
+    self.grid_columnconfigure(6, weight=1)
 
 if __name__ == "__main__":
     gui = GUI()
