@@ -3,8 +3,8 @@ from tkinter import *
 from db_interaction import *
 import os
 
-
 form_self = None
+results_self = None
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -21,13 +21,15 @@ class GUI(tk.Tk):
         # create home menu
         menu.add_cascade(label="Home", command=lambda: self.show("Home"))
 
+        menu.add_cascade(label="Search", command=lambda: self.show("Search"))
+
         # create file menu
         file_menu = Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="Exit", command=self.quit)
 
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, Search, ResultsPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -100,12 +102,6 @@ class EnterEmail(tk.Frame):
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
 
-
-def email(self):
-    email = self.controller.shared["email"].get()
-    self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
-    self.title.grid(row=1, columnspan=4)
-
 class Form(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -149,6 +145,71 @@ class Form(tk.Frame):
         self.grid_rowconfigure(11, weight=1)
         self.grid_columnconfigure(3, weight=1)
 
+class Search(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller=controller
+        var1 = tk.StringVar()
+        var2 = tk.StringVar()
+        var3 = tk.StringVar()
+        title1 = tk.Label(self, text="Search:", font=("Courier", 28), fg="black")
+        title1.grid(row=19, column=40)
+        e1 = tk.Entry(self, textvariable=var1 )
+        e1.grid(row=20, column=40, sticky="nsew")
+        e2 = tk.Radiobutton(self, text="Name", font=("Courier", 16), padx=20, variable=var2, value="Name")
+        e3 = tk.Radiobutton(self, text="File", font=("Courier", 16), padx=20, variable=var2, value="File")
+        e2.grid(row=22, column=40)
+        e3.grid(row=23, column=40)
+        title2 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
+        title2.grid(row=24, column=40)
+        e4 = tk.Entry(self, textvariable=var3)
+        e4.grid(row=25, column=40, sticky="nsew")
+
+        def find():
+            if var2.get() == "File":
+                search_file = file_search(e1.get())
+                if var1.get() == "":
+                    print("please enter a file name")
+                else:
+                    global results_self
+                    results(results_self, search_file)
+                    controller.show("ResultsPage")
+
+            elif var2.get() == "Name":
+                search_user = user_search(e1.get())
+                search_date = date_search(e4.get())
+                search_user_date = user_date_search(e1.get(), e4.get())
+                if var1.get() == "":
+                    print("please enter a user name")
+                else:
+                    print(search_user)
+
+            else:
+                print("Please select what you want to look for")
+
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
+        find_button.grid(row=28, column=40, padx=2, pady=2)
+        col_count, row_count = self.grid_size()
+        for col in range(col_count):
+            self.grid_columnconfigure(col, minsize=10)
+        for row in range(row_count):
+            self.grid_rowconfigure(row, minsize=10)
+
+class ResultsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        global results_self
+        results_self = self
+        email = tk.Label(self, text="Email", font=("Courier", 28), fg="black")
+        email.grid(row=0, column=1, padx=20)
+        name = tk.Label(self, text="Name", font=("Courier", 28), fg="black")
+        name.grid(row=0, column=2, padx=20)
+        path = tk.Label(self, text="Path", font=("Courier", 28), fg="black")
+        path.grid(row=0, column=3, padx=20)
+        date = tk.Label(self, text="Date", font=("Courier", 28), fg="black")
+        date.grid(row=0, column=4, padx=20)
+
 class Run(tk.Frame):
     def __init__(self, parent, controller):
         def run_script():
@@ -162,6 +223,23 @@ class Run(tk.Frame):
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
+
+def email(self):
+    email = self.controller.shared["email"].get()
+    self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
+    self.title.grid(row=1, columnspan=4)
+
+def results(self, list):
+    count = 0
+    for x, i in enumerate(list):
+        count = count + 1
+        for y, j in enumerate(i[1:]):
+            result = tk.Label(self, text=j, fg="black", padx=10)
+            result.grid(row=x+1, column=y+1)
+
+    self.grid_rowconfigure(count+1, weight=1)
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_columnconfigure(5, weight=1)
 
 if __name__ == "__main__":
     gui = GUI()
