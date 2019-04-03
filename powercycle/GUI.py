@@ -176,7 +176,8 @@ class Search(tk.Frame):
                 if var1.get() == "":
                     print("please enter a user name")
                 else:
-                    print(search_user)
+                    results(self.controller.shared["results_self"], search_user_date)
+                    controller.show("ResultsPage")
 
             else:
                 print("Please select what you want to look for")
@@ -242,6 +243,10 @@ def results(self, list):
     for z, k in enumerate(range(count)):
         k = Variable()
         Checkbutton(self, text="Send to Email?", variable=k).grid(row=z+1, column=5)
+    def submit():
+        print(k.get())
+    button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
+    button.grid(row=5, column=1, padx=2, pady=2)
     self.grid_rowconfigure(count+1, weight=1)
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(6, weight=1)
