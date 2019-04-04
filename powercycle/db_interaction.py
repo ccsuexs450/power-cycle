@@ -97,105 +97,109 @@ def email_search(email):
     return search_result
 
 
-# search file
-def file_select(conn, name):
-    sql = ''' SELECT * FROM text WHERE name=? '''
-    cur = conn.cursor()
-    cur.execute(sql, (name,))
-    return cur.fetchall()
-
-# Called from GUI.py file search window
-def file_search(name):
-    database = 'cycle.db'
-
-    # database connection
-    conn = create_connection(database)
-    with conn:
-        # search for file
-        search_result = file_select(conn, name)
-
-    return search_result
-
-
-# search user by first name
-def user_select(conn, fname):
-    sql = ''' SELECT * FROM user WHERE fname=?'''
-    cur = conn.cursor()
-    cur.execute(sql, (fname,))
-    return cur.fetchall()
-
-
-# Called from GUI.py file search window
-def user_search(fname):
-    database = 'cycle.db'
-
-    # database connection
-    conn = create_connection(database)
-    with conn:
-        # search for user
-        search_result = user_select(conn, fname)
-
-    return search_result
-
-
-# search date
-def date_select(conn, date):
-    sql = ''' SELECT date FROM text WHERE date=?'''
-    cur = conn.cursor()
-    cur.execute(sql, (date,))
-    return cur.fetchall()
-
-
-# Called from GUI.py file search window
-def date_search(date):
-    database = 'cycle.db'
-
-    # database connection
-    conn = create_connection(database)
-    with conn:
-        # search for user
-        search_result = date_select(conn, date)
-
-    return search_result
-
-
-# search file by file name and date
-def file_date_select(conn, name, date):
-    sql = ''' SELECT name, date FROM text WHERE name=? AND date=?'''
+# search by file
+def file_select(conn, name, date):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE name=? AND date=?'''
     cur = conn.cursor()
     cur.execute(sql, (name, date,))
     return cur.fetchall()
 
 
-# Called from GUI.py file search window
-def file_date_search(name, date):
+# Called from GUI.py search window
+def file_search(name, date):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
-        # search for file by file name and date
-        search_result = file_date_select(conn, name, date)
+        # search by file and date
+        search_result = file_select(conn, name, date)
 
     return search_result
 
 
-# search file by user and date
-def user_date_select(conn, fname, date):
-    sql = ''' SELECT fname, name, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND date=?'''
+# search by user name-- fname only for now
+def user_select(conn, fname, date):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND date=?'''
     cur = conn.cursor()
     cur.execute(sql, (fname, date,))
     return cur.fetchall()
 
 
-# Called from GUI.py file search window
-def user_date_search(fname, date):
+# Called from GUI.py search window
+def user_search(fname, date):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
-        # search for file by user and date
-        search_result = user_date_select(conn, fname, date)
+
+        # search by user and date
+        search_result = user_select(conn, fname, date)
 
     return search_result
+
+# the following sql statements will be deleted later
+
+# search date
+# def date_select(conn, date):
+#     sql = ''' SELECT date FROM text WHERE date=?'''
+#     cur = conn.cursor()
+#     cur.execute(sql, (date,))
+#     return cur.fetchall()
+#
+#
+# # Called from GUI.py file search window
+# def date_search(date):
+#     database = 'cycle.db'
+#
+#     # database connection
+#     conn = create_connection(database)
+#     with conn:
+#         # search for user
+#         search_result = date_select(conn, date)
+#
+#     return search_result
+#
+#
+# # search file by file name and date
+# def file_date_select(conn, name, date):
+#     sql = ''' SELECT name, date FROM text WHERE name=? AND date=?'''
+#     cur = conn.cursor()
+#     cur.execute(sql, (name, date,))
+#     return cur.fetchall()
+#
+#
+# # Called from GUI.py file search window
+# def file_date_search(name, date):
+#     database = 'cycle.db'
+#
+#     # database connection
+#     conn = create_connection(database)
+#     with conn:
+#         # search for file by file name and date
+#         search_result = file_date_select(conn, name, date)
+#
+#     return search_result
+#
+#
+# # search file by user and date
+# def user_date_select(conn, fname, date):
+#     sql = ''' SELECT fname, name, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND date=?'''
+#     cur = conn.cursor()
+#     cur.execute(sql, (fname, date,))
+#     return cur.fetchall()
+#
+#
+# # Called from GUI.py file search window
+# def user_date_search(fname, date):
+#     database = 'cycle.db'
+#
+#     # database connection
+#     conn = create_connection(database)
+#     with conn:
+#         # search for file by user and date
+#         search_result = user_date_select(conn, fname, date)
+#
+#     return search_result
+
