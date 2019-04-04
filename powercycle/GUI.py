@@ -218,9 +218,9 @@ class Run(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
-def widgets (self):
+def widgets(self):
     list = self.winfo_children()
-    for item in list :
+    for item in list:
         if item.winfo_children():
             list.extend(item.winfo_children())
     return list
@@ -235,16 +235,24 @@ def results(self, list):
     for item in widget_list[4:]:
         item.grid_forget()
     count = 0
+    emails = []
     for x, i in enumerate(list):
         count = count + 1
         for y, j in enumerate(i[1:]):
+            if y == 0:
+                email = j
+                emails.append(email)
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
-    for z, k in enumerate(range(count)):
-        k = Variable()
-        Checkbutton(self, text="Send to Email?", variable=k).grid(row=z+1, column=5)
+    vars = []
+    for i, j in enumerate(range(count)):
+        var = IntVar()
+        Checkbutton(self, text="Send to Email?", variable=var).grid(row=i+1, column=5)
+        vars.append(var)
     def submit():
-        print(k.get())
+        for i, j in enumerate(range(count)):
+            if vars[i].get() == 1:
+                print(emails[i])
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=5, column=1, padx=2, pady=2)
     self.grid_rowconfigure(count+1, weight=1)
