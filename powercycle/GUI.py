@@ -235,13 +235,9 @@ def results(self, list):
     for item in widget_list[4:]:
         item.grid_forget()
     count = 0
-    emails = []
     for x, i in enumerate(list):
         count = count + 1
         for y, j in enumerate(i[1:]):
-            if y == 0:
-                email = j
-                emails.append(email)
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
     vars = []
@@ -252,7 +248,7 @@ def results(self, list):
     def submit():
         for i, j in enumerate(range(count)):
             if vars[i].get() == 1:
-                print(emails[i])
+                print("Checked")
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=5, column=1, padx=2, pady=2)
     self.grid_rowconfigure(count+1, weight=1)
