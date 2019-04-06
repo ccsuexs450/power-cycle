@@ -16,7 +16,7 @@ soffice = subprocess.Popen([
 lines = []
 
 desktop = pyoo.Desktop('localhost', 2002)
-doc = desktop.open_spreadsheet("../docs/calibration/Calibrate_blank.ods")
+doc = desktop.open_spreadsheet("../docs/templates/Calibrate_blank.ods")
 
 sheet = doc.sheets[0]
 
