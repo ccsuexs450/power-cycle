@@ -7,12 +7,13 @@ from db_interaction import *
 soffice = subprocess.Popen([
     'lxterminal',
     '-e',
-    'soffice',
+    '/usr/bin/soffice',
     '--accept=host=localhost,port=2002;urp;',
     '--norestore',
     '--nologo',
     '--nodefault',
-    '--headless'])
+    '--headless'
+    '&'])
 
 time.sleep(5)
 
