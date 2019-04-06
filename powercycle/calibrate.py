@@ -1,17 +1,20 @@
 import os
 import subprocess
+import time
 import pyoo
 from db_interaction import *
 
 soffice = subprocess.Popen([
     'lxterminal',
     '-e',
-    '/usr/bin/soffice',
+    'soffice',
     '--accept=host=localhost,port=2002;urp;',
     '--norestore',
     '--nologo',
     '--nodefault',
     '--headless'])
+
+time.sleep(5)
 
 lines = []
 
@@ -29,7 +32,7 @@ print(lines[0:10])
  
 sheet[1:796,0].values = lines
 
-delta_theta = sheet[1:15,10]
+delta_theta = sheet[1:15,10].values
 
 with open("../docs/templates/delta_theta.txt", "w") as out:
     for item in delta_theta:
