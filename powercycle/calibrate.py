@@ -29,6 +29,12 @@ print(lines[0:10])
  
 sheet[1:796,0].values = lines
 
+delta_theta = sheet[1:15,10]
+
+with open("../docs/templates/delta_theta.txt", "w") as out:
+    for item in delta_theta:
+        out.write("%s\n" % item)
+
 path = "../docs/calibration/"
 date = "date_time" # place holder
 filename = "calibrate_now_date_time.ods"  # place holder
