@@ -18,7 +18,7 @@ lines = []
 dt    = []
 
 desktop = pyoo.Desktop('localhost', 2002)
-doc = desktop.open_spreadsheet("../docs/templates/Calibrate_blank.ods")
+doc = desktop.open_spreadsheet("../docs/templates/Power_blank.ods")
 
 power = doc.sheets[1]
 delta = doc.sheets[2]
@@ -37,7 +37,7 @@ with open("../docs/templates/delta_theta.txt", "r") as ins:
         line = line.rstrip('\n')
         dt.append(line)
 
-delta[1:16,10].values = dt
+delta[1:16,1].values = dt
 
 path = "../docs/power/"
 date = time.strftime("%Y%m%d-%H%M%S")
