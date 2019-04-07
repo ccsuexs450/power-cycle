@@ -98,36 +98,36 @@ def email_search(email):
 
 
 # search by file
-def file_select(conn, name, date):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE name=? AND date=?'''
+def file_select(conn, name, from_date, to_date ):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE name=? AND date BETWEEN ? AND ?'''
     cur = conn.cursor()
-    cur.execute(sql, (name, date,))
+    cur.execute(sql, (name, from_date, to_date))
     return cur.fetchall()
 
 
 # Called from GUI.py search window
-def file_search(name, date):
+def file_search(name, from_date, to_date):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
         # search by file and date
-        search_result = file_select(conn, name, date)
+        search_result = file_select(conn, name, from_date, to_date)
 
     return search_result
 
 
 # search by user name-- fname only for now
-def user_select(conn, fname, date):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND date=?'''
+def user_select(conn, fname, lname, from_date, to_date):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND lname=? AND date BETWEEN ? AND ?'''
     cur = conn.cursor()
-    cur.execute(sql, (fname, date,))
+    cur.execute(sql, (fname, lname, from_date, to_date))
     return cur.fetchall()
 
 
 # Called from GUI.py search window
-def user_search(fname, date):
+def user_search(fname, lname, from_date, to_date):
     database = 'cycle.db'
 
     # database connection
@@ -135,7 +135,7 @@ def user_search(fname, date):
     with conn:
 
         # search by user and date
-        search_result = user_select(conn, fname, date)
+        search_result = user_select(conn, fname, lname, from_date, to_date)
 
     return search_result
 

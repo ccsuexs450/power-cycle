@@ -20,7 +20,10 @@ class GUI(tk.Tk):
         menu.add_cascade(label="Home", command=lambda: self.show("Home"))
 
         # create search menu
-        menu.add_cascade(label="Search", command=lambda: self.show("Search"))
+        search_menu = Menu(menu, tearoff=0)
+        menu.add_cascade(label="Search", menu=search_menu)
+        search_menu.add_command(label="Search by user name", command=lambda: self.show("SearchName"))
+        search_menu.add_command(label="Search by file type", command=lambda: self.show("SearchFile"))
 
         # create file menu
         file_menu = Menu(menu, tearoff=0)
@@ -28,7 +31,7 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Exit", command=self.quit)
 
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run, Search, ResultsPage):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -40,6 +43,7 @@ class GUI(tk.Tk):
     def show(self, page):
         frame = self.frames[page]
         frame.tkraise()
+
 
 # create home page
 class Home(tk.Frame):
@@ -58,6 +62,7 @@ class Home(tk.Frame):
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
+
 
 # create calibration page
 class Calibrate(tk.Frame):
@@ -145,73 +150,89 @@ class Form(tk.Frame):
         self.grid_rowconfigure(11, weight=1)
         self.grid_columnconfigure(3, weight=1)
 
-# create search page
-class Search(tk.Frame):
+
+# create search by file type page
+class SearchFile(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller=controller
         var1 = tk.StringVar()
         var2 = tk.StringVar()
         var3 = tk.StringVar()
-        title1 = tk.Label(self, text="Search:", font=("Courier", 28), fg="black")
+        title1 = tk.Label(self, text="Search by file type:", font=("Courier", 28), fg="black")
         title1.grid(row=19, column=40)
         e1 = tk.Entry(self, textvariable=var1 )
         e1.grid(row=20, column=40, sticky="nsew")
-        e2 = tk.Radiobutton(self, text="Name", font=("Courier", 16), padx=20, variable=var2, value="Name")
-        e3 = tk.Radiobutton(self, text="File", font=("Courier", 16), padx=20, variable=var2, value="File")
-        e2.grid(row=22, column=40)
-        e3.grid(row=23, column=40)
         title2 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
         title2.grid(row=24, column=40)
-        e4 = tk.Entry(self, textvariable=var3)
-        e4.grid(row=25, column=40, sticky="nsew")
+        title3 = tk.Label(self, text="From:", font=("Courier", 16), fg="black")
+        title3.grid(row=25, column=40)
+        e2 = tk.Entry(self, textvariable=var2)
+        e2.grid(row=26, column=40, sticky="nsew")
+        title4 = tk.Label(self, text="To:", font=("Courier", 16), fg="black")
+        title4.grid(row=29, column=40)
+        e3 = tk.Entry(self, textvariable=var3)
+        e3.grid(row=30, column=40, sticky="nsew")
 
         def find():
-            if var2.get() == "File":
-                search_file = file_search(e1.get())
-                if var1.get() == "":
-                    print("please enter a file name")
-                else:
-                    results(self.controller.shared["results_self"], search_file)
-                    controller.show("ResultsPage")
-
-                    # if search_file == None:
-                    #     print("file name doesn't exist!!")
-                    # else:
-                    #     if var3.get() == "":
-                    #         print("please enter a date")
-                    #     else:
-                    #         if search_date == None:
-                    #             print("date doesn't exist, please enter a correct date")
-                    #         else:
-                    #             print(search_file_date)
-
-            elif var2.get() == "Name":
-                search_user = user_search(e1.get(), e4.get())
-                # search_date = date_search(e4.get())
-                # search_user_date = user_date_search(e1.get(), e4.get())
-                if var1.get() == "":
-                    print("please enter a user name")
-                else:
-                    results(self.controller.shared["results_self"], search_user)
-                    controller.show("ResultsPage")
-
-                    # if search_user == None:
-                    #     print("user name doesn't exist!!")
-                    # else:
-                    #     if var3.get() == "":
-                    #         print("please enter a date")
-                    #     else:
-                    #         if search_date == None:
-                    #             print("date doesn't exist, please enter a correct date")
-                    #         else:
-                    #             print(search_user_date)
-
+            search_file = file_search(e1.get(), e2.get(), e3.get())
+            if var1.get() == "":
+                print("please enter a file name")
             else:
-                print("Please select what you want to look for")
+                results(self.controller.shared["results_self"], search_file)
+                controller.show("ResultsPage")
 
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
-        find_button.grid(row=28, column=40, padx=2, pady=2)
+        find_button.grid(row=33, column=40, padx=2, pady=2)
+        col_count, row_count = self.grid_size()
+        for col in range(col_count):
+            self.grid_columnconfigure(col, minsize=10)
+        for row in range(row_count):
+            self.grid_rowconfigure(row, minsize=10)
+
+
+# create search by user name page
+class SearchName(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller=controller
+        var1 = tk.StringVar()
+        var2 = tk.StringVar()
+        var3 = tk.StringVar()
+        var4 = tk.StringVar()
+        title1 = tk.Label(self, text="Search by user name:", font=("Courier", 28), fg="black")
+        title1.grid(row=19, column=40)
+        title2 = tk.Label(self, text="First Name:", font=("Courier", 16), fg="black")
+        title2.grid(row=20, column=40)
+        e1 = tk.Entry(self, textvariable=var1)
+        e1.grid(row=21, column=40, sticky="nsew")
+        title3 = tk.Label(self, text="Last Name:", font=("Courier", 16), fg="black")
+        title3.grid(row=22, column=40)
+        e2 = tk.Entry(self, textvariable=var2 )
+        e2.grid(row=23, column=40, sticky="nsew")
+        title4 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
+        title4.grid(row=27, column=40)
+        title5 = tk.Label(self, text="From:", font=("Courier", 16), fg="black")
+        title5.grid(row=28, column=40)
+        e3 = tk.Entry(self, textvariable=var3)
+        e3.grid(row=29, column=40, sticky="nsew")
+        title6 = tk.Label(self, text="To:", font=("Courier", 16), fg="black")
+        title6.grid(row=30, column=40)
+        e4 = tk.Entry(self, textvariable=var4)
+        e4.grid(row=31, column=40, sticky="nsew")
+
+        def find():
+            search_user = user_search(e1.get(), e2.get(), e3.get(), e4.get())
+            if var1.get() == "":
+                print("please enter the first name")
+            elif var2.get() == "":
+                print("please enter last name")
+            else:
+                results(self.controller.shared["results_self"], search_user)
+                controller.show("ResultsPage")
+
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
+        find_button.grid(row=34, column=40, padx=2, pady=2)
         col_count, row_count = self.grid_size()
         for col in range(col_count):
             self.grid_columnconfigure(col, minsize=10)
@@ -254,6 +275,7 @@ class Run(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
+
 def widgets(self):
     list = self.winfo_children()
     for item in list:
@@ -288,8 +310,8 @@ def results(self, list):
         for i, j in enumerate(range(count)):
             if vars[i].get() == 1:
                 print("Checked")
-    button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
-    button.grid(row=5, column=1, padx=2, pady=2)
+    button = tk.Button(self, text="Submit", height=2, width=8, bg="deep sky blue", command=submit)
+    button.grid(row=x+2, column=4, padx=2, pady=2)
     self.grid_rowconfigure(count+1, weight=1)
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(6, weight=1)
