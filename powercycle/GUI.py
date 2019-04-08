@@ -4,7 +4,6 @@ from db_interaction import *
 from datetime import *
 import os
 
-
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -88,7 +87,7 @@ class EnterEmail(tk.Frame):
         e.grid(row=20, column=40, sticky="nsew")
 
         def submit():
-            email(self.controller.shared["form_self"])
+            form(self.controller.shared["form_self"])
             search = email_search(e.get())
             if search == None:
                 controller.show("Form")
@@ -109,48 +108,6 @@ class Form(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.controller.shared["form_self"] = self
-        s = tk.StringVar()
-        Label(self, text="First Name", font=("Courier", 14)).grid(row=2, column=1, pady=2)
-        Label(self, text="Last Name", font=("Courier", 14)).grid(row=3, column=1, pady=2)
-        Label(self, text="Date(YYYY MM DD)", font=("Courier", 14)).grid(row=4, column=1, pady=2)
-        Label(self, text="Height(feet, inches)", font=("Courier", 14)).grid(row=5, column=1, pady=2)
-        Label(self, text="Weight(lbs)", font=("Courier", 14)).grid(row=6, column=1, pady=2)
-        Label(self, text="Sex", font=("Courier", 14)).grid(row=7, column=1, pady=2)
-        Label(self, text="Category", font=("Courier", 14)).grid(row=9, column=1, pady=2)
-        entry1 = Entry(self)
-        entry2 = Entry(self)
-        entry3 = Entry(self)
-        entry4 = Entry(self, width=10)
-        entry5 = Entry(self, width=10)
-        entry6 = Entry(self)
-        entry7 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
-        entry8 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
-        entry9 = Entry(self)
-        entry1.grid(row=2, column=2, columnspan=2, pady=2)
-        entry2.grid(row=3, column=2, columnspan=2, pady=2)
-        entry3.grid(row=4, column=2, columnspan=2, pady=2)
-        entry4.grid(row=5, column=2, pady=2, padx=2)
-        entry5.grid(row=5, column=3, pady=2, padx=2)
-        entry6.grid(row=6, column=2, columnspan=2, pady=2)
-        entry7.grid(row=7, column=2, columnspan=2, pady=2)
-        entry8.grid(row=8, column=2, columnspan=2, pady=2)
-        entry9.grid(row=9, column=2, columnspan=2, pady=2)
-
-        def submit(email, fname, lname, date, height, weight, gender, category):
-            birth = datetime.strptime(date, "%Y %m %d")
-            today = datetime.now()
-            year = 365.2422
-            age =round(((today - birth).days / year), 1)
-            user_insert(email, fname, lname, age, height, weight, gender, category)
-            controller.show("Run")
-
-        submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), eval(entry4.get()) * 12 + eval(entry5.get()), entry6.get(), s.get(), entry9.get()))
-        submit_button.grid(row=10, column=1, columnspan=3, pady=20)
-
-        self.grid_rowconfigure(0, weight=1, minsize=150)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(11, weight=1)
-        self.grid_columnconfigure(4, weight=1)
 
 # create search page
 class Search(tk.Frame):
@@ -268,12 +225,58 @@ def widgets(self):
             list.extend(item.winfo_children())
     return list
 
-
-def email(self):
+def form(self):
+    widget_list = widgets(self)
+    if len(widget_list) != 0:
+        widget_list[0].grid_forget()
     email = self.controller.shared["email"].get()
     self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
     self.title.grid(row=1, columnspan=5)
+    s = tk.StringVar()
+    Label(self, text="First Name", font=("Courier", 14)).grid(row=2, column=1, pady=2)
+    Label(self, text="Last Name", font=("Courier", 14)).grid(row=3, column=1, pady=2)
+    Label(self, text="Date(YYYY MM DD)", font=("Courier", 14)).grid(row=4, column=1, pady=2)
+    Label(self, text="Height(feet, inches)", font=("Courier", 14)).grid(row=5, column=1, pady=2)
+    Label(self, text="Weight(lbs)", font=("Courier", 14)).grid(row=6, column=1, pady=2)
+    Label(self, text="Sex", font=("Courier", 14)).grid(row=7, column=1, pady=2)
+    Label(self, text="Category", font=("Courier", 14)).grid(row=9, column=1, pady=2)
+    entry1 = Entry(self)
+    entry2 = Entry(self)
+    entry3 = Entry(self)
+    entry4 = Entry(self, width=10)
+    entry5 = Entry(self, width=10)
+    entry6 = Entry(self)
+    entry7 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
+    entry8 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
+    entry9 = Entry(self)
+    entry1.grid(row=2, column=2, columnspan=2, pady=2)
+    entry2.grid(row=3, column=2, columnspan=2, pady=2)
+    entry3.grid(row=4, column=2, columnspan=2, pady=2)
+    entry4.grid(row=5, column=2, pady=2, padx=2)
+    entry5.grid(row=5, column=3, pady=2, padx=2)
+    entry6.grid(row=6, column=2, columnspan=2, pady=2)
+    entry7.grid(row=7, column=2, columnspan=2, pady=2)
+    entry8.grid(row=8, column=2, columnspan=2, pady=2)
+    entry9.grid(row=9, column=2, columnspan=2, pady=2)
 
+    def submit(email, fname, lname, date, height, weight, gender, category):
+        birth = datetime.strptime(date, "%Y %m %d")
+        today = datetime.now()
+        year = 365.2422
+        age = round(((today - birth).days / year), 1)
+        user_insert(email, fname, lname, age, height, weight, gender, category)
+        controller.show("Run")
+
+    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue",
+                              command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(),
+                                                     entry3.get(), eval(entry4.get()) * 12 + eval(entry5.get()),
+                                                     entry6.get(), s.get(), entry9.get()))
+    submit_button.grid(row=10, column=1, columnspan=3, pady=20)
+
+    self.grid_rowconfigure(0, weight=1, minsize=150)
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_rowconfigure(11, weight=1)
+    self.grid_columnconfigure(4, weight=1)
 
 def results(self, list):
     widget_list = widgets(self)
