@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from db_interaction import *
+from datetime import *
 import os
 
 
@@ -111,39 +112,45 @@ class Form(tk.Frame):
         s = tk.StringVar()
         Label(self, text="First Name", font=("Courier", 14)).grid(row=2, column=1, pady=2)
         Label(self, text="Last Name", font=("Courier", 14)).grid(row=3, column=1, pady=2)
-        Label(self, text="Age", font=("Courier", 14)).grid(row=4, column=1, pady=2)
-        Label(self, text="Height", font=("Courier", 14)).grid(row=5, column=1, pady=2)
-        Label(self, text="Weight", font=("Courier", 14)).grid(row=6, column=1, pady=2)
+        Label(self, text="Date(YYYY MM DD)", font=("Courier", 14)).grid(row=4, column=1, pady=2)
+        Label(self, text="Height(feet, inches)", font=("Courier", 14)).grid(row=5, column=1, pady=2)
+        Label(self, text="Weight(lbs)", font=("Courier", 14)).grid(row=6, column=1, pady=2)
         Label(self, text="Sex", font=("Courier", 14)).grid(row=7, column=1, pady=2)
         Label(self, text="Category", font=("Courier", 14)).grid(row=9, column=1, pady=2)
         entry1 = Entry(self)
         entry2 = Entry(self)
         entry3 = Entry(self)
-        entry4 = Entry(self)
-        entry5 = Entry(self)
-        entry6 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
-        entry7 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
-        entry8 = Entry(self)
-        entry1.grid(row=2, column=2, pady=2)
-        entry2.grid(row=3, column=2, pady=2)
-        entry3.grid(row=4, column=2, pady=2)
-        entry4.grid(row=5, column=2, pady=2)
-        entry5.grid(row=6, column=2, pady=2)
-        entry6.grid(row=7, column=2, pady=2)
-        entry7.grid(row=8, column=2, pady=2)
-        entry8.grid(row=9, column=2, pady=2)
+        entry4 = Entry(self, width=10)
+        entry5 = Entry(self, width=10)
+        entry6 = Entry(self)
+        entry7 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
+        entry8 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
+        entry9 = Entry(self)
+        entry1.grid(row=2, column=2, columnspan=2, pady=2)
+        entry2.grid(row=3, column=2, columnspan=2, pady=2)
+        entry3.grid(row=4, column=2, columnspan=2, pady=2)
+        entry4.grid(row=5, column=2, pady=2, padx=2)
+        entry5.grid(row=5, column=3, pady=2, padx=2)
+        entry6.grid(row=6, column=2, columnspan=2, pady=2)
+        entry7.grid(row=7, column=2, columnspan=2, pady=2)
+        entry8.grid(row=8, column=2, columnspan=2, pady=2)
+        entry9.grid(row=9, column=2, columnspan=2, pady=2)
 
-        def submit(email, fname, lname, age, height, weight, gender, category):
+        def submit(email, fname, lname, date, height, weight, gender, category):
+            birth = datetime.strptime(date, "%Y %m %d")
+            today = datetime.now()
+            days = 365.2425
+            age =round(((today - birth).days / days), 1)
             user_insert(email, fname, lname, age, height, weight, gender, category)
             controller.show("Run")
 
-        submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), s.get(), entry8.get()))
-        submit_button.grid(row=10, column=2)
+        submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), eval(entry4.get()) * 12 + eval(entry5.get()), entry6.get(), s.get(), entry9.get()))
+        submit_button.grid(row=10, column=1, columnspan=3, pady=20)
 
         self.grid_rowconfigure(0, weight=1, minsize=150)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(11, weight=1)
-        self.grid_columnconfigure(3, weight=1)
+        self.grid_columnconfigure(4, weight=1)
 
 # create search page
 class Search(tk.Frame):
@@ -155,7 +162,7 @@ class Search(tk.Frame):
         var3 = tk.StringVar()
         title1 = tk.Label(self, text="Search:", font=("Courier", 28), fg="black")
         title1.grid(row=19, column=40)
-        e1 = tk.Entry(self, textvariable=var1 )
+        e1 = tk.Entry(self, textvariable=var1)
         e1.grid(row=20, column=40, sticky="nsew")
         e2 = tk.Radiobutton(self, text="Name", font=("Courier", 16), padx=20, variable=var2, value="Name")
         e3 = tk.Radiobutton(self, text="File", font=("Courier", 16), padx=20, variable=var2, value="File")
@@ -168,7 +175,7 @@ class Search(tk.Frame):
 
         def find():
             if var2.get() == "File":
-                search_file = file_search(e1.get())
+                search_file = file_search(e1.get(), e4.get())
                 if var1.get() == "":
                     print("please enter a file name")
                 else:
@@ -265,7 +272,7 @@ def widgets(self):
 def email(self):
     email = self.controller.shared["email"].get()
     self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
-    self.title.grid(row=1, columnspan=4)
+    self.title.grid(row=1, columnspan=5)
 
 
 def results(self, list):
@@ -278,21 +285,39 @@ def results(self, list):
         for y, j in enumerate(i[0:]):
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
-    vars = []
+    email_vars = []
+    open_vars = []
     for i, j in enumerate(range(count)):
         var = IntVar()
+        var1 = IntVar()
         Checkbutton(self, text="Send to Email?", variable=var).grid(row=i+1, column=7)
-        vars.append(var)
+        Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=8)
+        email_vars.append(var)
+        open_vars.append(var1)
 
     def submit():
         for i, j in enumerate(range(count)):
-            if vars[i].get() == 1:
+            if email_vars[i].get() == 1:
                 print("Checked")
+            if open_vars[i].get() == 1:
+                print("Checked again")
+        popup = tk.Tk()
+        label = tk.Label(popup, text="Enter email")
+        label.grid(row=0, column=0, pady=10)
+        entry = tk.Entry(popup)
+        entry.grid(row=1, column=0)
+        def send():
+            print(entry.get())
+            popup.destroy()
+        button = tk.Button(popup, text="Submit", command=send)
+        button.grid(row=2, column=0)
+
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
-    button.grid(row=5, column=1, padx=2, pady=2)
-    self.grid_rowconfigure(count+1, weight=1)
+    button.grid(row=count+1, columnspan=10, padx=2, pady=20)
+
+    self.grid_rowconfigure(count+2, weight=1)
     self.grid_columnconfigure(0, weight=1)
-    self.grid_columnconfigure(6, weight=1)
+    self.grid_columnconfigure(9, weight=1)
 
 
 if __name__ == "__main__":
