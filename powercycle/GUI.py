@@ -139,8 +139,8 @@ class Form(tk.Frame):
         def submit(email, fname, lname, date, height, weight, gender, category):
             birth = datetime.strptime(date, "%Y %m %d")
             today = datetime.now()
-            days = 365.2425
-            age =round(((today - birth).days / days), 1)
+            year = 365.2422
+            age =round(((today - birth).days / year), 1)
             user_insert(email, fname, lname, age, height, weight, gender, category)
             controller.show("Run")
 
