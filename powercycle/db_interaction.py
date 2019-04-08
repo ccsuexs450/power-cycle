@@ -139,29 +139,31 @@ def user_search(fname, lname, from_date, to_date):
 
     return search_result
 
+
+# search for last 5 records
+def user_records_select(conn, fname, lname):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND lname=? ORDER BY id DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql, (fname, lname))
+    return cur.fetchall()
+
+
+# Called from GUI.py search window
+def user_records_search(fname, lname):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+
+        # search by user and date
+        search_result = user_records_select(conn, fname, lname)
+
+    return search_result
+
+
 # the following sql statements will be deleted later
 
-# search date
-# def date_select(conn, date):
-#     sql = ''' SELECT date FROM text WHERE date=?'''
-#     cur = conn.cursor()
-#     cur.execute(sql, (date,))
-#     return cur.fetchall()
-#
-#
-# # Called from GUI.py file search window
-# def date_search(date):
-#     database = 'cycle.db'
-#
-#     # database connection
-#     conn = create_connection(database)
-#     with conn:
-#         # search for user
-#         search_result = date_select(conn, date)
-#
-#     return search_result
-#
-#
 # # search file by file name and date
 # def file_date_select(conn, name, date):
 #     sql = ''' SELECT name, date FROM text WHERE name=? AND date=?'''

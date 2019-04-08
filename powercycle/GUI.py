@@ -223,10 +223,14 @@ class SearchName(tk.Frame):
 
         def find():
             search_user = user_search(e1.get(), e2.get(), e3.get(), e4.get())
+            records_search_user = user_records_search(e1.get(), e2.get())
             if var1.get() == "":
                 print("please enter the first name")
             elif var2.get() == "":
                 print("please enter last name")
+            elif var3.get() == "" or var4.get() == "":
+                results(self.controller.shared["results_self"], records_search_user)
+                controller.show("ResultsPage")
             else:
                 results(self.controller.shared["results_self"], search_user)
                 controller.show("ResultsPage")
