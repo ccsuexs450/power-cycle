@@ -1,18 +1,12 @@
-import os
+import os, signal
 import subprocess
 import time
 import pyoo
 from db_interaction import *
 
-soffice = subprocess.Popen([
-    'lxterminal',
-    '-e',
-    'soffice',
-    '--accept=host=localhost,port=2002;urp;',
-    '--norestore',
-    '--nologo',
-    '--nodefault',
-    '--headless'])
+soffice = subprocess.Popen('startLO')
+
+time.sleep(3)
 
 lines = []
 dt    = []
