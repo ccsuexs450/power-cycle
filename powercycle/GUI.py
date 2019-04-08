@@ -28,8 +28,8 @@ class GUI(tk.Tk):
         # create file menu
         file_menu = Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
         file_menu.add_command(label="Exit", command=self.quit)
-
         self.frames = {}
         for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage):
             page = F.__name__
@@ -52,9 +52,9 @@ class Home(tk.Frame):
         title = tk.Label(self, text="Welcome to Performance Cycling System !", font=("Courier", 32), fg="black",)
         title.grid(row=0, column=1, padx=30, pady=30)
 
-        calibrate_button = tk.Button(self, text="Calibrate", height=2, width=10,
-                                     bg="deep sky blue", command=lambda: controller.show("Calibrate"))
-        calibrate_button.grid(row=1, column=1, padx=15, pady=15)
+        # calibrate_button = tk.Button(self, text="Calibrate", height=2, width=10,
+        #                              bg="deep sky blue", command=lambda: controller.show("Calibrate"))
+        # calibrate_button.grid(row=1, column=1, padx=15, pady=15)
         run_button = tk.Button(self, text="Run", height=4, width=20,
                                bg="sea green", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=2, column=1, padx=2, pady=2)
