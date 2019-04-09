@@ -118,6 +118,27 @@ def text_file_search(from_date, to_date):
     return search_result
 
 
+# search for text files last 5 records
+def text_file_records_select(conn):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email ORDER BY id DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def text_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search last 5 text files
+        search_result = text_file_records_select(conn)
+
+    return search_result
+
+
 # search for power sheet files
 def power_file_select(conn, from_date, to_date ):
     sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email WHERE date BETWEEN ? AND ?'''
@@ -139,25 +160,67 @@ def power_file_search(from_date, to_date):
     return search_result
 
 
+# search for power files last 5 records
+def power_file_records_select(conn):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email ORDER BY id DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def power_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search last 5 power files
+        search_result = power_file_records_select(conn)
+
+    return search_result
+
+
 # search for calibration file
-# def calibration_file_select(conn, from_date, to_date ):
-#     sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN calibration ON user.email = calibration.user_email WHERE date BETWEEN ? AND ?'''
-#     cur = conn.cursor()
-#     cur.execute(sql, (from_date, to_date))
-#     return cur.fetchall()
-#
-#
-# # Called from GUI.py search file window
-# def calibration_file_search(from_date, to_date):
-#     database = 'cycle.db'
-#
-#     # database connection
-#     conn = create_connection(database)
-#     with conn:
-#         # search calibration file for a specific date range
-#         search_result = calibration_file_select(conn, from_date, to_date)
-#
-#     return search_result
+def calibration_file_select(conn, from_date, to_date):
+    sql = ''' SELECT name, path, date FROM calibration  WHERE date BETWEEN ? AND ?'''
+    cur = conn.cursor()
+    cur.execute(sql, (from_date, to_date))
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def calibration_file_search(from_date, to_date):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search calibration file for a specific date range
+        search_result = calibration_file_select(conn, from_date, to_date)
+
+    return search_result
+
+
+# search for calibration files last 5 records
+def calibration_file_records_select(conn):
+    sql = ''' SELECT name, path, date FROM calibration ORDER BY id DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def calibration_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search calibration file last 5 records
+        search_result = calibration_file_records_select(conn)
+
+    return search_result
 
 
 # search for graph files
@@ -177,6 +240,27 @@ def graph_file_search(from_date, to_date):
     with conn:
         # search graph files for a specific date range
         search_result = graph_file_select(conn, from_date, to_date)
+
+    return search_result
+
+
+# search for graph files last 5 records
+def graph_file_records_select(conn):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email ORDER BY id DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def graph_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search last 5 graph files
+        search_result = graph_file_records_select(conn)
 
     return search_result
 
