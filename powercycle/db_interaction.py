@@ -120,7 +120,7 @@ def text_file_search(from_date, to_date):
 
 # search for text files last 5 records
 def text_file_records_select(conn):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email ORDER BY id DESC LIMIT 5'''
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email ORDER BY date DESC LIMIT 5'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -162,7 +162,7 @@ def power_file_search(from_date, to_date):
 
 # search for power files last 5 records
 def power_file_records_select(conn):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email ORDER BY id DESC LIMIT 5'''
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email ORDER BY date DESC LIMIT 5'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -204,7 +204,7 @@ def calibration_file_search(from_date, to_date):
 
 # search for calibration files last 5 records
 def calibration_file_records_select(conn):
-    sql = ''' SELECT name, path, date FROM calibration ORDER BY id DESC LIMIT 5'''
+    sql = ''' SELECT name, path, date FROM calibration ORDER BY date DESC LIMIT 5'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -246,7 +246,7 @@ def graph_file_search(from_date, to_date):
 
 # search for graph files last 5 records
 def graph_file_records_select(conn):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email ORDER BY id DESC LIMIT 5'''
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email ORDER BY date DESC LIMIT 5'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -304,17 +304,17 @@ def user_records_select(conn, fname, lname):
     sql = '''SELECT fname, lname, email, name, path, date 
             FROM 
             (
-            SELECT id, fname, lname, email, name, path, date 
+            SELECT fname, lname, email, name, path, date 
             FROM user JOIN text ON user.email = text.user_email 
             UNION
-            SELECT id, fname, lname, email, name, path, date 
+            SELECT fname, lname, email, name, path, date 
             FROM user JOIN powersheet ON user.email = powersheet.user_email 
             UNION
-            SELECT id,fname, lname, email, name, path, date 
+            SELECT fname, lname, email, name, path, date 
             FROM user JOIN graph ON user.email = graph.user_email 
             )
             WHERE fname=? AND lname=?
-            ORDER BY id DESC LIMIT 5'''
+            ORDER BY date DESC LIMIT 5'''
     cur = conn.cursor()
     cur.execute(sql, (fname, lname))
     return cur.fetchall()
