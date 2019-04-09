@@ -52,9 +52,6 @@ class Home(tk.Frame):
         title = tk.Label(self, text="Welcome to Performance Cycling System !", font=("Courier", 32), fg="black",)
         title.grid(row=0, column=1, padx=30, pady=30)
 
-        # calibrate_button = tk.Button(self, text="Calibrate", height=2, width=10,
-        #                              bg="deep sky blue", command=lambda: controller.show("Calibrate"))
-        # calibrate_button.grid(row=1, column=1, padx=15, pady=15)
         run_button = tk.Button(self, text="Run", height=4, width=20,
                                bg="sea green", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=2, column=1, padx=2, pady=2)
@@ -114,11 +111,12 @@ class Form(tk.Frame):
         self.controller = controller
         self.controller.shared["form_self"] = self
 
+
 # create search by file type page
 class SearchFile(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.controller=controller
+        self.controller = controller
         var1 = tk.StringVar()
         var2 = tk.StringVar()
         var3 = tk.StringVar()
@@ -138,12 +136,26 @@ class SearchFile(tk.Frame):
         e3.grid(row=30, column=40, sticky="nsew")
 
         def find():
-            search_file = file_search(e1.get(), e2.get(), e3.get())
+            search_text_file = text_file_search(e2.get(), e3.get())
+            search_power_file = power_file_search(e2.get(), e3.get())
+            # search_calibration_file = calibration_file_search(e2.get(), e3.get())
+            search_graph_file = graph_file_search(e2.get(), e3.get())
             if var1.get() == "":
-                print("please enter a file name")
-            else:
-                results(self.controller.shared["results_self"], search_file)
+                print("please enter a file type")
+            elif var1.get() == "text":
+                results(self.controller.shared["results_self"], search_text_file)
                 controller.show("ResultsPage")
+            elif var1.get() == "power":
+                results(self.controller.shared["results_self"], search_power_file)
+                controller.show("ResultsPage")
+            # elif var1.get() == "calibration":
+            #     results(self.controller.shared["results_self"], search_calibration_file)
+            #     controller.show("ResultsPage")
+            elif var1.get() == "graph":
+                results(self.controller.shared["results_self"], search_graph_file)
+                controller.show("ResultsPage")
+            else:
+                print(" the file type you have entered is not found!!!")
 
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
         find_button.grid(row=33, column=40, padx=2, pady=2)
@@ -152,6 +164,7 @@ class SearchFile(tk.Frame):
             self.grid_columnconfigure(col, minsize=10)
         for row in range(row_count):
             self.grid_rowconfigure(row, minsize=10)
+
 
 # create search by user name page
 class SearchName(tk.Frame):
@@ -249,6 +262,7 @@ def widgets(self):
             list.extend(item.winfo_children())
     return list
 
+
 def form(self):
     widget_list = widgets(self)
     if len(widget_list) != 0:
@@ -289,7 +303,7 @@ def form(self):
         year = 365.2422
         age = round(((today - birth).days / year), 1)
         user_insert(email, fname, lname, age, height, weight, gender, category)
-        controller.show("Run")
+        self.controller.show("Run")
 
     submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(),entry3.get(), eval(entry4.get()) * 12 + eval(entry5.get()),entry6.get(), s.get(), entry9.get()))
     submit_button.grid(row=10, column=1, columnspan=3, pady=20)
@@ -298,6 +312,7 @@ def form(self):
     self.grid_columnconfigure(0, weight=1)
     self.grid_rowconfigure(11, weight=1)
     self.grid_columnconfigure(4, weight=1)
+
 
 def results(self, list):
     widget_list = widgets(self)
@@ -330,6 +345,7 @@ def results(self, list):
         label.grid(row=0, column=0, pady=10)
         entry = tk.Entry(popup)
         entry.grid(row=1, column=0)
+
         def send():
             print(entry.get())
             popup.destroy()

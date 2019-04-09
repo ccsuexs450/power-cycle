@@ -43,4 +43,14 @@ conn.execute('''CREATE TABLE calibration
 
 print ("Table created successfully");
 
+conn.execute('''CREATE TABLE graph
+         (id INTEGER PRIMARY KEY NOT NULL,
+         user_email TEXT NOT NULL REFERENCES user(email),
+         name            TEXT          NOT NULL,
+         path            TEXT          NOT NULL,
+         date            DATE          NOT NULL);''')
+
+print ("Table created successfully");
+
+
 conn.close()
