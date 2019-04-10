@@ -304,9 +304,12 @@ def results(self, list):
     for item in widget_list[6:]:
         item.grid_forget()
     count = 0
+    paths = []
     for x, i in enumerate(list):
         count = count + 1
         for y, j in enumerate(i[0:]):
+            if y == 4:
+                paths.append(j)
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
     email_vars = []
@@ -320,21 +323,23 @@ def results(self, list):
         open_vars.append(var1)
 
     def submit():
+        send = False
         for i, j in enumerate(range(count)):
             if email_vars[i].get() == 1:
-                print("Checked")
+                send = True
             if open_vars[i].get() == 1:
-                print("Checked again")
-        popup = tk.Tk()
-        label = tk.Label(popup, text="Enter email")
-        label.grid(row=0, column=0, pady=10)
-        entry = tk.Entry(popup)
-        entry.grid(row=1, column=0)
-        def send():
-            print(entry.get())
-            popup.destroy()
-        button = tk.Button(popup, text="Submit", command=send)
-        button.grid(row=2, column=0)
+                os.startfile(paths[i])
+        if send == True:
+            popup = tk.Tk()
+            label = tk.Label(popup, text="Enter email")
+            label.grid(row=0, column=0, pady=10)
+            entry = tk.Entry(popup)
+            entry.grid(row=1, column=0)
+            def send():
+                print(entry.get())
+                popup.destroy()
+            button = tk.Button(popup, text="Submit", command=send)
+            button.grid(row=2, column=0)
 
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=count+1, columnspan=10, padx=2, pady=20)
