@@ -97,109 +97,238 @@ def email_search(email):
     return search_result
 
 
-# search by file
-def file_select(conn, name, date):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE name=? AND date=?'''
+# search for text files
+def text_file_select(conn, from_date, to_date ):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE date BETWEEN ? AND ?'''
     cur = conn.cursor()
-    cur.execute(sql, (name, date,))
+    cur.execute(sql, (from_date, to_date))
     return cur.fetchall()
 
 
-# Called from GUI.py search window
-def file_search(name, date):
+# Called from GUI.py search file window
+def text_file_search(from_date, to_date):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
-        # search by file and date
-        search_result = file_select(conn, name, date)
+        # search text files for a specific date range
+        search_result = text_file_select(conn, from_date, to_date)
 
     return search_result
 
 
-# search by user name-- fname only for now
-def user_select(conn, fname, date):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND date=?'''
+# search for text files last 5 records
+def text_file_records_select(conn):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email ORDER BY date DESC LIMIT 5'''
     cur = conn.cursor()
-    cur.execute(sql, (fname, date,))
+    cur.execute(sql)
     return cur.fetchall()
 
 
-# Called from GUI.py search window
-def user_search(fname, date):
+# Called from GUI.py search file window
+def text_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search last 5 text files
+        search_result = text_file_records_select(conn)
+
+    return search_result
+
+
+# search for power sheet files
+def power_file_select(conn, from_date, to_date ):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email WHERE date BETWEEN ? AND ?'''
+    cur = conn.cursor()
+    cur.execute(sql, (from_date, to_date))
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def power_file_search(from_date, to_date):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search power files for a specific date range
+        search_result = power_file_select(conn, from_date, to_date)
+
+    return search_result
+
+
+# search for power files last 5 records
+def power_file_records_select(conn):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email ORDER BY date DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def power_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search last 5 power files
+        search_result = power_file_records_select(conn)
+
+    return search_result
+
+
+# search for calibration file
+def calibration_file_select(conn, from_date, to_date):
+    sql = ''' SELECT name, path, date FROM calibration  WHERE date BETWEEN ? AND ?'''
+    cur = conn.cursor()
+    cur.execute(sql, (from_date, to_date))
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def calibration_file_search(from_date, to_date):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search calibration file for a specific date range
+        search_result = calibration_file_select(conn, from_date, to_date)
+
+    return search_result
+
+
+# search for calibration files last 5 records
+def calibration_file_records_select(conn):
+    sql = ''' SELECT name, path, date FROM calibration ORDER BY date DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def calibration_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search calibration file last 5 records
+        search_result = calibration_file_records_select(conn)
+
+    return search_result
+
+
+# search for graph files
+def graph_file_select(conn, from_date, to_date ):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email WHERE date BETWEEN ? AND ?'''
+    cur = conn.cursor()
+    cur.execute(sql, (from_date, to_date))
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def graph_file_search(from_date, to_date):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search graph files for a specific date range
+        search_result = graph_file_select(conn, from_date, to_date)
+
+    return search_result
+
+
+# search for graph files last 5 records
+def graph_file_records_select(conn):
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email ORDER BY date DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Called from GUI.py search file window
+def graph_file_records_search():
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search last 5 graph files
+        search_result = graph_file_records_select(conn)
+
+    return search_result
+
+
+# search by user name
+def user_select(conn, fname, lname, from_date, to_date):
+    sql = '''SELECT fname, lname, email, name, path, date 
+            FROM 
+            (
+            SELECT fname, lname, email, name, path, date 
+            FROM user JOIN text ON user.email = text.user_email 
+            UNION
+            SELECT fname, lname, email, name, path, date 
+            FROM user JOIN powersheet ON user.email = powersheet.user_email 
+            UNION
+            SELECT fname, lname, email, name, path, date 
+            FROM user JOIN graph ON user.email = graph.user_email 
+            )
+            WHERE fname=? AND lname=? AND date BETWEEN ? AND ?'''
+    cur = conn.cursor()
+    cur.execute(sql, (fname, lname, from_date, to_date))
+    return cur.fetchall()
+
+
+# Called from GUI.py search user window
+def user_search(fname, lname, from_date, to_date):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
 
-        # search by user and date
-        search_result = user_select(conn, fname, date)
+        # search by user for a specific date range
+        search_result = user_select(conn, fname, lname, from_date, to_date)
 
     return search_result
 
-# the following sql statements will be deleted later
 
-# search date
-# def date_select(conn, date):
-#     sql = ''' SELECT date FROM text WHERE date=?'''
-#     cur = conn.cursor()
-#     cur.execute(sql, (date,))
-#     return cur.fetchall()
-#
-#
-# # Called from GUI.py file search window
-# def date_search(date):
-#     database = 'cycle.db'
-#
-#     # database connection
-#     conn = create_connection(database)
-#     with conn:
-#         # search for user
-#         search_result = date_select(conn, date)
-#
-#     return search_result
-#
-#
-# # search file by file name and date
-# def file_date_select(conn, name, date):
-#     sql = ''' SELECT name, date FROM text WHERE name=? AND date=?'''
-#     cur = conn.cursor()
-#     cur.execute(sql, (name, date,))
-#     return cur.fetchall()
-#
-#
-# # Called from GUI.py file search window
-# def file_date_search(name, date):
-#     database = 'cycle.db'
-#
-#     # database connection
-#     conn = create_connection(database)
-#     with conn:
-#         # search for file by file name and date
-#         search_result = file_date_select(conn, name, date)
-#
-#     return search_result
-#
-#
-# # search file by user and date
-# def user_date_select(conn, fname, date):
-#     sql = ''' SELECT fname, name, date FROM user JOIN text ON user.email = text.user_email WHERE fname=? AND date=?'''
-#     cur = conn.cursor()
-#     cur.execute(sql, (fname, date,))
-#     return cur.fetchall()
-#
-#
-# # Called from GUI.py file search window
-# def user_date_search(fname, date):
-#     database = 'cycle.db'
-#
-#     # database connection
-#     conn = create_connection(database)
-#     with conn:
-#         # search for file by user and date
-#         search_result = user_date_select(conn, fname, date)
-#
-#     return search_result
+# search for last 5 records when you search by user name and there is no date entered
+def user_records_select(conn, fname, lname):
+    sql = '''SELECT fname, lname, email, name, path, date 
+            FROM 
+            (
+            SELECT fname, lname, email, name, path, date 
+            FROM user JOIN text ON user.email = text.user_email 
+            UNION
+            SELECT fname, lname, email, name, path, date 
+            FROM user JOIN powersheet ON user.email = powersheet.user_email 
+            UNION
+            SELECT fname, lname, email, name, path, date 
+            FROM user JOIN graph ON user.email = graph.user_email 
+            )
+            WHERE fname=? AND lname=?
+            ORDER BY date DESC LIMIT 5'''
+    cur = conn.cursor()
+    cur.execute(sql, (fname, lname))
+    return cur.fetchall()
 
+
+# Called from GUI.py search user window
+def user_records_search(fname, lname):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+
+        # search and display last 5 records
+        search_result = user_records_select(conn, fname, lname)
+
+    return search_result
