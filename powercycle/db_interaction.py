@@ -47,7 +47,7 @@ def email_select(conn, email):
     return cur.fetchone()
 
 # search user for powersheet profile
-def user_profile_select(conn, email);
+def user_profile_select(conn, email):
     sql = ''' SELECT email, fname, lname, age, height, weight, gender, category FROM user WHERE email=? '''
     cur = conn.cursor()
     cur.execute(sql, (email,))
@@ -73,7 +73,7 @@ def power_insert(user_email ,name, path, date):
         calibrate_rid = create_calibrate(conn, spreadsheet)
 
 # Called from power.py
-def user_profile_search
+def user_profile_search(email):
     database = 'cycle.db'
 
     # database connection
