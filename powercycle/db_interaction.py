@@ -70,7 +70,7 @@ def power_insert(user_email ,name, path, date):
     with conn:
         # new spreadsheet
         spreadsheet = (user_email, name, path, date)
-        calibrate_rid = create_calibrate(conn, spreadsheet)
+        calibrate_rid = create_power(conn, spreadsheet)
 
 # Called from power.py
 def user_profile_search(email):
