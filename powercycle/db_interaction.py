@@ -53,6 +53,25 @@ def user_profile_select(conn, email);
     cur.execute(sql, (email,))
     return cur.fetchone()
 
+# create power sheet 
+def create_power(conn, spreadsheet):
+    sql = ''' INSERT INTO  powersheet(user_email,name,path,date)
+              VALUES(?,?,?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, spreadsheet)
+    return cur.lastrowid
+
+# Called from power.py
+def power_insert(user_email ,name, path, date):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # new spreadsheet
+        spreadsheet = (user_email, name, path, date)
+        calibrate_rid = create_calibrate(conn, spreadsheet)
+
 # Called from power.py
 def user_profile_search
     database = 'cycle.db'
