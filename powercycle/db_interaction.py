@@ -46,6 +46,25 @@ def email_select(conn, email):
     cur.execute(sql, (email,))
     return cur.fetchone()
 
+# search user for powersheet profile
+def user_profile_select(conn, email);
+    sql = ''' SELECT email, fname, lname, age, height, weight, gender, category FROM user WHERE email=? '''
+    cur = conn.cursor()
+    cur.execute(sql, (email,))
+    return cur.fetchone()
+
+# Called from power.py
+def user_profile_search
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # search for user
+        search_result = user_profile_select(conn, email)
+
+    return search_result
+
 
 # Called from GUI.py user insertion
 def user_insert(email, fname, lname, age, height, weight, gender, category):
@@ -332,3 +351,5 @@ def user_records_search(fname, lname):
         search_result = user_records_select(conn, fname, lname)
 
     return search_result
+
+
