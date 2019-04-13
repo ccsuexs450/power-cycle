@@ -1,22 +1,16 @@
 import os
 import subprocess
+import time
 import pyoo
 from db_interaction import *
 
-soffice = subprocess.Popen([
-    'lxterminal',
-    '-e',
-    '/usr/bin/soffice',
-    '--accept=host=localhost,port=2002;urp;',
-    '--norestore',
-    '--nologo',
-    '--nodefault',
-    '--headless'])
-
+soffice = subprocess.Popen('startLO')
+time.sleep(3)
+    
 lines = []
 
 desktop = pyoo.Desktop('localhost', 2002)
-doc = desktop.open_spreadsheet("../docs/calibration/Calibrate_blank.ods")
+doc = desktop.open_spreadsheet("../docs/templates/Calibrate_blank.ods")
 
 sheet = doc.sheets[0]
 
@@ -28,6 +22,12 @@ with open("../data/sensordata/calibrate.txt", "r") as ins:
 print(lines[0:10])
  
 sheet[1:796,0].values = lines
+
+delta_theta = sheet[1:15,10].values
+
+with open("../docs/templates/delta_theta.txt", "w") as out:
+    for item in delta_theta:
+        out.write("%s\n" % item)
 
 path = "../docs/calibration/"
 date = "date_time" # place holder
