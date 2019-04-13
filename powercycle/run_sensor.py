@@ -29,7 +29,7 @@ def calibrate_input(): #placeholder until sensor is working. Reads test input fr
     print("Files Created")
     
 
-def power__input(user_email):
+def power_input(user_email):
 
     ser = serial_conn()
 

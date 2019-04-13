@@ -109,3 +109,7 @@ venv.bak/
 # .ods
 *.ods
 !docs/templates/*.ods
+
+# .txt
+data/sensordata/*.txt
+
