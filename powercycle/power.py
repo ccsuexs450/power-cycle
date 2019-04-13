@@ -4,7 +4,7 @@ import time
 import pyoo
 from db_interaction import *
 
-def power_sheet(email):
+def power_sheet(lines, email):
 
     soffice = subprocess.Popen('startLO')
 
@@ -20,14 +20,16 @@ def power_sheet(email):
     power = doc.sheets[1]
     delta = doc.sheets[2]
 
-    with open("../data/sensordata/power.txt", "r") as ins:
-        for line in ins:
-            line = line.rstrip('\n')
-            lines.append(line)
+    #with open("../data/sensordata/power.txt", "r") as ins:
+    #    for line in ins:
+    #        line = line.rstrip('\n')
+    #        lines.append(line)
 
     print(lines[0:10])
  
-    power[1:496,0].values = lines
+    #power[1:496,0].values = lines
+    power[1:30,0].values = lines
+
 
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:

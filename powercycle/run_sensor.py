@@ -3,20 +3,17 @@ import serial
 import io
 import time
 from db_interaction import *
+from calibrate import *
+from power import *
 
 values = []
-time_values = []
 
-def sensor_running(user_email):
+def serial_conn():
     
     ser=serial.Serial("/dev/ttyACM0",9600)  #change ACM number as found from ls /de$
     ser.baudrate=9600
 
-    sensor_input()
-    print(values)
-
-    textwrite(user_email)
-    print('File created')
+    return ser
 
 
 def calibrate_input(): #placeholder until sensor is working. Reads test input from file.
@@ -26,22 +23,31 @@ def calibrate_input(): #placeholder until sensor is working. Reads test input fr
             line = line.rstrip('\n')
             values.append(line)
 
-    return values
+    textwrite("calibrator")
+    calibrate_sheet(values, user_email)
+
+    print("Files Created")
     
 
-def performance_input():
+def power__input(user_email):
+
+    ser = serial_conn()
+
     i = 0
-    while i < 30:
+    while i < 29:
 
         input = int(ser.readline().strip())
         values.append(str(input))
         i+=1
 
-    return values
+    textwrite(user_email)
+    power_sheet(values, user_email)
+
+    print("Files Created")
 
 
 def textwrite(user_email):
-    filename = time.strftime("%Y%m%d-%H%M%S")
+    filename = user_email[0:5] + time.strftime("%Y%m%d-%H%M%S")
     extension = ".txt"
     dir  = "../data/sensordata/"
     path = dir+filename+extension
@@ -53,6 +59,6 @@ def textwrite(user_email):
     outfile.close()
     textfile_insert(user_email, filename, path, filename)
 
-
+power_input("htazi@gmail.com")
 
 
