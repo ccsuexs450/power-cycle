@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from db_interaction import *
-from run_sensor import power_input
+from run_sensor import *
 from datetime import *
 import os
 
