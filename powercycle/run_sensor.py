@@ -34,7 +34,7 @@ def power_input(user_email):
     ser = serial_conn()
 
     i = 0
-    while i < 29:
+    while i < 495:
 
         input = int(ser.readline().strip())
         values.append(str(input))
