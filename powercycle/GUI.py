@@ -163,10 +163,10 @@ class SearchFile(tk.Frame):
                     controller.show("ResultsPage")
             elif var1.get() == "calibration":
                 if var2.get() == "" or var3.get() == "":
-                    results(self.controller.shared["calibration_results_self"], search_calibration_file_records)
+                    calibration_results(self.controller.shared["calibration_results_self"], search_calibration_file_records)
                     controller.show("CalibrationResultsPage")
                 else:
-                    results(self.controller.shared["calibration_results_self"], search_calibration_file)
+                    calibration_results(self.controller.shared["calibration_results_self"], search_calibration_file)
                     controller.show("CalibrationResultsPage")
             elif var1.get() == "graph":
                 if var2.get() == "" or var3.get() == "":
@@ -353,9 +353,12 @@ def results(self, list):
     for item in widget_list[6:]:
         item.grid_forget()
     count = 0
+    paths = []
     for x, i in enumerate(list):
         count = count + 1
         for y, j in enumerate(i[0:]):
+            if y == 4:
+                paths.append(j)
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
     email_vars = []
@@ -369,22 +372,23 @@ def results(self, list):
         open_vars.append(var1)
 
     def submit():
+        send = False
         for i, j in enumerate(range(count)):
             if email_vars[i].get() == 1:
-                print("Checked")
+                send = True
             if open_vars[i].get() == 1:
-                print("Checked again")
-        popup = tk.Tk()
-        label = tk.Label(popup, text="Enter email")
-        label.grid(row=0, column=0, pady=10)
-        entry = tk.Entry(popup)
-        entry.grid(row=1, column=0)
-
-        def send():
-            print(entry.get())
-            popup.destroy()
-        button = tk.Button(popup, text="Submit", command=send)
-        button.grid(row=2, column=0)
+                os.startfile(paths[i])
+        if send == True:
+            popup = tk.Tk()
+            label = tk.Label(popup, text="Enter email")
+            label.grid(row=0, column=0, pady=10)
+            entry = tk.Entry(popup)
+            entry.grid(row=1, column=0)
+            def send():
+                print(entry.get())
+                popup.destroy()
+            button = tk.Button(popup, text="Submit", command=send)
+            button.grid(row=2, column=0)
 
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=count+1, columnspan=10, padx=2, pady=20)
@@ -399,9 +403,12 @@ def calibration_results(self, list):
     for item in widget_list[3:]:
         item.grid_forget()
     count = 0
+    paths = []
     for x, i in enumerate(list):
         count = count + 1
         for y, j in enumerate(i[0:]):
+            if y == 1:
+                paths.append(j)
             result = tk.Label(self, text=j, fg="black", padx=10)
             result.grid(row=x+1, column=y+1)
     email_vars = []
@@ -409,35 +416,37 @@ def calibration_results(self, list):
     for i, j in enumerate(range(count)):
         var = IntVar()
         var1 = IntVar()
-        Checkbutton(self, text="Send to Email?", variable=var).grid(row=i+1, column=7)
-        Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=8)
+        Checkbutton(self, text="Send to Email?", variable=var).grid(row=i+1, column=4)
+        Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=5)
         email_vars.append(var)
         open_vars.append(var1)
 
     def submit():
+        send = False
         for i, j in enumerate(range(count)):
             if email_vars[i].get() == 1:
-                print("Checked")
+                send = True
             if open_vars[i].get() == 1:
-                print("Checked again")
-        popup = tk.Tk()
-        label = tk.Label(popup, text="Enter email")
-        label.grid(row=0, column=0, pady=10)
-        entry = tk.Entry(popup)
-        entry.grid(row=1, column=0)
+                os.startfile(paths[i])
+        if send == True:
+            popup = tk.Tk()
+            label = tk.Label(popup, text="Enter email")
+            label.grid(row=0, column=0, pady=10)
+            entry = tk.Entry(popup)
+            entry.grid(row=1, column=0)
 
-        def send():
-            print(entry.get())
-            popup.destroy()
-        button = tk.Button(popup, text="Submit", command=send)
-        button.grid(row=2, column=0)
+            def send():
+                print(entry.get())
+                popup.destroy()
+            button = tk.Button(popup, text="Submit", command=send)
+            button.grid(row=2, column=0)
 
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
-    button.grid(row=count+1, columnspan=10, padx=2, pady=20)
+    button.grid(row=count+1, columnspan=7, padx=2, pady=20)
 
     self.grid_rowconfigure(count+2, weight=1)
     self.grid_columnconfigure(0, weight=1)
-    self.grid_columnconfigure(9, weight=1)
+    self.grid_columnconfigure(6, weight=1)
 
 
 if __name__ == "__main__":
