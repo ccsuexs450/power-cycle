@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from db_interaction import *
+from run_sensor import power_input
 from datetime import *
 import os
 
@@ -64,9 +65,9 @@ class Home(tk.Frame):
 # create calibration page
 class Calibrate(tk.Frame):
     def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
         def run_script():
             os.system('python Script.py')
-        tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="sea green", command=run_script)
@@ -82,7 +83,7 @@ class Calibrate(tk.Frame):
 class EnterEmail(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.controller=controller
+        self.controller = controller
         title = tk.Label(self, text="Enter Email:", font=("Courier", 28), fg="black")
         title.grid(row=19, column=40)
         e = tk.Entry(self, textvariable=self.controller.shared["email"])
@@ -276,12 +277,13 @@ class CalibrationResultsPage(tk.Frame):
 # create run page
 class Run(tk.Frame):
     def __init__(self, parent, controller):
-        def run_script():
-            os.system('python Script.py')
         tk.Frame.__init__(self, parent)
+        self.controller = controller
+        def run():
+            power_input(self.controller.shared["email"])
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
-        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run_script)
+        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
         run_button.grid(row=2, column=1, padx=2, pady=2)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
