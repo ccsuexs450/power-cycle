@@ -8,9 +8,9 @@ def power_sheet(lines, email):
 
     soffice = subprocess.Popen('startLO')
 
-    time.sleep(3)
+    time.sleep(7)
 
-    lines = []
+#    lines = []
     dt    = []
 
     desktop = pyoo.Desktop('localhost', 2002)
@@ -26,7 +26,7 @@ def power_sheet(lines, email):
     #        lines.append(line)
 
     print(lines[0:10])
- 
+    print(len(lines)) 
     #power[1:496,0].values = lines
     power[1:30,0].values = lines
 
@@ -56,4 +56,4 @@ def power_sheet(lines, email):
 
     print("File Saved")
 
-power_sheet("htazi@gmail.com")
+#power_sheet("htazi@gmail.com")
