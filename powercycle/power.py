@@ -8,7 +8,7 @@ def power_sheet(lines, email):
 
     soffice = subprocess.Popen('startLO')
 
-    time.sleep(3)
+    time.sleep(7)
 
 #    lines = []
     dt    = []

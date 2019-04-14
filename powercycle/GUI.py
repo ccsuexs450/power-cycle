@@ -280,7 +280,8 @@ class Run(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         def run():
-            power_input(self.controller.shared["email"])
+            user_email = str(self.controller.shared["email"].get())
+            power_input(user_email)
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
