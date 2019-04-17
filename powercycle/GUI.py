@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import *
 from db_interaction import *
-from run_sensor import *
+#from run_sensor import *
 from datetime import *
 import os
+
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -90,12 +91,13 @@ class EnterEmail(tk.Frame):
         e.grid(row=20, column=40, sticky="nsew")
 
         def submit():
-            form(self.controller.shared["form_self"])
             search = email_search(e.get())
             if search == None:
+                form(self.controller.shared["form_self"], 1)
                 controller.show("Form")
             else:
-                controller.show("Run")
+                form(self.controller.shared["form_self"], 0)
+                controller.show("Form")
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
         find_button.grid(row=25, column=40, padx=2, pady=2)
         col_count, row_count = self.grid_size()
@@ -280,7 +282,8 @@ class Run(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         def run():
-            power_input(self.controller.shared["email"])
+            os.system('python Script.py')
+            #power_input(self.controller.shared["email"])
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
@@ -299,7 +302,7 @@ def widgets(self):
     return list
 
 
-def form(self):
+def form(self, new):
     widget_list = widgets(self)
     if len(widget_list) != 0:
         widget_list[0].grid_forget()
@@ -309,7 +312,7 @@ def form(self):
     s = tk.StringVar()
     Label(self, text="First Name", font=("Courier", 14)).grid(row=2, column=1, pady=2)
     Label(self, text="Last Name", font=("Courier", 14)).grid(row=3, column=1, pady=2)
-    Label(self, text="Date(YYYY MM DD)", font=("Courier", 14)).grid(row=4, column=1, pady=2)
+    Label(self, text="Date(YYYY-MM-DD)", font=("Courier", 14)).grid(row=4, column=1, pady=2)
     Label(self, text="Height(feet, inches)", font=("Courier", 14)).grid(row=5, column=1, pady=2)
     Label(self, text="Weight(lbs)", font=("Courier", 14)).grid(row=6, column=1, pady=2)
     Label(self, text="Sex", font=("Courier", 14)).grid(row=7, column=1, pady=2)
@@ -323,6 +326,20 @@ def form(self):
     entry7 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
     entry8 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
     entry9 = Entry(self)
+
+    if new == 0:
+        entry1.insert(0, user_profile_search(email)[1])
+        entry2.insert(0, user_profile_search(email)[2])
+        entry3.insert(0, user_profile_search(email)[8])
+        entry4.insert(0, int(user_profile_search(email)[4])//12)
+        entry5.insert(0, int(user_profile_search(email)[4]) % 12)
+        entry6.insert(0, user_profile_search(email)[5])
+        if user_profile_search(email)[6] == "Male":
+            entry7.invoke()
+        else:
+            entry8.invoke()
+        entry9.insert(0, user_profile_search(email)[7])
+
     entry1.grid(row=2, column=2, columnspan=2, pady=2)
     entry2.grid(row=3, column=2, columnspan=2, pady=2)
     entry3.grid(row=4, column=2, columnspan=2, pady=2)
@@ -334,11 +351,14 @@ def form(self):
     entry9.grid(row=9, column=2, columnspan=2, pady=2)
 
     def submit(email, fname, lname, date, height, weight, gender, category):
-        birth = datetime.strptime(date, "%Y %m %d")
+        birth = datetime.strptime(date, "%Y-%m-%d")
         today = datetime.now()
         year = 365.2422
         age = round(((today - birth).days / year), 1)
-        user_insert(email, fname, lname, age, height, weight, gender, category)
+        if new == 1:
+            user_insert(email, fname, lname, age, height, weight, gender, category, date)
+        else:
+            user_update(email, fname, lname, age, height, weight, gender, category, date)
         self.controller.show("Run")
 
     submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(),entry3.get(), eval(entry4.get()) * 12 + eval(entry5.get()),entry6.get(), s.get(), entry9.get()))
