@@ -1,9 +1,37 @@
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
+from matplotlib import style
+
+from db_interaction import *
+# from run_sensor import *
+from datetime import *
 import tkinter as tk
 from tkinter import *
-from db_interaction import *
-from run_sensor import *
-from datetime import *
 import os
+
+style.use("ggplot")
+
+f = Figure(figsize=(5, 5), dpi=100)
+a = f.add_subplot(111)
+
+
+def animate(i):
+    pullData = open("test.txt", "r").read()
+    dataList = pullData.split('\n')
+    xList = []
+    yList = []
+    for eachLine in dataList:
+        if len(eachLine) > 1:
+            x, y = eachLine.split(',')
+            xList.append(int(x))
+            yList.append(int(y))
+
+    a.clear()
+    a.plot(xList, yList)
+
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -32,7 +60,7 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
         file_menu.add_command(label="Exit", command=self.quit)
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage, GraphPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -54,12 +82,36 @@ class Home(tk.Frame):
         title.grid(row=0, column=1, padx=30, pady=30)
 
         run_button = tk.Button(self, text="Run", height=4, width=20,
-                               bg="sea green", command=lambda: controller.show("EnterEmail"))
+                               bg="sea green", command=lambda: controller.show("GraphPage"))
         run_button.grid(row=2, column=1, padx=2, pady=2)
 
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
+
+
+# create graph page
+class GraphPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        title = tk.Label(self, text="Graph Page !", font=("Courier", 32), fg="black",)
+        title.pack(padx=30, pady=30)
+
+        run_button = tk.Button(self, text="Done", height=4, width=20,
+                               bg="sea green", command=lambda: controller.show("Home"))
+        run_button.pack()
+
+        canvas = FigureCanvasTkAgg(f, self)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        # self.grid_rowconfigure(3, weight=1)
+        # self.grid_columnconfigure(0, weight=1)
+        # self.grid_columnconfigure(2, weight=1)
 
 
 # create calibration page
@@ -92,7 +144,7 @@ class EnterEmail(tk.Frame):
         def submit():
             form(self.controller.shared["form_self"])
             search = email_search(e.get())
-            if search == None:
+            if search is None:
                 controller.show("Form")
             else:
                 controller.show("Run")
@@ -454,4 +506,5 @@ def calibration_results(self, list):
 
 if __name__ == "__main__":
     gui = GUI()
+    ani = animation.FuncAnimation(f, animate, interval=1000)
     gui.mainloop()
