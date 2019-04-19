@@ -4,6 +4,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
+from PIL import ImageTk, Image as PilImage
 
 from db_interaction import *
 # from run_sensor import *
@@ -14,7 +15,7 @@ import os
 
 style.use("ggplot")
 
-f = Figure(figsize=(5, 5), dpi=100)
+f = Figure(figsize=(3, 3), dpi=100)
 a = f.add_subplot(111)
 
 
@@ -82,7 +83,7 @@ class Home(tk.Frame):
         title.grid(row=0, column=1, padx=30, pady=30)
 
         run_button = tk.Button(self, text="Run", height=4, width=20,
-                               bg="sea green", command=lambda: controller.show("GraphPage"))
+                               bg="sea green", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=2, column=1, padx=2, pady=2)
 
         self.grid_rowconfigure(3, weight=1)
@@ -109,10 +110,30 @@ class GraphPage(tk.Frame):
         toolbar.update()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # self.grid_rowconfigure(3, weight=1)
-        # self.grid_columnconfigure(0, weight=1)
-        # self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
 
+
+# create graph display page
+# class GraphDisplayPage(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#         title = tk.Label(self, text="Graph Page !", font=("Courier", 32), fg="black",)
+#         title.pack(padx=30, pady=30)
+#
+#         run_button = tk.Button(self, text="Done", height=4, width=20,
+#                                bg="sea green", command=lambda: controller.show("Home"))
+#         run_button.pack()
+#
+#         img = ImageTk.PhotoImage(PilImage.open("path"))
+#         label = tk.Label(self, image=img)
+#         label.pack()
+# #
+#         self.grid_rowconfigure(3, weight=1)
+#         self.grid_columnconfigure(0, weight=1)
+#         self.grid_columnconfigure(2, weight=1)
+#
 
 # create calibration page
 class Calibrate(tk.Frame):
@@ -334,15 +355,22 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
            # power_input(user_email)
+        def showImg():
+            load = PilImage.open("C:\\Users\\Admin\\PycharmProjects\\power-cycle\\docs\\graphs\\image2.png")
+            render = ImageTk.PhotoImage(load)
+
+            # labels can be text or images
+            img = Label(self, image=render)
+            img.image = render
+            img.place(x=0, y=0)
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
-        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
+        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=showImg)
         run_button.grid(row=2, column=1, padx=2, pady=2)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
-
 
 def widgets(self):
     list = self.winfo_children()
