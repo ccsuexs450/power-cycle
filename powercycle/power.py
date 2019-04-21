@@ -3,14 +3,14 @@ import subprocess
 import time
 import pyoo
 from db_interaction import *
+from power_chart import *
+lines = []
 
 def power_sheet(lines, email):
 
     soffice = subprocess.Popen('startLO')
 
     time.sleep(7)
-
-#    lines = []
     dt    = []
 
     desktop = pyoo.Desktop('localhost', 2002)
@@ -20,15 +20,16 @@ def power_sheet(lines, email):
     power = doc.sheets[1]
     delta = doc.sheets[2]
 
-    #with open("../data/sensordata/power.txt", "r") as ins:
-    #    for line in ins:
-    #        line = line.rstrip('\n')
-    #        lines.append(line)
+    # comment this loop when sensor is plugged in
+    with open("../data/sensordata/power.txt", "r") as ins:
+        for line in ins:
+            line = line.rstrip('\n')
+            lines.append(line)
 
     print(lines[0:10])
     print(len(lines)) 
-    #power[1:496,0].values = lines
-    power[1:30,0].values = lines
+    power[1:496,0].values = lines
+    #power[1:30,0].values = lines
 
 
     with open("../docs/templates/delta_theta.txt", "r") as ins:
@@ -38,6 +39,12 @@ def power_sheet(lines, email):
 
     delta[1:16,1].values = dt
     
+    datax  = power[1:11,32].values
+    datay1 = power[1:11,33].values
+    datay2 = power[1:11,34].values
+     
+    draw_graph(datax, datay1, datay2)
+
     # user search 
     profile = user_profile_search(email)
     print(profile)
@@ -56,4 +63,4 @@ def power_sheet(lines, email):
 
     print("File Saved")
 
-#power_sheet("htazi@gmail.com")
+power_sheet(lines, "htazi@gmail.com")
