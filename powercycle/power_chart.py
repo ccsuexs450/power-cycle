@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import spline
 from scipy.interpolate import UnivariateSpline
 
-def draw_graph(datax, datay1, datay2):
+def draw_graph(datax, datay1, datay2, email):
     
     fig, ax1 = plt.subplots()
       

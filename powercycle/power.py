@@ -43,7 +43,7 @@ def power_sheet(lines, email):
     datay1 = power[1:11,33].values
     datay2 = power[1:11,34].values
      
-    draw_graph(datax, datay1, datay2)
+    draw_graph(datax, datay1, datay2, email)
 
     # user search 
     profile = user_profile_search(email)
