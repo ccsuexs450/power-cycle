@@ -93,10 +93,10 @@ class EnterEmail(tk.Frame):
         def submit():
             search = email_search(e.get())
             if search == None:
-                form(self.controller.shared["form_self"], 1)
+                form(self.controller.shared["form_self"], True)
                 controller.show("Form")
             else:
-                form(self.controller.shared["form_self"], 0)
+                form(self.controller.shared["form_self"], False)
                 controller.show("Form")
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
         find_button.grid(row=25, column=40, padx=2, pady=2)
@@ -113,6 +113,22 @@ class Form(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.controller.shared["form_self"] = self
+
+    def validate_int(self, value):
+        if str.isdigit(value) or value == "":
+            return True
+        else:
+            return False
+
+    def validate_float(self, value):
+        if value != "":
+            try:
+                float(value)
+                return True
+            except ValueError:
+                return False
+        else:
+            return True
 
 
 # create search by file type page
@@ -307,6 +323,8 @@ def form(self, new):
     if len(widget_list) != 0:
         widget_list[0].grid_forget()
     email = self.controller.shared["email"].get()
+    int_check = (self.register(self.validate_int))
+    float_check = (self.register(self.validate_float))
     self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
     self.title.grid(row=1, columnspan=5)
     s = tk.StringVar()
@@ -320,25 +338,26 @@ def form(self, new):
     entry1 = Entry(self)
     entry2 = Entry(self)
     entry3 = Entry(self)
-    entry4 = Entry(self, width=10)
-    entry5 = Entry(self, width=10)
-    entry6 = Entry(self)
+    entry4 = Entry(self, validate='all', validatecommand=(int_check, '%P'), width=10)
+    entry5 = Entry(self, validate='all', validatecommand=(int_check, '%P'), width=10)
+    entry6 = Entry(self, validate='all', validatecommand=(float_check, '%P'))
     entry7 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
     entry8 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
-    entry9 = Entry(self)
+    entry9 = Entry(self, validate='all', validatecommand=(int_check, '%P'))
 
-    if new == 0:
-        entry1.insert(0, user_profile_search(email)[1])
-        entry2.insert(0, user_profile_search(email)[2])
-        entry3.insert(0, user_profile_search(email)[8])
-        entry4.insert(0, int(user_profile_search(email)[4])//12)
-        entry5.insert(0, int(user_profile_search(email)[4]) % 12)
-        entry6.insert(0, user_profile_search(email)[5])
-        if user_profile_search(email)[6] == "Male":
+    if not new:
+        user_info = user_profile_search(email)
+        entry1.insert(0, user_info[1])
+        entry2.insert(0, user_info[2])
+        entry3.insert(0, user_info[8])
+        entry4.insert(0, int(user_info[4])//12)
+        entry5.insert(0, int(user_info[4]) % 12)
+        entry6.insert(0, user_info[5])
+        if user_info[6] == "Male":
             entry7.invoke()
         else:
             entry8.invoke()
-        entry9.insert(0, user_profile_search(email)[7])
+        entry9.insert(0, user_info[7])
 
     entry1.grid(row=2, column=2, columnspan=2, pady=2)
     entry2.grid(row=3, column=2, columnspan=2, pady=2)
@@ -351,11 +370,14 @@ def form(self, new):
     entry9.grid(row=9, column=2, columnspan=2, pady=2)
 
     def submit(email, fname, lname, date, height, weight, gender, category):
-        birth = datetime.strptime(date, "%Y-%m-%d")
+        try:
+            birth = datetime.strptime(date, "%Y-%m-%d")
+        except:
+            message("Wrong date format. Correct format is YYYY-MM-DD")
         today = datetime.now()
         year = 365.2422
         age = round(((today - birth).days / year), 1)
-        if new == 1:
+        if new:
             user_insert(email, fname, lname, age, height, weight, gender, category, date)
         else:
             user_update(email, fname, lname, age, height, weight, gender, category, date)
@@ -400,7 +422,7 @@ def results(self, list):
                 send = True
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
-        if send == True:
+        if send:
             popup = tk.Tk()
             label = tk.Label(popup, text="Enter email")
             label.grid(row=0, column=0, pady=10)
@@ -450,7 +472,7 @@ def calibration_results(self, list):
                 send = True
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
-        if send == True:
+        if send:
             popup = tk.Tk()
             label = tk.Label(popup, text="Enter email")
             label.grid(row=0, column=0, pady=10)
@@ -470,6 +492,12 @@ def calibration_results(self, list):
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(6, weight=1)
 
+def message(text):
+    popup = tk.Tk()
+    label = tk.Label(popup, text=text)
+    label.grid(row=0, column=0, pady=10)
+    button = tk.Button(popup, text="Ok", height=1, width=6, bg="sea green", command=popup.destroy)
+    button.grid(row=1, column=0)
 
 if __name__ == "__main__":
     gui = GUI()
