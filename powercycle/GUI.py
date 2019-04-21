@@ -298,8 +298,8 @@ class Run(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         def run():
-            os.system('python Script.py')
-            #power_input(self.controller.shared["email"])
+            user_email = str(self.controller.shared["email"].get())
+            # power_input(user_email)
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
@@ -320,8 +320,11 @@ def widgets(self):
 
 def form(self, new):
     widget_list = widgets(self)
-    if len(widget_list) != 0:
-        widget_list[0].grid_forget()
+    i = len(widget_list) - 1
+    if len(widget_list)!= 0:
+        while widget_list[i].winfo_ismapped():
+            widget_list[i].grid_forget()
+            i = i-1
     email = self.controller.shared["email"].get()
     int_check = (self.register(self.validate_int))
     float_check = (self.register(self.validate_float))
@@ -369,21 +372,26 @@ def form(self, new):
     entry8.grid(row=8, column=2, columnspan=2, pady=2)
     entry9.grid(row=9, column=2, columnspan=2, pady=2)
 
-    def submit(email, fname, lname, date, height, weight, gender, category):
-        try:
-            birth = datetime.strptime(date, "%Y-%m-%d")
-        except:
-            message("Wrong date format. Correct format is YYYY-MM-DD")
-        today = datetime.now()
-        year = 365.2422
-        age = round(((today - birth).days / year), 1)
-        if new:
-            user_insert(email, fname, lname, age, height, weight, gender, category, date)
+    def submit(email, fname, lname, date, feet, inches, weight, gender, category):
+        if len(fname) == 0 or len(lname) == 0 or len(feet) == 0 or len(inches) == 0 or len(weight) == 0 or len(gender) == 0 or len(category) == 0:
+            message("Form entries cannot be blank")
         else:
-            user_update(email, fname, lname, age, height, weight, gender, category, date)
-        self.controller.show("Run")
+            try:
+                birth = datetime.strptime(date, "%Y-%m-%d")
+                today = datetime.now()
+                year = 365.2422
+                age = round(((today - birth).days / year), 1)
+            except:
+                message("Wrong date format. Correct format is YYYY-MM-DD")
+            else:
+                height = eval(feet) * 12 + eval(inches)
+                if new:
+                    user_insert(email, fname, lname, age, height, weight, gender, category, date)
+                else:
+                    user_update(email, fname, lname, age, height, weight, gender, category, date)
+                self.controller.show("Run")
 
-    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(),entry3.get(), eval(entry4.get()) * 12 + eval(entry5.get()),entry6.get(), s.get(), entry9.get()))
+    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), entry6.get(), s.get(), entry9.get()))
     submit_button.grid(row=10, column=1, columnspan=3, pady=20)
 
     self.grid_rowconfigure(0, weight=1, minsize=150)
@@ -394,8 +402,10 @@ def form(self, new):
 
 def results(self, list):
     widget_list = widgets(self)
-    for item in widget_list[6:]:
-        item.grid_forget()
+    i = len(widget_list) - 1
+    while widget_list[i].winfo_ismapped() and i > 5:
+        widget_list[i].grid_forget()
+        i = i - 1
     count = 0
     paths = []
     for x, i in enumerate(list):
@@ -437,15 +447,16 @@ def results(self, list):
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=count+1, columnspan=10, padx=2, pady=20)
 
-    self.grid_rowconfigure(count+2, weight=1)
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(9, weight=1)
 
 
 def calibration_results(self, list):
     widget_list = widgets(self)
-    for item in widget_list[3:]:
-        item.grid_forget()
+    i = len(widget_list) - 1
+    while widget_list[i].winfo_ismapped() and i > 2:
+        widget_list[i].grid_forget()
+        i = i - 1
     count = 0
     paths = []
     for x, i in enumerate(list):
@@ -488,7 +499,6 @@ def calibration_results(self, list):
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=count+1, columnspan=7, padx=2, pady=20)
 
-    self.grid_rowconfigure(count+2, weight=1)
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(6, weight=1)
 
