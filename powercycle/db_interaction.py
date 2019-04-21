@@ -70,7 +70,7 @@ def create_graph(conn, graph):
     return cur.lastrowid
 
 # Called from power_chart.py
-def power_insert(user_email ,name, path, date):
+def graph_insert(user_email ,name, path, date):
     database = 'cycle.db'
 
     # database connection

@@ -1,7 +1,10 @@
+import time 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import spline
 from scipy.interpolate import UnivariateSpline
+from db_interaction import *
+
 
 def draw_graph(datax, datay1, datay2, email):
     
@@ -44,4 +47,10 @@ def draw_graph(datax, datay1, datay2, email):
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
 #    plt.show()
-    plt.savefig('../docs/graph/testGraph.png')
+  
+    path = "../docs/graph/"
+    date = time.strftime("%Y%m%d-%H%M%S")
+    filename = email[0:5] + date + ".png"
+    file_path = path + filename
+    plt.savefig(file_path)
+    graph_insert(email, filename, file_path, date)
