@@ -1,11 +1,14 @@
+import numpy as np
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
+from matplotlib import pyplot as plt
 from PIL import ImageTk, Image as PilImage
 
+from power_chart import *
 from db_interaction import *
 # from run_sensor import *
 from datetime import *
@@ -13,31 +16,30 @@ import tkinter as tk
 from tkinter import *
 import os
 
-style.use("ggplot")
 
-f = Figure(figsize=(3, 3), dpi=100)
-a = f.add_subplot(111)
-
-
-def animate(i):
-    pullData = open("test.txt", "r").read()
-    dataList = pullData.split('\n')
-    xList = []
-    yList = []
-    for eachLine in dataList:
-        if len(eachLine) > 1:
-            x, y = eachLine.split(',')
-            xList.append(int(x))
-            yList.append(int(y))
-
-    a.clear()
-    a.plot(xList, yList)
+# fig = Figure(figsize=(3, 3), dpi=100)
+# a = fig.add_subplot(111)
+#
+#
+# def animate(i):
+#     pullData = open("test.txt", "r").read()
+#     dataList = pullData.split('\n')
+#     xList = []
+#     yList = []
+#     for eachLine in dataList:
+#         if len(eachLine) > 1:
+#             x, y = eachLine.split(',')
+#             xList.append(int(x))
+#             yList.append(int(y))
+#
+#     a.clear()
+#     a.plot(xList, yList)
 
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable()}
+        self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable(), "results_page_self": tk.Variable()}
         container = tk.Frame(self)
         container.pack()
         self.geometry("1200x800")
@@ -61,7 +63,7 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
         file_menu.add_command(label="Exit", command=self.quit)
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage, GraphPage):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage, FinalResultsPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -92,48 +94,122 @@ class Home(tk.Frame):
 
 
 # create graph page
-class GraphPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Graph Page !", font=("Courier", 32), fg="black",)
-        title.pack(padx=30, pady=30)
-
-        run_button = tk.Button(self, text="Done", height=4, width=20,
-                               bg="sea green", command=lambda: controller.show("Home"))
-        run_button.pack()
-
-        canvas = FigureCanvasTkAgg(f, self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-
-        toolbar = NavigationToolbar2Tk(canvas, self)
-        toolbar.update()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        self.grid_rowconfigure(3, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-
-
-# create graph display page
-# class GraphDisplayPage(tk.Frame):
+# class GraphPage(tk.Frame):
 #     def __init__(self, parent, controller):
 #         tk.Frame.__init__(self, parent)
-#         title = tk.Label(self, text="Graph Page !", font=("Courier", 32), fg="black",)
-#         title.pack(padx=30, pady=30)
+#         self.controller = controller
+#         # self.controller.shared["results_page_self"] = self
+#         email = self.controller.shared["email"].get()
+#         self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
+#                               font=("Courier", 14), fg="black")
+#         self.title.pack(padx=5, pady=5)
+#         self.title = tk.Label(self, text="Max Power: " + email, font=("Courier", 16), fg="black")
+#         self.title.pack(padx=6, pady=6)
+#         self.title = tk.Label(self, text="RPM opt: " + email, font=("Courier", 16), fg="black")
+#         self.title.pack(padx=6, pady=7)
+#         self.title = tk.Label(self, text="Percentage %: " + email, font=("Courier", 16), fg="black")
+#         self.title.pack(padx=6, pady=8)
 #
-#         run_button = tk.Button(self, text="Done", height=4, width=20,
-#                                bg="sea green", command=lambda: controller.show("Home"))
+#         style.use("ggplot")
+#
+#         fig, ax1 = plt.subplots()
+#         pullData = open("test.txt", "r").read()
+#         dataList = pullData.split('\n')
+#         xList = []
+#         yList = []
+#         zList = []
+#         for eachLine in dataList:
+#             if len(eachLine) > 1:
+#                 x, y, z = eachLine.split(',')
+#                 xList.append(int(x))
+#                 yList.append(int(y))
+#                 zList.append(int(z))
+#
+#         ax1.clear()
+#
+#         plt.title('Power Chart')
+#         color = 'tab:blue'
+#         ax1.set_xlabel('Pedaling Rate (rpm)')
+#         ax1.set_ylabel('Power (watts)', color=color)
+#         ax1.scatter(xList, yList, color=color)
+#         ax1.tick_params(axis='y', labelcolor=color)
+#
+#         ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+#         ax2.clear()
+#
+#         color = 'tab:red'
+#         ax2.set_ylabel('Torque (Nm)', color=color)  # we already handled the x-label with ax1
+#         ax2.plot(xList, zList, color=color)
+#         ax2.tick_params(axis='y', labelcolor=color)
+#
+#         fig.tight_layout()  # otherwise the right y-label is slightly clipped
+#
+#         canvas = FigureCanvasTkAgg(fig, self)
+#         canvas.draw()
+#         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH)
+#
+#         # toolbar = NavigationToolbar2Tk(canvas, self)
+#         # toolbar.update()
+#         # canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+#
+#         var1 = IntVar()
+#         var2 = IntVar()
+#         Checkbutton(self, text="Run again?", variable=var1).pack(side=RIGHT, padx=10, pady=10)
+#         Checkbutton(self, text="New user?", variable=var2).pack(side=RIGHT, padx=11, pady=10)
+#
+#         def submit():
+#             if var1.get() == 1:
+#                 self.controller.show("run")
+#             if var2.get() == 1:
+#                 self.controller.show("EnterEmail")
+#
+#         run_button = tk.Button(self, text="Submit", height=4, width=20, bg="sea green", command=lambda: submit)
 #         run_button.pack()
-#
-#         img = ImageTk.PhotoImage(PilImage.open("path"))
-#         label = tk.Label(self, image=img)
-#         label.pack()
-# #
-#         self.grid_rowconfigure(3, weight=1)
-#         self.grid_columnconfigure(0, weight=1)
-#         self.grid_columnconfigure(2, weight=1)
-#
+
+
+# create final results page
+class FinalResultsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.controller.shared["results_page_self"] = self
+        # email = self.controller.shared["email"].get()
+        # self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
+        #                       font=("Courier", 14), fg="black")
+        # self.title.pack(padx=5, pady=5)
+        # self.title = tk.Label(self, text="Max Power: " + email, font=("Courier", 16), fg="black")
+        # self.title.pack(padx=6, pady=6)
+        # self.title = tk.Label(self, text="RPM opt: " + email, font=("Courier", 16), fg="black")
+        # self.title.pack(padx=6, pady=7)
+        # self.title = tk.Label(self, text="Percentage %: " + email, font=("Courier", 16), fg="black")
+        # self.title.pack(padx=6, pady=8)
+        #
+        # load = PilImage.open("C:\\Users\\Admin\\PycharmProjects\\power-cycle\\docs\\graph\\testGraph.png")
+        # render = ImageTk.PhotoImage(load)
+        #
+        # # labels can be text or images
+        # img = Label(self, image=render)
+        # img.image = render
+        # img.pack(side=tk.TOP, fill=tk.BOTH)
+        #
+        # var1 = IntVar()
+        # var2 = IntVar()
+        # Checkbutton(self, text="Change user ?", variable=var1).pack(side=RIGHT, padx=8, pady=10)
+        # Checkbutton(self, text="Run again ?", variable=var2).pack(side=RIGHT)
+        #
+        # def submit():
+        #     if var1.get() == 1:
+        #         controller.show("EnterEmail")
+        #     if var2.get() == 1:
+        #         controller.show("Run")
+        #
+        # submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="deep sky blue", command=submit)
+        # submit_button.pack(side=BOTTOM, padx=8, pady=10)
+        #
+        # self.grid_rowconfigure(3, weight=1)
+        # self.grid_columnconfigure(0, weight=1)
+        # self.grid_columnconfigure(2, weight=1)
+
 
 # create calibration page
 class Calibrate(tk.Frame):
@@ -141,6 +217,14 @@ class Calibrate(tk.Frame):
         tk.Frame.__init__(self, parent)
         def run_script():
             os.system('python Script.py')
+
+        # def print_path():
+        #     datax=[]
+        #     datay1=[]
+        #     datay2=[]
+        #     email= controller.shared["email"].get()
+        #     file_path = draw_graph(datax, datay1, datay2, email)
+        #     print(file_path)
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="sea green", command=run_script)
@@ -347,30 +431,29 @@ class CalibrationResultsPage(tk.Frame):
         date = tk.Label(self, text="Date", font=("Courier", 16), fg="black")
         date.grid(row=0, column=3, padx=20)
 
+
 # create run page
 class Run(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        def run():
-            user_email = str(self.controller.shared["email"].get())
-           # power_input(user_email)
-        def showImg():
-            load = PilImage.open("C:\\Users\\Admin\\PycharmProjects\\power-cycle\\docs\\graphs\\image2.png")
-            render = ImageTk.PhotoImage(load)
 
-            # labels can be text or images
-            img = Label(self, image=render)
-            img.image = render
-            img.place(x=0, y=0)
+        def run():
+           # user_email = str(self.controller.shared["email"].get())
+           #path = power_input(user_email)
+            results_page(self.controller.shared["results_page_self"])
+            controller.show("FinalResultsPage")
+
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
-        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=showImg)
+        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
         run_button.grid(row=2, column=1, padx=2, pady=2)
+
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
+
 
 def widgets(self):
     list = self.winfo_children()
@@ -429,6 +512,52 @@ def form(self):
     self.grid_columnconfigure(0, weight=1)
     self.grid_rowconfigure(11, weight=1)
     self.grid_columnconfigure(4, weight=1)
+
+
+def results_page(self):
+    widget_list = widgets(self)
+    if len(widget_list) != 0:
+        widget_list[0].grid_forget()
+    email = self.controller.shared["email"].get()
+    self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
+                          font=("Courier", 14), fg="black")
+    self.title.pack(padx=5, pady=5)
+    self.title = tk.Label(self, text="Max Power: " + email, font=("Courier", 16), fg="black")
+    self.title.pack(padx=6, pady=6)
+    self.title = tk.Label(self, text="RPM opt: " + email, font=("Courier", 16), fg="black")
+    self.title.pack(padx=6, pady=7)
+    self.title = tk.Label(self, text="Percentage %: " + email, font=("Courier", 16), fg="black")
+    self.title.pack(padx=6, pady=8)
+
+    # retrieve the graph path from db
+    # path = graph_path_search()
+    # file_path = draw_graph()
+    # print(file_path)
+    load = PilImage.open("C:/Users/Admin/PycharmProjects/power-cycle/docs/graph/testGraph.png")
+    render = ImageTk.PhotoImage(load)
+
+    # labels can be text or images
+    img = Label(self, image=render)
+    img.image = render
+    img.pack(side=tk.TOP, fill=tk.BOTH)
+
+    var1 = IntVar()
+    var2 = IntVar()
+    Checkbutton(self, text="Change user ?", variable=var1).pack(side=RIGHT, padx=8, pady=10)
+    Checkbutton(self, text="Run again ?", variable=var2).pack(side=RIGHT)
+
+    def submit():
+        if var1.get() == 1:
+            self.controller.show("EnterEmail")
+        if var2.get() == 1:
+            self.controller.show("Run")
+
+    submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="deep sky blue", command=submit)
+    submit_button.pack(side=BOTTOM, padx=8, pady=10)
+
+    self.grid_rowconfigure(3, weight=1)
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_columnconfigure(2, weight=1)
 
 
 def results(self, list):
@@ -534,5 +663,5 @@ def calibration_results(self, list):
 
 if __name__ == "__main__":
     gui = GUI()
-    ani = animation.FuncAnimation(f, animate, interval=1000)
+    # ani = animation.FuncAnimation(fig, animate, interval=1000)
     gui.mainloop()
