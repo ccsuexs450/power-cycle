@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import spline
 from scipy.interpolate import UnivariateSpline
+from scipy import stats
 from db_interaction import *
 
 
@@ -14,35 +15,29 @@ def draw_graph(datax, datay1, datay2, email):
     y1_sm = np.array(datay1)
     
     p = np.poly1d(np.polyfit(x_sm, y1_sm, 3))
-    t = np.linspace(0,1,200)
-    #x_smooth = np.linspace(x_sm.min(), x_sm.max(), 100)
-    #y_smooth = spline(datax, datay1, x_smooth)
+    t = np.linspace(x_sm.min(), x_sm.max(), 100)
     
     color = 'k'
-    ax1.set_xlim([50, 190])
+    ax1.set_xlim([50, 200])
     ax1.set_ylim([0, 1400])
     ax1.set_xlabel('Pedaling Rate(rpm)')
     ax1.set_ylabel('Power(watts)', color=color)
-    ax1.plot(x_sm, y1_sm, 'o', t, p(t),color=color)
+    ax1.plot(x_sm, y1_sm, '.', t, p(t),color=color, linewidth = 4)
     ax1.tick_params(axis='y', labelcolor=color)
 
-    x_sm  = np.array(datax)
     y2_sm = np.array(datay2)
+    z = np.polyfit(x_sm, y2_sm, 1)
+    p = np.poly1d(z)
     
-    p = np.poly1d(np.polyfit(x_sm, y2_sm, 3))
-    b, m = np.polyfit(x_sm, y2_sm, 1)
-    t = np.linspace(0, 1, 200) 
-    #x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
-    #y2_smooth = spline(datax, datay2, x_smooth)
-
-
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-    ax2.set_xlim([50, 190])
+    ax2.set_xlim([50, 200])
     ax2.set_ylim([0,140])
     color = 'tab:red'
     ax2.set_ylabel('Torque(Nm)', color=color)  # we already handled the x-label with ax1
-    ax2.plot(x_sm, y2_sm, 'o',t, p(t), color=color)
-    ax2.plot(x_sm, b + m * x_sm, '-', color=color)
+    ax2.plot(x_sm, y2_sm, '.', color=color)
+    ax2.plot(x_sm, p(x_sm), '-',  color=color, linewidth = 4)
+    
+
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
