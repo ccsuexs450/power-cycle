@@ -52,5 +52,3 @@ def draw_graph(datax, datay1, datay2, email):
     file_path = path + filename
     plt.savefig(file_path)
     graph_insert(email, filename, file_path, date)
-
-    return file_path
