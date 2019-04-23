@@ -10,12 +10,14 @@ from PIL import ImageTk, Image as PilImage
 
 from power_chart import *
 from db_interaction import *
-from results_test import  *
+# import results_test
+# from results_test import resultsT
 # from run_sensor import *
 from datetime import *
 import tkinter as tk
 from tkinter import *
 import os
+import importlib   # Use 'importlib' in Python 3
 
 
 class GUI(tk.Tk):
@@ -307,6 +309,9 @@ class Run(tk.Frame):
 
         def run():
             # user_email = str(self.controller.shared["email"].get())
+            import results_test
+            from results_test import resultsT
+            importlib.reload(results_test)
             values = resultsT()
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
@@ -542,3 +547,4 @@ def calibration_results(self, list):
 if __name__ == "__main__":
     gui = GUI()
     gui.mainloop()
+
