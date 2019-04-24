@@ -38,10 +38,7 @@ def draw_graph(datax, datay1, datay2, email):
     ax2.set_ylim([0, 140])
     color = 'tab:red'
     ax2.set_ylabel('Torque(Nm)', color=color)  # we already handled the x-label with ax1
-   # ax2.plot(x_sm, y2_sm, '.', color=color)
-    ax2.plot(x2_sm, p(x2_sm), '-',  color=color, linewidth = 4)
-    
-
+    ax2.plot(x2_sm, p(x2_sm), '-',  color=color, linewidth = 3)
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
