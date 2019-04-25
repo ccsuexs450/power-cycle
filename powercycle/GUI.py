@@ -4,6 +4,7 @@ from db_interaction import *
 #from run_sensor import *
 from datetime import *
 import os
+#from emailtest import *
 
 
 class GUI(tk.Tk):
@@ -91,13 +92,16 @@ class EnterEmail(tk.Frame):
         e.grid(row=20, column=40, sticky="nsew")
 
         def submit():
-            search = email_search(e.get())
-            if search == None:
-                form(self.controller.shared["form_self"], True)
-                controller.show("Form")
+            if len(e.get()) == 0:
+                message("Entry cannot be blank")
             else:
-                form(self.controller.shared["form_self"], False)
-                controller.show("Form")
+                search = email_search(e.get())
+                if search == None:
+                    form(self.controller.shared["form_self"], True)
+                    controller.show("Form")
+                else:
+                    form(self.controller.shared["form_self"], False)
+                    controller.show("Form")
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
         find_button.grid(row=25, column=40, padx=2, pady=2)
         col_count, row_count = self.grid_size()
@@ -143,7 +147,7 @@ class SearchFile(tk.Frame):
         title1.grid(row=19, column=30)
         e1 = tk.Entry(self, textvariable=var1)
         e1.grid(row=20, column=30, sticky="nsew")
-        title2 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
+        title2 = tk.Label(self, text="Date range: (YYYY-MM-DD)", font=("Courier", 28), fg="black")
         title2.grid(row=24, column=30)
         title3 = tk.Label(self, text="From:", font=("Courier", 16), fg="black")
         title3.grid(row=25, column=30)
@@ -235,7 +239,7 @@ class SearchName(tk.Frame):
         title3.grid(row=22, column=30)
         e2 = tk.Entry(self, textvariable=var2 )
         e2.grid(row=23, column=30, sticky="nsew")
-        title4 = tk.Label(self, text="Date range:", font=("Courier", 28), fg="black")
+        title4 = tk.Label(self, text="Date range: (YYYY-MM-DD)", font=("Courier", 28), fg="black")
         title4.grid(row=27, column=30)
         title5 = tk.Label(self, text="From:", font=("Courier", 16), fg="black")
         title5.grid(row=28, column=30)
@@ -319,6 +323,7 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
            # power_input(user_email)
+            sendEmail(user_email, "test.txt")
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
