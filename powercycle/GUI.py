@@ -7,10 +7,12 @@ import os
 from email_function import *
 from validate_email import validate_email
 import socket
+import automatic_email_bash
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+        automatic_email_bash
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable()}
         container = tk.Frame(self)
         container.pack()
@@ -345,14 +347,6 @@ class Run(tk.Frame):
         self.grid_columnconfigure(2, weight=1)
 
 
-def widgets(self):
-    list = self.winfo_children()
-    for item in list:
-        if item.winfo_children():
-            list.extend(item.winfo_children())
-    return list
-
-
 def form(self, new):
     widget_list = widgets(self)
     i = len(widget_list) - 1
@@ -484,20 +478,26 @@ def results(self, list):
             label2.grid(row=2, column=0, pady=10)
             passEntry = tk.Entry(popup, show="*")
             passEntry.grid(row=3, column=0)
-            def send():
+
+            def send(popup):
                 nonlocal entry
                 email = entry.get()
                 nonlocal passEntry
                 password = passEntry.get()
                 if connection == True:
+                    popup.error = tk.Label(popup, text="", bg="red")
+                    popup.error.grid(row=5, column=0)
                     if validate(email) == 0:
-                       nonlocal popup
-                       error = tk.Label(popup, text="Email not valid", bg="red")
-                       error.grid(row=5, column=0)
-                       return
-                sendEmail(email, password, email_paths)
+                        popup.error['text'] = 'Email not valid'
+                        return
+                    if sendEmail(email, password, email_paths) == 0:
+                        popup.error['text'] = 'Password not valid'
+                        return
+                else:
+                    sendEmail(email, password, email_paths)
+                    message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
-            button = tk.Button(popup, text="Submit", command=send)
+            button = tk.Button(popup, text="Submit", command=lambda: send(popup))
             button.grid(row=4, column=0)
 
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
@@ -557,6 +557,13 @@ def calibration_results(self, list):
 
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(6, weight=1)
+
+def widgets(self):
+    list = self.winfo_children()
+    for item in list:
+        if item.winfo_children():
+            list.extend(item.winfo_children())
+    return list
 
 def message(text):
     popup = tk.Tk()
