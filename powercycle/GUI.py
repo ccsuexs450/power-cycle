@@ -1,10 +1,9 @@
 import tkinter as tk
 from tkinter import *
 from db_interaction import *
-from run_sensor import *
+#from run_sensor import *
 from datetime import *
 import os
-
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
