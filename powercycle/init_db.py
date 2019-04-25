@@ -13,7 +13,8 @@ conn.execute('''CREATE TABLE user
          height         REAL             NOT NULL,
          weight         REAL             NOT NULL,
          gender         TEXT,
-         category       INT);''')
+         category       INT,
+         birth          DATE);''')
 
 print ("Table created successfully");
 
