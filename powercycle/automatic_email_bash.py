@@ -1,5 +1,4 @@
 #!/usr/bin/python
-##import automatic_email_bash within the gui.py, then call it
 import smtplib, ssl, email,os,socket
 from email import encoders
 from email.mime.base import MIMEBase
@@ -71,9 +70,9 @@ try:
 except OSError:
     connection = False
         
-if (os.path.isfile("/store.txt")):
+if (os.path.isfile("/home/pi/readwritetest/store.txt")):
     sendEmail()
-    os.remove("/store.txt")
+    os.remove("/home/pi/readwritetest/store.txt")
     print("Stored files, successfully sent")
 elif (connection == False):
     print ("No internet connection")
