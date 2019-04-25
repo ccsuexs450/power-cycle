@@ -4,15 +4,22 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from validate_email import validate_email
 
+def validate(receiver_email):
+    is_valid = validate_email(receiver_email,verify=True)
+    if (is_valid == False):
+        return 0;
+    else
+        return 1;
 
 def sendEmail(receiver_email,filename):
     smtp_server = "smtp.gmail.com" ##dont touch
     port = 587 ##dont touch
     subject = "Bicycle Application Requested Files..."##can be changed
     body = "Here are the Files you requested..."
-    sender_email = input("Enter Email: ")
-    password = input("Enter Password: ")  ##bicycle.email.bot@gmail.com"
+    sender_email = bicycle.email.bot@gmail.com"
+    password = input("Enter Password: ")  
     connection = False
    
     message = MIMEMultipart()
@@ -49,8 +56,7 @@ def sendEmail(receiver_email,filename):
                 try:
                     server.login(sender_email, password)
                 except smtplib.SMTPAuthenticationError:
-                    print('Login failure: please reenter credential information.')
-                    sender_email = input("Enter Email: ")
+                    print('Login failure: please re-enter the password.')
                     password = input("Enter Password: ")  ##bicycle.email.bot@gmail.com"
                     message["From"] = sender_email
                     continue
@@ -70,8 +76,8 @@ def sendEmail(receiver_email,filename):
             f.write("\n")
         f.close()
 
-email = ["kyledarocha@gmail.com"]
-attachment = [""] ##need to add files if you wanna test
-sendEmail(email,attachment)
+##email = ["kyledarocha@gmail.com"]
+##attachment = [] ##need to add files if you wanna test
+##sendEmail(email,attachment)
 
 
