@@ -1,23 +1,12 @@
-import numpy as np
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
-import matplotlib.animation as animation
-from matplotlib import style
-from matplotlib import pyplot as plt
 from PIL import ImageTk, Image as PilImage
-
-from power_chart import *
+# from power_chart import *
 from db_interaction import *
-# import results_test
-# from results_test import resultsT
+from results_test import resultsT
 # from run_sensor import *
 from datetime import *
 import tkinter as tk
 from tkinter import *
 import os
-import importlib   # Use 'importlib' in Python 3
 
 
 class GUI(tk.Tk):
@@ -92,6 +81,7 @@ class FinalResultsPage(tk.Frame):
 class Calibrate(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
         def run_script():
             os.system('python Script.py')
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
@@ -309,9 +299,6 @@ class Run(tk.Frame):
 
         def run():
             # user_email = str(self.controller.shared["email"].get())
-            import results_test
-            from results_test import resultsT
-            importlib.reload(results_test)
             values = resultsT()
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
@@ -405,13 +392,13 @@ def results_page(self):
     self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
                           font=("Courier", 16), fg="black")
     self.title.grid(row=0, column=1, columnspan=10, rowspan=3, pady=20)
-    self.title = tk.Label(self, text="Max Power: " + max_power, font=("Courier", 14), fg="blue")
+    self.title = tk.Label(self, text="Max Power: " + max_power, font=("Courier", 16), fg="blue")
     self.title.grid(row=4, column=2, pady=5)
-    self.title = tk.Label(self, text="RPM : " + rpm, font=("Courier", 14), fg="red")
+    self.title = tk.Label(self, text="RPM : " + rpm, font=("Courier", 16), fg="red")
     self.title.grid(row=4, column=3, pady=5)
-    self.title = tk.Label(self, text="RPM opt: " + rpm_opt, font=("Courier", 14), fg="blue")
+    self.title = tk.Label(self, text="RPM opt: " + rpm_opt, font=("Courier", 16), fg="blue")
     self.title.grid(row=5, column=2, pady=5)
-    self.title = tk.Label(self, text="Twitch %: " + twitch, font=("Courier", 14), fg="red")
+    self.title = tk.Label(self, text="Twitch %: " + twitch, font=("Courier", 16), fg="red")
     self.title.grid(row=5, column=3, pady=5)
 
     path = str(self.controller.shared["path"].get())

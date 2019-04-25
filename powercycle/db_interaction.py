@@ -389,26 +389,3 @@ def user_records_search(fname, lname):
         search_result = user_records_select(conn, fname, lname)
 
     return search_result
-
-
-# search for last file graph path
-def graph_path_select(conn):
-    sql = ''' SELECT path FROM user JOIN graph ON user.email = graph.user_email WHERE id = (SELECT max(id) FROM graph)'''
-    cur = conn.cursor()
-    cur.execute(sql)
-    return cur.fetchall()
-
-
-# Called from GUI.py final results window
-def graph_path_search():
-    database = 'cycle.db'
-
-    # database connection
-    conn = create_connection(database)
-    with conn:
-        # search for last insert graph path
-        search_result = graph_path_select(conn)
-
-    return search_result
-
-
