@@ -6,13 +6,13 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-def sendEmail(receiver_email,filename):
+def sendEmail(receiver_email, password, filename):
     smtp_server = "smtp.gmail.com" ##dont touch
     port = 587 ##dont touch
     subject = "Bicycle Application Requested Files..."##can be changed
     body = "Here are the Files you requested..."
-    sender_email = input("Enter Email: ")
-    password = input("Enter Password: ")  ##bicycle.email.bot@gmail.com"
+    sender_email = "bicycle.email.bot@gmail.com"
+    password = password  ##bicycle.email.bot@gmail.com"
     connection = False
    
     message = MIMEMultipart()
@@ -69,9 +69,5 @@ def sendEmail(receiver_email,filename):
             f.write(filename[i])
             f.write("\n")
         f.close()
-
-email = ["kyledarocha@gmail.com"]
-attachment = [""] ##need to add files if you wanna test
-sendEmail(email,attachment)
 
 

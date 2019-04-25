@@ -4,7 +4,9 @@ from db_interaction import *
 #from run_sensor import *
 from datetime import *
 import os
-#from emailtest import *
+from email_function import *
+from validate_email import validate_email
+import socket
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -91,10 +93,20 @@ class EnterEmail(tk.Frame):
         e.grid(row=20, column=40, sticky="nsew")
 
         def submit():
-            if len(e.get()) == 0:
+            email = e.get()
+            try:
+                socket.create_connection(("www.google.com", 80))
+                connection = True
+            except OSError:
+                connection = False
+            if len(email) == 0:
                 message("Entry cannot be blank")
             else:
-                search = email_search(e.get())
+                if connection == True:
+                    if validate(email) == 0:
+                        message("Invalid email address")
+                        return
+                search = email_search(email)
                 if search == None:
                     form(self.controller.shared["form_self"], True)
                     controller.show("Form")
@@ -450,22 +462,43 @@ def results(self, list):
 
     def submit():
         send = False
+        email_paths = []
         for i, j in enumerate(range(count)):
             if email_vars[i].get() == 1:
                 send = True
+                email_paths.append(paths[i])
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
         if send:
+            try:
+                socket.create_connection(("www.google.com", 80))
+                connection = True
+            except OSError:
+                connection = False
             popup = tk.Tk()
-            label = tk.Label(popup, text="Enter email")
-            label.grid(row=0, column=0, pady=10)
+            label1 = tk.Label(popup, text="Enter receiving email")
+            label1.grid(row=0, column=0, pady=10)
             entry = tk.Entry(popup)
             entry.grid(row=1, column=0)
+            label2 = tk.Label(popup, text="Enter sending email password")
+            label2.grid(row=2, column=0, pady=10)
+            passEntry = tk.Entry(popup, show="*")
+            passEntry.grid(row=3, column=0)
             def send():
-                print(entry.get())
+                nonlocal entry
+                email = entry.get()
+                nonlocal passEntry
+                password = passEntry.get()
+                if connection == True:
+                    if validate(email) == 0:
+                       nonlocal popup
+                       error = tk.Label(popup, text="Email not valid", bg="red")
+                       error.grid(row=5, column=0)
+                       return
+                sendEmail(email, password, email_paths)
                 popup.destroy()
             button = tk.Button(popup, text="Submit", command=send)
-            button.grid(row=2, column=0)
+            button.grid(row=4, column=0)
 
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=count+1, columnspan=10, padx=2, pady=20)
@@ -528,9 +561,20 @@ def calibration_results(self, list):
 def message(text):
     popup = tk.Tk()
     label = tk.Label(popup, text=text)
-    label.grid(row=0, column=0, pady=10)
+    label.grid(row=0, column=1, pady=10)
     button = tk.Button(popup, text="Ok", height=1, width=6, bg="sea green", command=popup.destroy)
-    button.grid(row=1, column=0)
+    button.grid(row=1, column=1)
+
+    popup.grid_columnconfigure(0, weight=1, minsize=50)
+    popup.grid_columnconfigure(2, weight=1, minsize=50)
+    popup.grid_rowconfigure(2, minsize=30)
+
+def validate(receiver_email):
+    is_valid = validate_email(receiver_email, verify=True)
+    if (is_valid == False):
+        return 0;
+    else:
+        return 1;
 
 if __name__ == "__main__":
     gui = GUI()
