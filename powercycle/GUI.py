@@ -12,7 +12,6 @@ import automatic_email_bash
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        automatic_email_bash
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable()}
         container = tk.Frame(self)
         container.pack()
@@ -336,7 +335,6 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
            # power_input(user_email)
-            sendEmail(user_email, "test.txt")
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
@@ -478,20 +476,19 @@ def results(self, list):
             label2.grid(row=2, column=0, pady=10)
             passEntry = tk.Entry(popup, show="*")
             passEntry.grid(row=3, column=0)
+            error = tk.Label(popup)
+            error.grid(row=5, column=0)
 
             def send(popup):
-                nonlocal entry
                 email = entry.get()
-                nonlocal passEntry
                 password = passEntry.get()
+                error['bg'] = "red"
                 if connection == True:
-                    popup.error = tk.Label(popup, text="", bg="red")
-                    popup.error.grid(row=5, column=0)
                     if validate(email) == 0:
-                        popup.error['text'] = 'Email not valid'
+                        error['text'] = "Email not valid"
                         return
                     if sendEmail(email, password, email_paths) == 0:
-                        popup.error['text'] = 'Password not valid'
+                        error['text'] = "Password not valid"
                         return
                 else:
                     sendEmail(email, password, email_paths)
@@ -534,23 +531,47 @@ def calibration_results(self, list):
 
     def submit():
         send = False
+        email_paths = []
         for i, j in enumerate(range(count)):
             if email_vars[i].get() == 1:
                 send = True
+                email_paths.append(paths[i])
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
         if send:
+            try:
+                socket.create_connection(("www.google.com", 80))
+                connection = True
+            except OSError:
+                connection = False
             popup = tk.Tk()
-            label = tk.Label(popup, text="Enter email")
-            label.grid(row=0, column=0, pady=10)
+            label1 = tk.Label(popup, text="Enter receiving email")
+            label1.grid(row=0, column=0, pady=10)
             entry = tk.Entry(popup)
             entry.grid(row=1, column=0)
-
-            def send():
-                print(entry.get())
+            label2 = tk.Label(popup, text="Enter sending email password")
+            label2.grid(row=2, column=0, pady=10)
+            passEntry = tk.Entry(popup, show="*")
+            passEntry.grid(row=3, column=0)
+            error = tk.Label(popup)
+            error.grid(row=5, column=0)
+            def send(popup):
+                email = entry.get()
+                password = passEntry.get()
+                error['bg'] = "red"
+                if connection == True:
+                    if validate(email) == 0:
+                        error['text'] = "Email not valid"
+                        return
+                    if sendEmail(email, password, email_paths) == 0:
+                        error['text'] = "Password not valid"
+                        return
+                else:
+                    sendEmail(email, password, email_paths)
+                    message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
-            button = tk.Button(popup, text="Submit", command=send)
-            button.grid(row=2, column=0)
+            button = tk.Button(popup, text="Submit",  command=lambda: send(popup))
+            button.grid(row=4, column=0)
 
     button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
     button.grid(row=count+1, columnspan=7, padx=2, pady=20)

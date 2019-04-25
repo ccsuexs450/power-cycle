@@ -4,8 +4,6 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from tkinter import *
-
 
 def sendEmail(receiver_email, password, filename):
     smtp_server = "smtp.gmail.com" ##dont touch
