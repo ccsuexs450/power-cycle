@@ -507,6 +507,7 @@ def results(self, list):
             if email_vars[i].get() == 1:
                 send = True
             if open_vars[i].get() == 1:
+                os.startfile(paths[i])
 
         if send:
             popup = tk.Tk()
