@@ -14,12 +14,20 @@ def create_connection(db_file):
 
 # create user
 def create_user(conn, user):
-    sql = ''' INSERT INTO user(email, fname, lname, age, height, weight, gender, category)
-              VALUES(?,?,?,?,?,?,?,?) '''
+    sql = ''' INSERT INTO user(email, fname, lname, age, height, weight, gender, category, birth)
+              VALUES(?,?,?,?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, user)
     return cur.lastrowid
 
+# update user
+def update_user(conn, user):
+    sql = ''' UPDATE user 
+              SET fname = ?, lname = ?, age = ?, height = ?, weight = ?, gender = ?, category = ?, birth = ?
+              WHERE email = ? '''
+    cur = conn.cursor()
+    cur.execute(sql, user)
+    return cur.lastrowid
 
 # create textfile
 def create_textfile(conn, textfile):
@@ -48,7 +56,7 @@ def email_select(conn, email):
 
 # search user for powersheet profile
 def user_profile_select(conn, email):
-    sql = ''' SELECT email, fname, lname, age, height, weight, gender, category FROM user WHERE email=? '''
+    sql = ''' SELECT email, fname, lname, age, height, weight, gender, category, birth FROM user WHERE email=? '''
     cur = conn.cursor()
     cur.execute(sql, (email,))
     return cur.fetchone()
@@ -105,19 +113,28 @@ def user_profile_search(email):
 
 
 # Called from GUI.py user insertion
-def user_insert(email, fname, lname, age, height, weight, gender, category):
+def user_insert(email, fname, lname, age, height, weight, gender, category, birth):
     database = 'cycle.db'
 
     # database connection
     conn = create_connection(database)
     with conn:
         # new user
-        user = (email, fname, lname, age, height, weight, gender, category)
+        user = (email, fname, lname, age, height, weight, gender, category, birth)
         user_rid = create_user(conn, user)
 
+# Called from GUI.py user update
+def user_update(email, fname, lname, age, height, weight, gender, category, birth):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # update user
+        user = (fname, lname, age, height, weight, gender, category, birth, email)
+        user_rid = update_user(conn, user)
 
 # Called from calibrate.py
-
 def calibrate_insert(name, path, date):
     database = 'cycle.db'
 
