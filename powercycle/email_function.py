@@ -71,7 +71,7 @@ def sendEmail(receiver_email,filename):
         f.close()
 
 email = ["kyledarocha@gmail.com"]
-attachment = ["test.txt", "test.xlsx"]
+attachment = [""] ##need to add files if you wanna test
 sendEmail(email,attachment)
 
 

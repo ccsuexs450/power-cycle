@@ -70,9 +70,9 @@ try:
 except OSError:
     connection = False
         
-if (os.path.isfile("/home/pi/readwritetest/store.txt")):
+if (os.path.isfile("/store.txt")):
     sendEmail()
-    os.remove("/home/pi/readwritetest/store.txt")
+    os.remove("/store.txt")
     print("Stored files, successfully sent")
 elif (connection == False):
     print ("No internet connection")
