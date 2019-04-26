@@ -1,8 +1,8 @@
 from PIL import ImageTk, Image as PilImage
-# from power_chart import *
+from power_chart import *
 from db_interaction import *
 from results_test import *
-# from run_sensor import *
+from run_sensor import *
 from datetime import *
 import tkinter as tk
 from tkinter import *
@@ -347,7 +347,7 @@ class ProcessingPage(tk.Frame):
         self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
         self.title.grid(row=1, column=1, pady=5)
 
-        def process():
+        def cont():
             power_sheet(path_test,user_email)
             values = resultsT()
             self.controller.shared["max_power"].set(values[0])
@@ -360,8 +360,8 @@ class ProcessingPage(tk.Frame):
                 controller.show("FinalResultsPage")
                 results_page(self.controller.shared["results_page_self"])
 
-        run_button = tk.Button(self, text="Continue", height=4, width=24, bg="sea green", command=process)
-        run_button.grid(row=2, column=1, padx=2, pady=2)
+        cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="sea green", command=cont)
+        cont_button.grid(row=2, column=1, padx=2, pady=2)
 
 
 # create run page
@@ -377,6 +377,7 @@ class Run(tk.Frame):
             self.controller.shared["path_txt_test"].set(path)
             if path is not None:
                  controller.show("ProcessingPage")
+                 results_page(self.controller.shared["process_self"])
              
 
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
@@ -479,6 +480,20 @@ def form(self, new):
     self.grid_rowconfigure(11, weight=1)
     self.grid_columnconfigure(4, weight=1)
 
+
+def process(self):
+    widget_list = widgets(self)
+    if len(widget_list) != 0:
+        widget_list[0].grid_forget()
+    explanation = '''data collection finished. It's in the path bellow, click continue to process,
+        it may take a minute or so to process, please be patient '''
+
+    self.title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
+    self.title.grid(row=0, column=1,padx=30, pady=30)
+
+    path_test = self.controller.shared["path_txt_test"].get()
+    self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
+    self.title.grid(row=1, column=1, pady=5)git
 
 def results_page(self):
     widget_list = widgets(self)
