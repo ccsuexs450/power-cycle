@@ -21,15 +21,15 @@ def power_sheet(lines, email):
     delta = doc.sheets[2]
 
     # comment this loop when sensor is plugged in
-    with open("../data/sensordata/power.txt", "r") as ins:
-        for line in ins:
-            line = line.rstrip('\n')
-            lines.append(line)
+#    with open("../data/sensordata/power.txt", "r") as ins:
+#        for line in ins:
+#            line = line.rstrip('\n')
+#            lines.append(line)
 
     print(lines[0:10])
     print(len(lines)) 
     power[1:496,0].values = lines
-    #power[1:30,0].values = lines
+   # power[1:16,0].values = lines
 
 
     with open("../docs/templates/delta_theta.txt", "r") as ins:
@@ -63,4 +63,4 @@ def power_sheet(lines, email):
 
     print("File Saved")
 
-power_sheet(lines, "htazi@gmail.com")
+#power_sheet(lines, "htazi@gmail.com")

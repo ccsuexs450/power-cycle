@@ -18,13 +18,23 @@ def serial_conn():
 
 def calibrate_input(): #placeholder until sensor is working. Reads test input from file.
 
-    with open("../data/sensordata/calibrate.txt", "r") as ins:
-        for line in ins:
-            line = line.rstrip('\n')
-            values.append(line)
+#    with open("../data/sensordata/calibrate.txt", "r") as ins:
+#        for line in ins:
+#            line = line.rstrip('\n')
+#            values.append(line)
 
-    textwrite("calibrator")
-    calibrate_sheet(values, user_email)
+    ser = serial_conn()
+
+    i = 0
+    while i < 900:
+
+        input = int(ser.readline().strip())
+        values.append(str(input))
+        i+=1
+
+
+    textwrite("htazi@gmail.com")
+    calibrate_sheet(values)
 
     print("Files Created")
     
@@ -60,6 +70,6 @@ def textwrite(user_email):
     outfile.close()
     textfile_insert(user_email, filename, path, filename)
 
-#power_input("htazi@gmail.com")
-
+power_input("htazi@gmail.com")
+#calibrate_input()
 
