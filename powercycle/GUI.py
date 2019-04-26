@@ -377,7 +377,7 @@ class Run(tk.Frame):
             self.controller.shared["path_txt_test"].set(path)
             if path is not None:
                  controller.show("ProcessingPage")
-                 results_page(self.controller.shared["process_self"])
+                 process(self.controller.shared["process_self"])
              
 
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")

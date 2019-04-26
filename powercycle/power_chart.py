@@ -22,7 +22,7 @@ def draw_graph(datax, datay1, datay2, email):
     ax1.set_ylim([0, y1_sm.max() + 200])
     ax1.set_xlabel('Pedaling Rate(rpm)')
     ax1.set_ylabel('Power(watts)', color=color)
-    ax1.plot( t, p(t),color=color, linewidth = 3)
+    ax1.plot(t, p(t),color=color, linewidth = 3)
     ax1.tick_params(axis='y', labelcolor=color)
     
     x2len = len(datax)

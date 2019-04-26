@@ -51,7 +51,7 @@ def power_sheet(path, email):
     rpm_max = power[22, 46].value
     
     # calculate fiber twitch
-    twitch = (2.0833 * rpm_opt) – 198.458
+    twitch = (2.0833 * rpm_opt) - 198.458
     
     # graph data
     datax  = power[1:11,32].values
@@ -62,9 +62,9 @@ def power_sheet(path, email):
 
     # user search 
     profile = user_profile_search(email)
-    print(profile)
+  #  print(profile)
     
-    sum[1:9,7].values = profile
+#    sum[1:9,7].values = profile
     
     path = "../docs/power/"
     date = time.strftime("%Y%m%d-%H%M%S")
@@ -73,6 +73,8 @@ def power_sheet(path, email):
     doc.save(file_path)
     power_insert(email, filename, file_path, date)
     doc.close()
+    
+    payload = []
 
     payload.append(max_pow)
     payload.append(rpm_max)
