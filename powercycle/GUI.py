@@ -493,7 +493,7 @@ def process(self):
 
     path_test = self.controller.shared["path_txt_test"].get()
     self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
-    self.title.grid(row=1, column=1, pady=5)git
+    self.title.grid(row=1, column=1, pady=5)
 
 def results_page(self):
     widget_list = widgets(self)
