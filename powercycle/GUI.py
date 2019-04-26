@@ -1,12 +1,13 @@
 from PIL import ImageTk, Image as PilImage
 # from power_chart import *
 from db_interaction import *
-from results_test import resultsT
+from results_test import *
 # from run_sensor import *
 from datetime import *
 import tkinter as tk
 from tkinter import *
 import os
+import time
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -14,7 +15,8 @@ class GUI(tk.Tk):
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(),
                        "calibration_results_self": tk.Variable(), "results_page_self": tk.Variable(),
                        "max_power": tk.StringVar(), "rpm": tk.StringVar(), "rpm_opt": tk.StringVar(),
-                       "twitch": tk.StringVar(), "path": tk.StringVar()}
+                       "twitch": tk.StringVar(), "path": tk.StringVar(), "path_txt_test": tk.StringVar(),
+                       "process_self": tk.Variable()}
         container = tk.Frame(self)
         container.pack()
         self.geometry("1200x800")
@@ -38,7 +40,8 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
         file_menu.add_command(label="Exit", command=self.quit)
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage, FinalResultsPage):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage,
+                  FinalResultsPage, ProcessingPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -327,14 +330,24 @@ class CalibrationResultsPage(tk.Frame):
         date.grid(row=0, column=3, padx=20)
 
 
-# create run page
-class Run(tk.Frame):
+# create processing page
+class ProcessingPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.controller.shared["process_self"] = self
 
-        def run():
-            # user_email = str(self.controller.shared["email"].get())
+        explanation = '''data collection finished. click continue to process,
+        it may take a minute to process, please be patient '''
+
+        title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
+        title.grid(row=0, column=1,padx=30, pady=30)
+        path_test = self.controller.shared["path_txt_test"].get()
+        self.title = tk.Label(self, text="path_test: " + path_test, font=("Courier", 16), fg="blue")
+        self.title.grid(row=1, column=1, pady=5)
+
+        def process():
+            # power_sheet(path_test)
             values = resultsT()
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
@@ -345,6 +358,22 @@ class Run(tk.Frame):
             if values is not None:
                 controller.show("FinalResultsPage")
                 results_page(self.controller.shared["results_page_self"])
+
+        run_button = tk.Button(self, text="Continue", height=4, width=24, bg="sea green", command=process)
+        run_button.grid(row=2, column=1, padx=2, pady=2)
+
+
+# create run page
+class Run(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.controller.shared["path_txt_test"].set(power_input_test())
+
+        def run():
+            # user_email = str(self.controller.shared["email"].get())
+            # power_input(user_email)
+            controller.show("ProcessingPage")
 
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
