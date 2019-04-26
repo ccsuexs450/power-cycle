@@ -337,13 +337,13 @@ class ProcessingPage(tk.Frame):
         self.controller = controller
         self.controller.shared["process_self"] = self
 
-        explanation = '''data collection finished. click continue to process,
-        it may take a minute to process, please be patient '''
+        explanation = '''data collection finished. It's in the path bellow, click continue to process,
+        it may take a minute or so to process, please be patient '''
 
         title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
         title.grid(row=0, column=1,padx=30, pady=30)
         path_test = self.controller.shared["path_txt_test"].get()
-        self.title = tk.Label(self, text="path_test: " + path_test, font=("Courier", 16), fg="blue")
+        self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
         self.title.grid(row=1, column=1, pady=5)
 
         def process():
