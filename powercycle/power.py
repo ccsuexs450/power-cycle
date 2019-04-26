@@ -16,7 +16,7 @@ def power_sheet(lines, email):
     desktop = pyoo.Desktop('localhost', 2002)
     doc = desktop.open_spreadsheet("../docs/templates/Power_blank.ods")
     
-    sum   = doc.sheets[0]
+    sum  = doc.sheets[0]
     power = doc.sheets[1]
     delta = doc.sheets[2]
 
