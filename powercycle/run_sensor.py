@@ -50,11 +50,11 @@ def power_input(user_email):
         values.append(str(input))
         i+=1
 
-    textwrite(user_email)
-    power_sheet(values, user_email)
+    path =  textwrite(user_email)
+  #  power_sheet(values, user_email)
 
     print("Files Created")
-
+    return path
 
 def textwrite(user_email):
     emailStr = str(user_email)
@@ -69,7 +69,17 @@ def textwrite(user_email):
         outfile.write("\n")
     outfile.close()
     textfile_insert(user_email, filename, path, filename)
+    
+    return path
 
-power_input("htazi@gmail.com")
+
+def test_run(user_email):
+
+   path = "../data/sensordata/power.txt"
+
+   return path
+
+#power_input("htazi@gmail.com")
 #calibrate_input()
+test_run("htazi@gmail.com")
 

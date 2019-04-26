@@ -342,12 +342,13 @@ class ProcessingPage(tk.Frame):
 
         title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
         title.grid(row=0, column=1,padx=30, pady=30)
-        path_test = self.controller.shared["path_txt_test"].get()
+        path_test = str(self.controller.shared["path_txt_test"].get())
+        user_email = str(self.controller.shared["email"].get())
         self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
         self.title.grid(row=1, column=1, pady=5)
 
         def process():
-            # power_sheet(path_test)
+            power_sheet(path_test,user_email)
             values = resultsT()
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
@@ -368,12 +369,15 @@ class Run(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.controller.shared["path_txt_test"].set(power_input_test())
+        #self.controller.shared["path_txt_test"].set(power_input_test())
 
         def run():
-            # user_email = str(self.controller.shared["email"].get())
-            # power_input(user_email)
-            controller.show("ProcessingPage")
+            user_email = str(self.controller.shared["email"].get())
+            path = test_run(user_email)
+            self.controller.shared["path_txt_test"].set(path)
+            if path is not None:
+                 controller.show("ProcessingPage")
+             
 
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)

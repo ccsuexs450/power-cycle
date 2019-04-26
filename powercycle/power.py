@@ -6,7 +6,7 @@ from db_interaction import *
 from power_chart import *
 lines = []
 
-def power_sheet(lines, email):
+def power_sheet(path, email):
 
     soffice = subprocess.Popen('startLO')
 
@@ -21,16 +21,22 @@ def power_sheet(lines, email):
     delta = doc.sheets[2]
 
     # comment this loop when sensor is plugged in
-#    with open("../data/sensordata/power.txt", "r") as ins:
-#        for line in ins:
-#            line = line.rstrip('\n')
-#            lines.append(line)
+    with open("../data/sensordata/power.txt", "r") as ins:
+        for line in ins:
+            line = line.rstrip('\n')
+            lines.append(line)
+
+        # get sensor values
+   # with open(path, "r") as ins:
+   #     for line in ins:
+   #         line = line.rstrip('\n')
+   #         lines.append(line)
+
 
     print(lines[0:10])
     print(len(lines)) 
     power[1:496,0].values = lines
    # power[1:16,0].values = lines
-
 
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
@@ -38,12 +44,21 @@ def power_sheet(lines, email):
             dt.append(line)
 
     delta[1:16,1].values = dt
+
+    # retrieve payload
+    max_pow = power[20, 43].value
+    rpm_opt = power[20, 46].value
+    rpm_max = power[22, 46].value
     
+    # calculate fiber twitch
+    twitch = (2.0833 * rpm_opt) – 198.458
+    
+    # graph data
     datax  = power[1:11,32].values
     datay1 = power[1:11,33].values
     datay2 = power[1:11,34].values
      
-    draw_graph(datax, datay1, datay2, email)
+    graph_path = draw_graph(datax, datay1, datay2, email)
 
     # user search 
     profile = user_profile_search(email)
@@ -59,8 +74,16 @@ def power_sheet(lines, email):
     power_insert(email, filename, file_path, date)
     doc.close()
 
+    payload.append(max_pow)
+    payload.append(rpm_max)
+    payload.append(rpm_opt)
+    payload.append(twitch)
+    payload.append(graph_path)
+
     soffice.kill()
 
     print("File Saved")
+    
+    return payload
 
 #power_sheet(lines, "htazi@gmail.com")
