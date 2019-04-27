@@ -348,8 +348,8 @@ class ProcessingPage(tk.Frame):
         self.title.grid(row=1, column=1, pady=5)
 
         def cont():
-            power_sheet(path_test,user_email)
-            values = resultsT()
+            
+            values = power_sheet(path_test,user_email)
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
             self.controller.shared["rpm_opt"].set(values[2])
@@ -357,6 +357,7 @@ class ProcessingPage(tk.Frame):
             self.controller.shared["path"].set(values[4])
 
             if values is not None:
+                values = None
                 controller.show("FinalResultsPage")
                 results_page(self.controller.shared["results_page_self"])
 
@@ -376,6 +377,8 @@ class Run(tk.Frame):
             path = test_run(user_email)
             self.controller.shared["path_txt_test"].set(path)
             if path is not None:
+                 path = None
+                 print(path)
                  controller.show("ProcessingPage")
                  process(self.controller.shared["process_self"])
              

@@ -37,6 +37,10 @@ def power_sheet(path, email):
     print(len(lines)) 
     power[1:496,0].values = lines
    # power[1:16,0].values = lines
+    
+    lines.clear()
+    
+    print(lines)
 
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
@@ -82,7 +86,7 @@ def power_sheet(path, email):
     payload.append(twitch)
     payload.append(graph_path)
 
-    soffice.kill()
+   # soffice.kill()
 
     print("File Saved")
     
