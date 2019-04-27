@@ -1,9 +1,12 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 from db_interaction import *
 #from run_sensor import *
 from datetime import *
 import os
+from PIL import Image
+from PIL import ImageTk
 from email_function import *
 from validate_email import validate_email
 import socket
@@ -13,6 +16,14 @@ class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable()}
+        toolbar = Frame(self, bg="gray87")
+        house = Image.open("Home.png")
+        house = house.resize((40, 40))
+        image = ImageTk.PhotoImage(house)
+        button = tk.Button(toolbar, text="Home", image=image, height=30, width=60, command=lambda: self.show("Home"))
+        button.pack(side=LEFT)
+        button.image=image
+        toolbar.pack(side=TOP, fill=X)
         container = tk.Frame(self)
         container.pack()
         self.geometry("1200x800")
@@ -21,8 +32,11 @@ class GUI(tk.Tk):
         menu = Menu(self)
         self.config(menu=menu)
 
-        # create home menu
-        menu.add_cascade(label="Home", command=lambda: self.show("Home"))
+        # create file menu
+        file_menu = Menu(menu, tearoff=0)
+        menu.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
+        file_menu.add_command(label="Exit", command=self.quit)
 
         # create search menu
         search_menu = Menu(menu, tearoff=0)
@@ -30,11 +44,6 @@ class GUI(tk.Tk):
         search_menu.add_command(label="Search by user name", command=lambda: self.show("SearchName"))
         search_menu.add_command(label="Search by file type", command=lambda: self.show("SearchFile"))
 
-        # create file menu
-        file_menu = Menu(menu, tearoff=0)
-        menu.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
-        file_menu.add_command(label="Exit", command=self.quit)
         self.frames = {}
         for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage):
             page = F.__name__
@@ -54,14 +63,13 @@ class GUI(tk.Tk):
 class Home(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        title = tk.Label(self, text="Welcome to Performance Cycling System !", font=("Courier", 32), fg="black",)
+        title = tk.Label(self, text="Cycling Performance System", font=("Open Sans", 32))
         title.grid(row=0, column=1, padx=30, pady=30)
+        house = PhotoImage(file="House.gif")
+        run_button = tk.Button(self, text="Run", height=4, width=20, bg="turquoise", command=lambda: controller.show("EnterEmail"))
+        run_button.grid(row=1, column=1, padx=2, pady=2)
 
-        run_button = tk.Button(self, text="Run", height=4, width=20,
-                               bg="sea green", command=lambda: controller.show("EnterEmail"))
-        run_button.grid(row=2, column=1, padx=2, pady=2)
-
-        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
@@ -72,9 +80,9 @@ class Calibrate(tk.Frame):
         tk.Frame.__init__(self, parent)
         def run_script():
             os.system('python Script.py')
-        title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
+        title = tk.Label(self, text="Calibration", font=("Open Sans", 44), fg="black")
         title.grid(row=1, column=1)
-        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="sea green", command=run_script)
+        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="turquoise", command=run_script)
         calibrate_button.grid(row=2, column=1, padx=2, pady=2)
 
         self.grid_rowconfigure(0, weight=1)
@@ -88,10 +96,10 @@ class EnterEmail(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        title = tk.Label(self, text="Enter Email:", font=("Courier", 28), fg="black")
-        title.grid(row=19, column=40)
+        title = tk.Label(self, text="Enter Email:", font=("Open Sans", 28), fg="black")
+        title.grid(row=1, column=1)
         e = tk.Entry(self, textvariable=self.controller.shared["email"])
-        e.grid(row=20, column=40, sticky="nsew")
+        e.grid(row=2, column=1, pady=10, sticky="nsew")
 
         def submit():
             email = e.get()
@@ -103,24 +111,24 @@ class EnterEmail(tk.Frame):
             if len(email) == 0:
                 message("Entry cannot be blank")
             else:
-                if connection == True:
-                    if validate(email) == 0:
-                        message("Invalid email address")
-                        return
                 search = email_search(email)
                 if search == None:
+                    if connection == True:
+                        if validate(email) == 0:
+                            message("Invalid email address")
+                            return
                     form(self.controller.shared["form_self"], True)
                     controller.show("Form")
                 else:
                     form(self.controller.shared["form_self"], False)
                     controller.show("Form")
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=submit)
-        find_button.grid(row=25, column=40, padx=2, pady=2)
-        col_count, row_count = self.grid_size()
-        for col in range(col_count):
-            self.grid_columnconfigure(col, minsize=10)
-        for row in range(row_count):
-            self.grid_rowconfigure(row, minsize=10)
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=submit)
+        find_button.grid(row=3, column=1, padx=2, pady=2)
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(4, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
 
 
 # create form page
@@ -155,20 +163,20 @@ class SearchFile(tk.Frame):
         var1 = tk.StringVar()
         var2 = tk.StringVar()
         var3 = tk.StringVar()
-        title1 = tk.Label(self, text="Search by file type:", font=("Courier", 28), fg="black")
-        title1.grid(row=19, column=30)
+        title1 = tk.Label(self, text="Search by file type:", font=("Open Sans", 28), fg="black")
+        title1.grid(row=1, column=1)
         e1 = tk.Entry(self, textvariable=var1)
-        e1.grid(row=20, column=30, sticky="nsew")
-        title2 = tk.Label(self, text="Date range: (YYYY-MM-DD)", font=("Courier", 28), fg="black")
-        title2.grid(row=24, column=30)
-        title3 = tk.Label(self, text="From:", font=("Courier", 16), fg="black")
-        title3.grid(row=25, column=30)
+        e1.grid(row=2, column=1, sticky="nsew")
+        title2 = tk.Label(self, text="Date range: (YYYY-MM-DD)", font=("Open Sans", 28), fg="black")
+        title2.grid(row=4, column=1)
+        title3 = tk.Label(self, text="From:", font=("Open Sans", 16), fg="black")
+        title3.grid(row=5, column=1)
         e2 = tk.Entry(self, textvariable=var2)
-        e2.grid(row=26, column=30, sticky="nsew")
-        title4 = tk.Label(self, text="To:", font=("Courier", 16), fg="black")
-        title4.grid(row=29, column=30)
+        e2.grid(row=6, column=1, sticky="nsew")
+        title4 = tk.Label(self, text="To:", font=("Open Sans", 16), fg="black")
+        title4.grid(row=7, column=1)
         e3 = tk.Entry(self, textvariable=var3)
-        e3.grid(row=30, column=30, sticky="nsew")
+        e3.grid(row=8, column=1, sticky="nsew")
 
         def find():
             if len(e1.get()) == 0 or len(e2.get()) == 0 or len(e3.get()) == 0:
@@ -222,14 +230,14 @@ class SearchFile(tk.Frame):
                     else:
                         print(" the file type you have entered is not found!!!")
 
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
-        find_button.grid(row=33, column=30, padx=2, pady=2)
-        col_count, row_count = self.grid_size()
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
+        find_button.grid(row=9, column=1, padx=10, pady=10)
 
-        for col in range(col_count):
-            self.grid_columnconfigure(col, minsize=10)
-        for row in range(row_count):
-            self.grid_rowconfigure(row, minsize=10)
+        self.grid_rowconfigure(0, weight=1, minsize=150)
+        self.grid_rowconfigure(3, minsize=50)
+        self.grid_rowconfigure(10, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
 
 
 # create search by user name page
@@ -241,26 +249,26 @@ class SearchName(tk.Frame):
         var2 = tk.StringVar()
         var3 = tk.StringVar()
         var4 = tk.StringVar()
-        title1 = tk.Label(self, text="Search by user name:", font=("Courier", 28), fg="black")
-        title1.grid(row=19, column=30)
-        title2 = tk.Label(self, text="First Name:", font=("Courier", 16), fg="black")
-        title2.grid(row=20, column=30)
+        title1 = tk.Label(self, text="Search by user name:", font=("Open Sans", 28), fg="black")
+        title1.grid(row=1, column=1)
+        title2 = tk.Label(self, text="First Name:", font=("Open Sans", 16), fg="black")
+        title2.grid(row=2, column=1)
         e1 = tk.Entry(self, textvariable=var1)
-        e1.grid(row=21, column=30, sticky="nsew")
-        title3 = tk.Label(self, text="Last Name:", font=("Courier", 16), fg="black")
-        title3.grid(row=22, column=30)
+        e1.grid(row=3, column=1, sticky="nsew")
+        title3 = tk.Label(self, text="Last Name:", font=("Open Sans", 16), fg="black")
+        title3.grid(row=4, column=1)
         e2 = tk.Entry(self, textvariable=var2 )
-        e2.grid(row=23, column=30, sticky="nsew")
-        title4 = tk.Label(self, text="Date range: (YYYY-MM-DD)", font=("Courier", 28), fg="black")
-        title4.grid(row=27, column=30)
-        title5 = tk.Label(self, text="From:", font=("Courier", 16), fg="black")
-        title5.grid(row=28, column=30)
+        e2.grid(row=5, column=1, sticky="nsew")
+        title4 = tk.Label(self, text="Date range: (YYYY-MM-DD)", font=("Open Sans", 28), fg="black")
+        title4.grid(row=7, column=1)
+        title5 = tk.Label(self, text="From:", font=("Open Sans", 16), fg="black")
+        title5.grid(row=8, column=1)
         e3 = tk.Entry(self, textvariable=var3)
-        e3.grid(row=29, column=30, sticky="nsew")
-        title6 = tk.Label(self, text="To:", font=("Courier", 16), fg="black")
-        title6.grid(row=30, column=30)
+        e3.grid(row=9, column=1, sticky="nsew")
+        title6 = tk.Label(self, text="To:", font=("Open Sans", 16), fg="black")
+        title6.grid(row=10, column=1)
         e4 = tk.Entry(self, textvariable=var4)
-        e4.grid(row=31, column=30, sticky="nsew")
+        e4.grid(row=11, column=1, sticky="nsew")
 
         def find():
             if len(e1.get()) == 0 or len(e2.get()) == 0 or len(e3.get()) == 0 or len(e4.get()) == 0:
@@ -285,13 +293,14 @@ class SearchName(tk.Frame):
                         results(self.controller.shared["results_self"], search_user)
                         controller.show("ResultsPage")
 
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="deep sky blue", command=find)
-        find_button.grid(row=34, column=30, padx=2, pady=2)
-        col_count, row_count = self.grid_size()
-        for col in range(col_count):
-            self.grid_columnconfigure(col, minsize=10)
-        for row in range(row_count):
-            self.grid_rowconfigure(row, minsize=10)
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
+        find_button.grid(row=12, column=1, padx=10, pady=10)
+
+        self.grid_rowconfigure(0, weight=1, minsize=150)
+        self.grid_rowconfigure(6, minsize=50)
+        self.grid_rowconfigure(13, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
 
 
 # create results page
@@ -300,17 +309,17 @@ class ResultsPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.controller.shared["results_self"] = self
-        fname = tk.Label(self, text="FirstName", font=("Courier", 16), fg="black")
+        fname = tk.Label(self, text="FirstName", font=("Open Sans", 16), fg="black")
         fname.grid(row=0, column=1, padx=20)
-        lname = tk.Label(self, text="LastName", font=("Courier", 16), fg="black")
+        lname = tk.Label(self, text="LastName", font=("Open Sans", 16), fg="black")
         lname.grid(row=0, column=2, padx=20)
-        email = tk.Label(self, text="Email", font=("Courier", 16), fg="black")
+        email = tk.Label(self, text="Email", font=("Open Sans", 16), fg="black")
         email.grid(row=0, column=3, padx=20)
-        name = tk.Label(self, text="Name", font=("Courier", 16), fg="black")
+        name = tk.Label(self, text="Name", font=("Open Sans", 16), fg="black")
         name.grid(row=0, column=4, padx=20)
-        path = tk.Label(self, text="Path", font=("Courier", 16), fg="black")
+        path = tk.Label(self, text="Path", font=("Open Sans", 16), fg="black")
         path.grid(row=0, column=5, padx=20)
-        date = tk.Label(self, text="Date", font=("Courier", 16), fg="black")
+        date = tk.Label(self, text="Date", font=("Open Sans", 16), fg="black")
         date.grid(row=0, column=6, padx=20)
 
 
@@ -320,11 +329,11 @@ class CalibrationResultsPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.controller.shared["calibration_results_self"] = self
-        name = tk.Label(self, text="Name", font=("Courier", 16), fg="black")
+        name = tk.Label(self, text="Name", font=("Open Sans", 16), fg="black")
         name.grid(row=0, column=1, padx=20)
-        path = tk.Label(self, text="Path", font=("Courier", 16), fg="black")
+        path = tk.Label(self, text="Path", font=("Open Sans", 16), fg="black")
         path.grid(row=0, column=2, padx=20)
-        date = tk.Label(self, text="Date", font=("Courier", 16), fg="black")
+        date = tk.Label(self, text="Date", font=("Open Sans", 16), fg="black")
         date.grid(row=0, column=3, padx=20)
 
 # create run page
@@ -335,9 +344,9 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
            # power_input(user_email)
-        title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
+        title = tk.Label(self, text="Run Bicycle", font=("Open Sans", 44), fg="black")
         title.grid(row=1, column=1)
-        run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
+        run_button = tk.Button(self, text="Run", height=4, width=24, bg="turquoise", command=run)
         run_button.grid(row=2, column=1, padx=2, pady=2)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
@@ -355,16 +364,16 @@ def form(self, new):
     email = self.controller.shared["email"].get()
     int_check = (self.register(self.validate_int))
     float_check = (self.register(self.validate_float))
-    self.title = tk.Label(self, text="Email: " + email, font=("Courier", 28), fg="black")
+    self.title = tk.Label(self, text="Email: " + email, font=("Open Sans", 28), fg="black")
     self.title.grid(row=1, columnspan=5)
     s = tk.StringVar()
-    Label(self, text="First Name", font=("Courier", 14)).grid(row=2, column=1, pady=2)
-    Label(self, text="Last Name", font=("Courier", 14)).grid(row=3, column=1, pady=2)
-    Label(self, text="Date(YYYY-MM-DD)", font=("Courier", 14)).grid(row=4, column=1, pady=2)
-    Label(self, text="Height(feet, inches)", font=("Courier", 14)).grid(row=5, column=1, pady=2)
-    Label(self, text="Weight(lbs)", font=("Courier", 14)).grid(row=6, column=1, pady=2)
-    Label(self, text="Sex", font=("Courier", 14)).grid(row=7, column=1, pady=2)
-    Label(self, text="Category", font=("Courier", 14)).grid(row=9, column=1, pady=2)
+    Label(self, text="First Name", font=("Open Sans", 14)).grid(row=2, column=1, pady=2)
+    Label(self, text="Last Name", font=("Open Sans", 14)).grid(row=3, column=1, pady=2)
+    Label(self, text="Date(YYYY-MM-DD)", font=("Open Sans", 14)).grid(row=4, column=1, pady=2)
+    Label(self, text="Height(feet, inches)", font=("Open Sans", 14)).grid(row=5, column=1, pady=2)
+    Label(self, text="Weight(lbs)", font=("Open Sans", 14)).grid(row=6, column=1, pady=2)
+    Label(self, text="Sex", font=("Open Sans", 14)).grid(row=7, column=1, pady=2)
+    Label(self, text="Category", font=("Open Sans", 14)).grid(row=9, column=1, pady=2)
     entry1 = Entry(self)
     entry2 = Entry(self)
     entry3 = Entry(self)
@@ -418,7 +427,7 @@ def form(self, new):
                     user_update(email, fname, lname, age, height, weight, gender, category, date)
                 self.controller.show("Run")
 
-    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="deep sky blue", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), entry6.get(), s.get(), entry9.get()))
+    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="turquoise", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), entry6.get(), s.get(), entry9.get()))
     submit_button.grid(row=10, column=1, columnspan=3, pady=20)
 
     self.grid_rowconfigure(0, weight=1, minsize=150)
@@ -470,11 +479,11 @@ def results(self, list):
             popup = tk.Tk()
             label1 = tk.Label(popup, text="Enter receiving email")
             label1.grid(row=0, column=0, pady=10)
-            entry = tk.Entry(popup)
+            entry = tk.Entry(popup, width=35)
             entry.grid(row=1, column=0)
             label2 = tk.Label(popup, text="Enter sending email password")
             label2.grid(row=2, column=0, pady=10)
-            passEntry = tk.Entry(popup, show="*")
+            passEntry = tk.Entry(popup, width=35, show="*")
             passEntry.grid(row=3, column=0)
             error = tk.Label(popup)
             error.grid(row=5, column=0)
@@ -495,9 +504,9 @@ def results(self, list):
                     message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
             button = tk.Button(popup, text="Submit", command=lambda: send(popup))
-            button.grid(row=4, column=0)
+            button.grid(row=4, column=0, pady=5)
 
-    button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
+    button = tk.Button(self, text="Submit", height=4, width=24, bg="turquoise", command=submit)
     button.grid(row=count+1, columnspan=10, padx=2, pady=20)
 
     self.grid_columnconfigure(0, weight=1)
@@ -547,11 +556,11 @@ def calibration_results(self, list):
             popup = tk.Tk()
             label1 = tk.Label(popup, text="Enter receiving email")
             label1.grid(row=0, column=0, pady=10)
-            entry = tk.Entry(popup)
+            entry = tk.Entry(popup, width=30)
             entry.grid(row=1, column=0)
             label2 = tk.Label(popup, text="Enter sending email password")
             label2.grid(row=2, column=0, pady=10)
-            passEntry = tk.Entry(popup, show="*")
+            passEntry = tk.Entry(popup, width=30, show="*")
             passEntry.grid(row=3, column=0)
             error = tk.Label(popup)
             error.grid(row=5, column=0)
@@ -571,9 +580,9 @@ def calibration_results(self, list):
                     message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
             button = tk.Button(popup, text="Submit",  command=lambda: send(popup))
-            button.grid(row=4, column=0)
+            button.grid(row=4, column=0, pady=5)
 
-    button = tk.Button(self, text="Submit", height=4, width=24, bg="sea green", command=submit)
+    button = tk.Button(self, text="Submit", height=4, width=24, bg="turquoise", command=submit)
     button.grid(row=count+1, columnspan=7, padx=2, pady=20)
 
     self.grid_columnconfigure(0, weight=1)
