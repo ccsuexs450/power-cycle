@@ -21,7 +21,7 @@ class GUI(tk.Tk):
                        "calibration_results_self": tk.Variable(), "results_page_self": tk.Variable(),
                        "max_power": tk.StringVar(), "rpm": tk.StringVar(), "rpm_opt": tk.StringVar(),
                        "twitch": tk.StringVar(), "path": tk.StringVar(), "path_txt_test": tk.StringVar(),
-                       "process_self": tk.Variable()}
+                       "process_self": tk.Variable(), "password": tk.StringVar(), "email_boolean": tk.Variable()}
 
         toolbar = Frame(self, bg="gray87")
         house = Image.open("../icons/Home.png")
@@ -31,6 +31,7 @@ class GUI(tk.Tk):
         button.pack(side=LEFT)
         button.image=image
         toolbar.pack(side=TOP, fill=X)
+
         container = tk.Frame(self)
         container.pack()
 
@@ -566,6 +567,37 @@ def results_page(self):
     var2 = IntVar()
     Checkbutton(self, text="Change user ?", variable=var1).grid(row=13, column=4)
     Checkbutton(self, text="Run again ?", variable=var2).grid(row=13, column=3)
+
+    try:
+        socket.create_connection(("www.google.com", 80))
+        connection = True
+    except OSError:
+        connection = False
+
+    label1 = tk.Label(popup, text="Enter sending email password")
+    label1.grid(row=2, column=0, pady=10)
+    entry = tk.Entry(popup, width=35, show="*")
+    entry.grid(row=3, column=0)
+    error = tk.Label(popup)
+    error.grid(row=6, column=0)
+
+    def send(popup):
+        password = entry.get()
+        error['bg'] = "red"
+        if connection == True:
+            if sendEmail(email, password, path) == 0:
+                error['text'] = "Password not valid"
+                return
+        else:
+            sendEmail(email, password, path)
+            message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
+        popup.destroy()
+
+    button = tk.Button(popup, text="Submit", command=lambda: send(popup))
+    button.grid(row=4, column=0, pady=5)
+    button = tk.Button(popup, text="Continue without emailing", command=popup.destroy)
+    button.grid(row=5, column=0, pady=5)
+
 
     def submit():
         if var1.get() == 1:
