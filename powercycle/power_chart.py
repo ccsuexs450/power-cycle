@@ -1,4 +1,4 @@
-import time 
+import datetime 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import spline
@@ -44,10 +44,12 @@ def draw_graph(datax, datay1, datay2, email):
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
   
     path = "../docs/graph/"
-    date = time.strftime("%Y-%m-%dT%H:%M:%S")
+    date = str(datetime.datetime.now())
     filename = email[0:5] + date + ".png"
     file_path = path + filename
     plt.savefig(file_path)
+    print(email[0:len(email)-1])
+    print(filename)
     graph_insert(email, filename, file_path, date)
     
     return file_path

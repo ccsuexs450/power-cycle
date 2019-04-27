@@ -1,7 +1,7 @@
 
 import serial
 import io
-import time
+import datetime
 from db_interaction import *
 from calibrate import *
 from power import *
@@ -58,7 +58,7 @@ def power_input(user_email):
 
 def textwrite(user_email):
     emailStr = str(user_email)
-    filename = emailStr[0:5] + time.strftime("%Y-%m-%dT%H:%M:%S")
+    filename = emailStr[0:5] + str(datetime.datetime.now())
     extension = ".txt"
     dir  = "../data/sensordata/"
     path = dir+filename+extension

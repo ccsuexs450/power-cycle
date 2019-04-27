@@ -1,6 +1,6 @@
 import os
 import subprocess
-import time
+import datetime
 import pyoo
 from db_interaction import *
 
@@ -32,7 +32,7 @@ def calibrate_sheet(lines):
             out.write("%s\n" % item)
 
     path = "../docs/calibration/"
-    date = time.strftime("%Y-%m-%dT%H:%M:%S")
+    date = str(datetime.datetime.now())
     filename = email[0:5] + date + ".ods"
     file_path = path + filename
     doc.save(file_path)

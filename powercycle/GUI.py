@@ -348,7 +348,8 @@ class ProcessingPage(tk.Frame):
         self.title.grid(row=1, column=1, pady=5)
 
         def cont():
-            
+            user_email = str(self.controller.shared["email"].get())
+            print(user_email)
             values = power_sheet(path_test,user_email)
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
