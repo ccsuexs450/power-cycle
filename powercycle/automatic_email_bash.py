@@ -70,9 +70,10 @@ try:
 except OSError:
     connection = False
         
-if (os.path.isfile("/store.txt")):
+
+if (os.path.isfile("store.txt")):
     sendEmail()
-    os.remove("/store.txt")
+    os.remove("store.txt")
     print("Stored files, successfully sent")
 elif (connection == False):
     print ("No internet connection")

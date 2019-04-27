@@ -4,39 +4,30 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from validate_email import validate_email
 
-def validate(receiver_email):
-    is_valid = validate_email(receiver_email,verify=True)
-    if (is_valid == False):
-        return 0;
-    else
-        return 1;
-
-def sendEmail(receiver_email,filename):
+def sendEmail(receiver_email, password, filename):
     smtp_server = "smtp.gmail.com" ##dont touch
     port = 587 ##dont touch
     subject = "Bicycle Application Requested Files..."##can be changed
     body = "Here are the Files you requested..."
-    sender_email = bicycle.email.bot@gmail.com"
-    password = input("Enter Password: ")  
+    sender_email = "bicycle.email.bot@gmail.com"  ##bicycle.email.bot@gmail.com"
     connection = False
    
     message = MIMEMultipart()
-    message["To"] = receiver_email[0]
+    message["To"] = receiver_email
+    message["From"] = sender_email
     message["Subject"] = subject
-    message["Bcc"] = receiver_email[0]
+    message["Bcc"] = receiver_email
 
     message.attach(MIMEText(body, "plain"))
 
     #make an array for multiple files
-    test = 0
     try:
         socket.create_connection(("www.google.com", 80))
         connection = True
     except OSError:
         connection = False
-    if (test == 0):
+    if (connection == True):
         ##make a loop for opening all files in the file array
         ##each of these lines is needed to attach the file,
         ##the loop must go through all these lines before repeating
@@ -52,15 +43,11 @@ def sendEmail(receiver_email,filename):
         context = ssl.create_default_context() #dont touch
         with smtplib.SMTP(smtp_server, port) as server: #dont touch
             server.starttls(context=context) #dont touch
-            while True: # until we login
-                try:
-                    server.login(sender_email, password)
-                except smtplib.SMTPAuthenticationError:
-                    print('Login failure: please re-enter the password.')
-                    password = input("Enter Password: ")  ##bicycle.email.bot@gmail.com"
-                    message["From"] = sender_email
-                    continue
-                break
+            try:
+                server.login(sender_email, password)
+            except smtplib.SMTPAuthenticationError:
+                print('Login failure: please reenter credential information.')
+                return 0
                       
             server.sendmail(sender_email, receiver_email, text) ##dont touch
             server.quit() 
@@ -69,15 +56,9 @@ def sendEmail(receiver_email,filename):
     else:
         print("There is no internet connection, files were safely stored")
         f = open("store.txt","a+")
-        f.write(receiver_email[0])
+        f.write(receiver_email)
         f.write("\n")
         for i in range(len(filename)):
             f.write(filename[i])
             f.write("\n")
         f.close()
-
-##email = ["kyledarocha@gmail.com"]
-##attachment = [] ##need to add files if you wanna test
-##sendEmail(email,attachment)
-
-

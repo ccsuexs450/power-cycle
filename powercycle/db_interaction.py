@@ -1,5 +1,5 @@
 import sqlite3
-
+from datetime import *
 
 # create connection
 def create_connection(db_file):
@@ -183,18 +183,29 @@ def text_file_select(conn, from_date, to_date ):
 def text_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date == "" and to_date == "":
+        datetime1 = from_date
+        datetime2 = to_date
+    else:
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+
     # database connection
     conn = create_connection(database)
     with conn:
         # search text files for a specific date range
-        search_result = text_file_select(conn, from_date, to_date)
+        search_result = text_file_select(conn, datetime1, datetime2)
 
     return search_result
 
 
 # search for text files last 5 records
 def text_file_records_select(conn):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email ORDER BY date DESC LIMIT 5'''
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN text ON user.email = text.user_email ORDER BY date DESC LIMIT 15'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -225,18 +236,29 @@ def power_file_select(conn, from_date, to_date ):
 def power_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date == "" and to_date == "":
+        datetime1 = from_date
+        datetime2 = to_date
+    else:
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+
     # database connection
     conn = create_connection(database)
     with conn:
         # search power files for a specific date range
-        search_result = power_file_select(conn, from_date, to_date)
+        search_result = power_file_select(conn, datetime1, datetime2)
 
     return search_result
 
 
 # search for power files last 5 records
 def power_file_records_select(conn):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email ORDER BY date DESC LIMIT 5'''
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN powersheet ON user.email = powersheet.user_email ORDER BY date DESC LIMIT 15'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -267,18 +289,29 @@ def calibration_file_select(conn, from_date, to_date):
 def calibration_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date == "" and to_date == "":
+        datetime1 = from_date
+        datetime2 = to_date
+    else:
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+
     # database connection
     conn = create_connection(database)
     with conn:
         # search calibration file for a specific date range
-        search_result = calibration_file_select(conn, from_date, to_date)
+        search_result = calibration_file_select(conn, datetime1, datetime2)
 
     return search_result
 
 
 # search for calibration files last 5 records
 def calibration_file_records_select(conn):
-    sql = ''' SELECT name, path, date FROM calibration ORDER BY date DESC LIMIT 5'''
+    sql = ''' SELECT name, path, date FROM calibration ORDER BY date DESC LIMIT 15'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -309,18 +342,29 @@ def graph_file_select(conn, from_date, to_date ):
 def graph_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date == "" and to_date == "":
+        datetime1 = from_date
+        datetime2 = to_date
+    else:
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+
     # database connection
     conn = create_connection(database)
     with conn:
         # search graph files for a specific date range
-        search_result = graph_file_select(conn, from_date, to_date)
+        search_result = graph_file_select(conn, datetime1, datetime2)
 
     return search_result
 
 
 # search for graph files last 5 records
 def graph_file_records_select(conn):
-    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email ORDER BY date DESC LIMIT 5'''
+    sql = ''' SELECT fname, lname, email, name, path, date FROM user JOIN graph ON user.email = graph.user_email ORDER BY date DESC LIMIT 15'''
     cur = conn.cursor()
     cur.execute(sql)
     return cur.fetchall()
@@ -363,12 +407,23 @@ def user_select(conn, fname, lname, from_date, to_date):
 def user_search(fname, lname, from_date, to_date):
     database = 'cycle.db'
 
+    if from_date == "" and to_date == "":
+        datetime1 = from_date
+        datetime2 = to_date
+    else:
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+
     # database connection
     conn = create_connection(database)
     with conn:
 
         # search by user for a specific date range
-        search_result = user_select(conn, fname, lname, from_date, to_date)
+        search_result = user_select(conn, fname, lname, datetime1, datetime2)
 
     return search_result
 
@@ -388,7 +443,7 @@ def user_records_select(conn, fname, lname):
             FROM user JOIN graph ON user.email = graph.user_email 
             )
             WHERE fname=? AND lname=?
-            ORDER BY date DESC LIMIT 5'''
+            ORDER BY date DESC LIMIT 15'''
     cur = conn.cursor()
     cur.execute(sql, (fname, lname))
     return cur.fetchall()
