@@ -65,7 +65,6 @@ class Home(tk.Frame):
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Cycling Performance System", font=("Open Sans", 32))
         title.grid(row=0, column=1, padx=30, pady=30)
-        house = PhotoImage(file="House.gif")
         run_button = tk.Button(self, text="Run", height=4, width=20, bg="turquoise", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=1, column=1, padx=2, pady=2)
 
