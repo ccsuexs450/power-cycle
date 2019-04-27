@@ -1,39 +1,39 @@
 import os
 import subprocess
-import time
+import datetime
 import pyoo
 from db_interaction import *
 
-def calibrate_sheet(lines, email):
+def calibrate_sheet(lines):
     
     soffice = subprocess.Popen('startLO')
-    time.sleep(3)
+    time.sleep(7)
     
-    lines = []
+#    lines = []
 
     desktop = pyoo.Desktop('localhost', 2002)
     doc = desktop.open_spreadsheet("../docs/templates/Calibrate_blank.ods")
 
     sheet = doc.sheets[0]
 
-    with open("../data/sensordata/calibrate.txt", "r") as ins:
-        for line in ins:
-            line = line.rstrip('\n')
-            lines.append(line)
+#    with open("../data/sensordata/calibrate.txt", "r") as ins:
+#        for line in ins:
+#            line = line.rstrip('\n')
+#            lines.append(line)
 
     print(lines[0:10])
  
-    sheet[1:796,0].values = lines
+    sheet[1:901,0].values = lines
 
-    delta_theta = sheet[1:15,10].values
+    delta_theta = sheet[1:16,10].values
 
     with open("../docs/templates/delta_theta.txt", "w") as out:
         for item in delta_theta:
             out.write("%s\n" % item)
 
     path = "../docs/calibration/"
-    date = "date_time" # place holder
-    filename = "calibrate_now_date_time.ods"  # place holder
+    date = str(datetime.datetime.now())
+    filename = email[0:5] + date + ".ods"
     file_path = path + filename
     doc.save(file_path)
     calibrate_insert(filename, file_path, date)

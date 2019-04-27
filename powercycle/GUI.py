@@ -1,11 +1,10 @@
-
-# from power_chart import *
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+#from power_chart import *
 from db_interaction import *
-from results_test import resultsT
-# from run_sensor import *
+from results_test import *
+#from run_sensor import *
 from datetime import *
 import os
 from PIL import Image, ImageTk
@@ -13,6 +12,7 @@ from email_function import *
 from validate_email import validate_email
 import socket
 import automatic_email_bash
+import time
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -20,7 +20,8 @@ class GUI(tk.Tk):
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(),
                        "calibration_results_self": tk.Variable(), "results_page_self": tk.Variable(),
                        "max_power": tk.StringVar(), "rpm": tk.StringVar(), "rpm_opt": tk.StringVar(),
-                       "twitch": tk.StringVar(), "path": tk.StringVar()}
+                       "twitch": tk.StringVar(), "path": tk.StringVar(), "path_txt_test": tk.StringVar(),
+                       "process_self": tk.Variable()}
 
         toolbar = Frame(self, bg="gray87")
         house = Image.open("../icons/Home.png")
@@ -30,9 +31,9 @@ class GUI(tk.Tk):
         button.pack(side=LEFT)
         button.image=image
         toolbar.pack(side=TOP, fill=X)
-
         container = tk.Frame(self)
         container.pack()
+
         self.geometry("1200x800")
         self.title("Bicycle Application")
 
@@ -54,7 +55,8 @@ class GUI(tk.Tk):
         search_menu.add_command(label="Search by file type", command=lambda: self.show("SearchFile"))
 
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage, FinalResultsPage):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage,
+                  FinalResultsPage, ProcessingPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -371,14 +373,27 @@ class CalibrationResultsPage(tk.Frame):
         date.grid(row=0, column=3, padx=20)
 
 
-# create run page
-class Run(tk.Frame):
+# create processing page
+class ProcessingPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        def run():
-            # user_email = str(self.controller.shared["email"].get())
-            values = resultsT()
+        self.controller.shared["process_self"] = self
+
+        explanation = '''data collection finished. It's in the path bellow, click continue to process,
+        it may take a minute or so to process, please be patient '''
+
+        title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
+        title.grid(row=0, column=1,padx=30, pady=30)
+        path_test = str(self.controller.shared["path_txt_test"].get())
+        user_email = str(self.controller.shared["email"].get())
+        self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
+        self.title.grid(row=1, column=1, pady=5)
+
+        def cont():
+            user_email = str(self.controller.shared["email"].get())
+            print(user_email)
+            values = power_sheet(path_test,user_email)
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
             self.controller.shared["rpm_opt"].set(values[2])
@@ -386,8 +401,30 @@ class Run(tk.Frame):
             self.controller.shared["path"].set(values[4])
 
             if values is not None:
+                values = None
                 controller.show("FinalResultsPage")
                 results_page(self.controller.shared["results_page_self"])
+
+        cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", command=cont)
+        cont_button.grid(row=2, column=1, padx=2, pady=2)
+
+
+# create run page
+class Run(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        #self.controller.shared["path_txt_test"].set(power_input_test())
+
+        def run():
+            user_email = str(self.controller.shared["email"].get())
+            path = test_run(user_email)
+            self.controller.shared["path_txt_test"].set(path)
+            if path is not None:
+                path = None
+                print(path)
+                controller.show("ProcessingPage")
+                process(self.controller.shared["process_self"])
 
         title = tk.Label(self, text="Run Bicycle", font=("Open Sans", 44), fg="black")
         title.grid(row=1, column=1)
@@ -480,6 +517,21 @@ def form(self, new):
     self.grid_columnconfigure(0, weight=1)
     self.grid_rowconfigure(11, weight=1)
     self.grid_columnconfigure(4, weight=1)
+
+
+def process(self):
+    widget_list = widgets(self)
+    if len(widget_list) != 0:
+        widget_list[0].grid_forget()
+    explanation = '''data collection finished. It's in the path bellow, click continue to process,
+        it may take a minute or so to process, please be patient '''
+
+    self.title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
+    self.title.grid(row=0, column=1,padx=30, pady=30)
+
+    path_test = self.controller.shared["path_txt_test"].get()
+    self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
+    self.title.grid(row=1, column=1, pady=5)
 
 
 def results_page(self):

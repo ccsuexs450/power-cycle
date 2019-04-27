@@ -1,4 +1,4 @@
-import datetime 
+import time 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import spline
@@ -22,7 +22,7 @@ def draw_graph(datax, datay1, datay2, email):
     ax1.set_ylim([0, y1_sm.max() + 200])
     ax1.set_xlabel('Pedaling Rate(rpm)')
     ax1.set_ylabel('Power(watts)', color=color)
-    ax1.plot(t, p(t),color=color, linewidth = 3)
+    ax1.plot( t, p(t),color=color, linewidth = 3)
     ax1.tick_params(axis='y', labelcolor=color)
     
     x2len = len(datax)
@@ -44,12 +44,8 @@ def draw_graph(datax, datay1, datay2, email):
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
   
     path = "../docs/graph/"
-    date = str(datetime.datetime.now())
+    date = time.strftime("%Y%m%d-%H%M%S")
     filename = email[0:5] + date + ".png"
     file_path = path + filename
     plt.savefig(file_path)
-    print(email[0:len(email)-1])
-    print(filename)
     graph_insert(email, filename, file_path, date)
-    
-    return file_path

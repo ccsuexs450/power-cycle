@@ -1,7 +1,7 @@
 
 import serial
 import io
-import time
+import datetime
 from db_interaction import *
 from calibrate import *
 from power import *
@@ -18,13 +18,23 @@ def serial_conn():
 
 def calibrate_input(): #placeholder until sensor is working. Reads test input from file.
 
-    with open("../data/sensordata/calibrate.txt", "r") as ins:
-        for line in ins:
-            line = line.rstrip('\n')
-            values.append(line)
+#    with open("../data/sensordata/calibrate.txt", "r") as ins:
+#        for line in ins:
+#            line = line.rstrip('\n')
+#            values.append(line)
 
-    textwrite("calibrator")
-    calibrate_sheet(values, user_email)
+    ser = serial_conn()
+
+    i = 0
+    while i < 900:
+
+        input = int(ser.readline().strip())
+        values.append(str(input))
+        i+=1
+
+
+    textwrite("htazi@gmail.com")
+    calibrate_sheet(values)
 
     print("Files Created")
     
@@ -40,15 +50,15 @@ def power_input(user_email):
         values.append(str(input))
         i+=1
 
-    textwrite(user_email)
-    power_sheet(values, user_email)
+    path =  textwrite(user_email)
+  #  power_sheet(values, user_email)
 
     print("Files Created")
-
+    return path
 
 def textwrite(user_email):
     emailStr = str(user_email)
-    filename = emailStr[0:5] + time.strftime("%Y%m%d-%H%M%S")
+    filename = emailStr[0:5] + str(datetime.datetime.now())
     extension = ".txt"
     dir  = "../data/sensordata/"
     path = dir+filename+extension
@@ -59,7 +69,17 @@ def textwrite(user_email):
         outfile.write("\n")
     outfile.close()
     textfile_insert(user_email, filename, path, filename)
+    
+    return path
+
+
+def test_run(user_email):
+
+   path = "../data/sensordata/power.txt"
+
+   return path
 
 #power_input("htazi@gmail.com")
-
+#calibrate_input()
+test_run("htazi@gmail.com")
 

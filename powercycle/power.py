@@ -1,16 +1,17 @@
 import os, signal
 import subprocess
+import datetime
 import time
 import pyoo
 from db_interaction import *
+from power_chart import *
+lines = []
 
-def power_sheet(lines, email):
+def power_sheet(path, email):
 
     soffice = subprocess.Popen('startLO')
 
     time.sleep(7)
-
-#    lines = []
     dt    = []
 
     desktop = pyoo.Desktop('localhost', 2002)
@@ -20,16 +21,27 @@ def power_sheet(lines, email):
     power = doc.sheets[1]
     delta = doc.sheets[2]
 
-    #with open("../data/sensordata/power.txt", "r") as ins:
-    #    for line in ins:
-    #        line = line.rstrip('\n')
-    #        lines.append(line)
+    # comment this loop when sensor is plugged in
+    with open("../data/sensordata/power.txt", "r") as ins:
+        for line in ins:
+            line = line.rstrip('\n')
+            lines.append(line)
+
+        # get sensor values
+   # with open(path, "r") as ins:
+   #     for line in ins:
+   #         line = line.rstrip('\n')
+   #         lines.append(line)
+
 
     print(lines[0:10])
     print(len(lines)) 
-    #power[1:496,0].values = lines
-    power[1:30,0].values = lines
-
+    power[1:496,0].values = lines
+   # power[1:16,0].values = lines
+    
+    lines.clear()
+    
+    print(lines)
 
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
@@ -37,23 +49,48 @@ def power_sheet(lines, email):
             dt.append(line)
 
     delta[1:16,1].values = dt
+
+    # retrieve payload
+    max_pow = power[20, 43].value
+    rpm_opt = power[20, 46].value
+    rpm_max = power[22, 46].value
     
+    # calculate fiber twitch
+    twitch = (2.0833 * rpm_opt) - 198.458
+    
+    # graph data
+    datax  = power[1:11,32].values
+    datay1 = power[1:11,33].values
+    datay2 = power[1:11,34].values
+     
+    graph_path = draw_graph(datax, datay1, datay2, email)
+
     # user search 
     profile = user_profile_search(email)
-    print(profile)
+  #  print(profile)
     
-    sum[1:9,7].values = profile
+#    sum[1:9,7].values = profile
     
     path = "../docs/power/"
-    date = time.strftime("%Y%m%d-%H%M%S")
+    date = str(datetime.datetime.now())
     filename = email[0:5] + date + ".ods"
     file_path = path + filename
     doc.save(file_path)
     power_insert(email, filename, file_path, date)
     doc.close()
+    
+    payload = []
 
-    soffice.kill()
+    payload.append(max_pow)
+    payload.append(rpm_max)
+    payload.append(rpm_opt)
+    payload.append(twitch)
+    payload.append(graph_path)
+
+   # soffice.kill()
 
     print("File Saved")
+    
+    return payload
 
-#power_sheet("htazi@gmail.com")
+#power_sheet(lines, "htazi@gmail.com")
