@@ -71,7 +71,7 @@ def power_sheet(path, email):
 #    sum[1:9,7].values = profile
     
     path = "../docs/power/"
-    date = time.strftime("%Y%m%d-%H%M%S")
+    date = time.strftime("%Y-%m-%dT%H:%M:%S")
     filename = email[0:5] + date + ".ods"
     file_path = path + filename
     doc.save(file_path)

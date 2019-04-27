@@ -58,7 +58,7 @@ def power_input(user_email):
 
 def textwrite(user_email):
     emailStr = str(user_email)
-    filename = emailStr[0:5] + time.strftime("%Y%m%d-%H%M%S")
+    filename = emailStr[0:5] + time.strftime("%Y-%m-%dT%H:%M:%S")
     extension = ".txt"
     dir  = "../data/sensordata/"
     path = dir+filename+extension

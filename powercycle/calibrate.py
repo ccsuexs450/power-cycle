@@ -32,8 +32,8 @@ def calibrate_sheet(lines):
             out.write("%s\n" % item)
 
     path = "../docs/calibration/"
-    date = "date_time" # place holder
-    filename = "calibrate_now_date_time.ods"  # place holder
+    date = time.strftime("%Y-%m-%dT%H:%M:%S")
+    filename = email[0:5] + date + ".ods"
     file_path = path + filename
     doc.save(file_path)
     calibrate_insert(filename, file_path, date)
