@@ -5,8 +5,7 @@ from db_interaction import *
 #from run_sensor import *
 from datetime import *
 import os
-from PIL import Image
-from PIL import ImageTk
+from PIL import Image, ImageTk
 from email_function import *
 from validate_email import validate_email
 import socket
@@ -17,10 +16,10 @@ class GUI(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable()}
         toolbar = Frame(self, bg="gray87")
-        house = Image.open("Home.png")
-        house = house.resize((40, 40))
+        house = Image.open("../icons/Home.png")
+        house = house.resize((30, 35))
         image = ImageTk.PhotoImage(house)
-        button = tk.Button(toolbar, text="Home", image=image, height=30, width=60, command=lambda: self.show("Home"))
+        button = tk.Button(toolbar, text="Home", image=image, height=25, width=50, command=lambda: self.show("Home"))
         button.pack(side=LEFT)
         button.image=image
         toolbar.pack(side=TOP, fill=X)
@@ -35,7 +34,9 @@ class GUI(tk.Tk):
         # create file menu
         file_menu = Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Home", command=lambda: self.show("Home"))
         file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
+        file_menu.add_command(label="Run", command=lambda: self.show("Run"))
         file_menu.add_command(label="Exit", command=self.quit)
 
         # create search menu
@@ -178,56 +179,64 @@ class SearchFile(tk.Frame):
         e3.grid(row=8, column=1, sticky="nsew")
 
         def find():
-            if len(e1.get()) == 0 or len(e2.get()) == 0 or len(e3.get()) == 0:
-                message("Entries cannot be blank")
+            try:
+                if len(e2.get()) != 0:
+                    datetime.strptime(e2.get(), "%Y-%m-%d")
+                    date1 = e2.get()
+                    if len(e3.get()) == 0:
+                        date2 = str(date.today())
+                if len(e3.get()) != 0:
+                    datetime.strptime(e3.get(), "%Y-%m-%d")
+                    date2 = e3.get()
+                    if len(e2.get()) == 0:
+                            date1 = "2019-01-01"
+                if len(e2.get()) == 0 and len(e3.get()) == 0:
+                    date1 = e2.get()
+                    date2 = e3.get()
+            except:
+                message("Wrong date format. Correct format is YYYY-MM-DD")
             else:
-                try:
-                    date1 = datetime.strptime(e2.get(), "%Y-%m-%d")
-                    date2 = datetime.strptime(e3.get(), "%Y-%m-%d")
-                except:
-                    message("Wrong date format. Correct format is YYYY-MM-DD")
-                else:
-                    search_text_file = text_file_search(e2.get(), e3.get())
-                    search_power_file = power_file_search(e2.get(), e3.get())
-                    search_calibration_file = calibration_file_search(e2.get(), e3.get())
-                    search_graph_file = graph_file_search(e2.get(), e3.get())
-                    search_text_file_records = text_file_records_search()
-                    search_power_file_records = power_file_records_search()
-                    search_calibration_file_records = calibration_file_records_search()
-                    search_graph_file_records = graph_file_records_search()
+                search_text_file = text_file_search(date1, date2)
+                search_power_file = power_file_search(date1, date2)
+                search_calibration_file = calibration_file_search(date1, date2)
+                search_graph_file = graph_file_search(date1, date2)
+                search_text_file_records = text_file_records_search()
+                search_power_file_records = power_file_records_search()
+                search_calibration_file_records = calibration_file_records_search()
+                search_graph_file_records = graph_file_records_search()
 
-                    if var1.get() == "":
-                        print("please enter a file type")
-                    elif var1.get() == "text":
-                        if var2.get() == "" or var3.get() == "":
-                            results(self.controller.shared["results_self"], search_text_file_records)
-                            controller.show("ResultsPage")
-                        else:
-                            results(self.controller.shared["results_self"], search_text_file)
-                            controller.show("ResultsPage")
-                    elif var1.get() == "power":
-                        if var2.get() == "" or var3.get() == "":
-                            results(self.controller.shared["results_self"], search_power_file_records)
-                            controller.show("ResultsPage")
-                        else:
-                            results(self.controller.shared["results_self"], search_power_file)
-                            controller.show("ResultsPage")
-                    elif var1.get() == "calibration":
-                        if var2.get() == "" or var3.get() == "":
-                            calibration_results(self.controller.shared["calibration_results_self"], search_calibration_file_records)
-                            controller.show("CalibrationResultsPage")
-                        else:
-                            calibration_results(self.controller.shared["calibration_results_self"], search_calibration_file)
-                            controller.show("CalibrationResultsPage")
-                    elif var1.get() == "graph":
-                        if var2.get() == "" or var3.get() == "":
-                            results(self.controller.shared["results_self"], search_graph_file_records)
-                            controller.show("ResultsPage")
-                        else:
-                            results(self.controller.shared["results_self"], search_graph_file)
-                            controller.show("ResultsPage")
+                if var1.get() == "":
+                    print("please enter a file type")
+                elif var1.get() == "text":
+                    if var2.get() == "" and var3.get() == "":
+                        results(self.controller.shared["results_self"], search_text_file_records)
+                        controller.show("ResultsPage")
                     else:
-                        print(" the file type you have entered is not found!!!")
+                        results(self.controller.shared["results_self"], search_text_file)
+                        controller.show("ResultsPage")
+                elif var1.get() == "power":
+                    if var2.get() == "" or var3.get() == "":
+                        results(self.controller.shared["results_self"], search_power_file_records)
+                        controller.show("ResultsPage")
+                    else:
+                        results(self.controller.shared["results_self"], search_power_file)
+                        controller.show("ResultsPage")
+                elif var1.get() == "calibration":
+                    if var2.get() == "" or var3.get() == "":
+                        calibration_results(self.controller.shared["calibration_results_self"], search_calibration_file_records)
+                        controller.show("CalibrationResultsPage")
+                    else:
+                        calibration_results(self.controller.shared["calibration_results_self"], search_calibration_file)
+                        controller.show("CalibrationResultsPage")
+                elif var1.get() == "graph":
+                    if var2.get() == "" or var3.get() == "":
+                        results(self.controller.shared["results_self"], search_graph_file_records)
+                        controller.show("ResultsPage")
+                    else:
+                        results(self.controller.shared["results_self"], search_graph_file)
+                        controller.show("ResultsPage")
+                else:
+                    print(" the file type you have entered is not found!!!")
 
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
         find_button.grid(row=9, column=1, padx=10, pady=10)
@@ -270,27 +279,35 @@ class SearchName(tk.Frame):
         e4.grid(row=11, column=1, sticky="nsew")
 
         def find():
-            if len(e1.get()) == 0 or len(e2.get()) == 0 or len(e3.get()) == 0 or len(e4.get()) == 0:
-                message("Entries cannot be blank")
+            try:
+                if len(e3.get()) != 0:
+                    datetime.strptime(e3.get(), "%Y-%m-%d")
+                    date1 = e3.get()
+                    if len(e4.get()) == 0:
+                        date2 = str(date.today())
+                if len(e4.get()) != 0:
+                    datetime.strptime(e4.get(), "%Y-%m-%d")
+                    date2 = e4.get()
+                    if len(e3.get()) == 0:
+                        date1 = "2019-01-01"
+                if len(e3.get()) == 0 and len(e4.get()) == 0:
+                    date1 = e3.get()
+                    date2 = e4.get()
+            except:
+                message("Wrong date format. Correct format is YYYY-MM-DD")
             else:
-                try:
-                    date1 = datetime.strptime(e3.get(), "%Y-%m-%d")
-                    date2 = datetime.strptime(e4.get(), "%Y-%m-%d")
-                except:
-                    message("Wrong date format. Correct format is YYYY-MM-DD")
+                search_user = user_search(e1.get(), e2.get(), date1, date2)
+                records_search_user = user_records_search(e1.get(), e2.get())
+                if var1.get() == "":
+                    print("please enter the first name")
+                elif var2.get() == "":
+                    print("please enter last name")
+                elif var3.get() == "" and var4.get() == "":
+                    results(self.controller.shared["results_self"], records_search_user)
+                    controller.show("ResultsPage")
                 else:
-                    search_user = user_search(e1.get(), e2.get(), e3.get(), e4.get())
-                    records_search_user = user_records_search(e1.get(), e2.get())
-                    if var1.get() == "":
-                        print("please enter the first name")
-                    elif var2.get() == "":
-                        print("please enter last name")
-                    elif var3.get() == "" or var4.get() == "":
-                        results(self.controller.shared["results_self"], records_search_user)
-                        controller.show("ResultsPage")
-                    else:
-                        results(self.controller.shared["results_self"], search_user)
-                        controller.show("ResultsPage")
+                    results(self.controller.shared["results_self"], search_user)
+                    controller.show("ResultsPage")
 
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
         find_button.grid(row=12, column=1, padx=10, pady=10)
@@ -608,9 +625,9 @@ def message(text):
 def validate(receiver_email):
     is_valid = validate_email(receiver_email, verify=True)
     if (is_valid == False):
-        return 0;
+        return 0
     else:
-        return 1;
+        return 1
 
 if __name__ == "__main__":
     gui = GUI()

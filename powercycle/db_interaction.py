@@ -1,5 +1,5 @@
 import sqlite3
-
+from datetime import *
 
 # create connection
 def create_connection(db_file):
@@ -163,12 +163,24 @@ def text_file_select(conn, from_date, to_date ):
 # Called from GUI.py search file window
 def text_file_search(from_date, to_date):
     database = 'cycle.db'
+    if from_date != '':
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+    else:
+        datetime1 = from_date
+    if to_date != '':
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+    else:
+        datetime2 = to_date
 
     # database connection
     conn = create_connection(database)
     with conn:
         # search text files for a specific date range
-        search_result = text_file_select(conn, from_date, to_date)
+        search_result = text_file_select(conn, datetime1, datetime2)
 
     return search_result
 
@@ -206,11 +218,24 @@ def power_file_select(conn, from_date, to_date ):
 def power_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date != '':
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+    else:
+        datetime1 = from_date
+    if to_date != '':
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+    else:
+        datetime2 = to_date
+
     # database connection
     conn = create_connection(database)
     with conn:
         # search power files for a specific date range
-        search_result = power_file_select(conn, from_date, to_date)
+        search_result = power_file_select(conn, datetime1, datetime2)
 
     return search_result
 
@@ -248,11 +273,24 @@ def calibration_file_select(conn, from_date, to_date):
 def calibration_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date != '':
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+    else:
+        datetime1 = from_date
+    if to_date != '':
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+    else:
+        datetime2 = to_date
+
     # database connection
     conn = create_connection(database)
     with conn:
         # search calibration file for a specific date range
-        search_result = calibration_file_select(conn, from_date, to_date)
+        search_result = calibration_file_select(conn, datetime1, datetime2)
 
     return search_result
 
@@ -290,11 +328,23 @@ def graph_file_select(conn, from_date, to_date ):
 def graph_file_search(from_date, to_date):
     database = 'cycle.db'
 
+    if from_date != '':
+        d1 = datetime.strptime(from_date, '%Y-%m-%d')
+        t1 = time(0, 0, 0)
+        datetime1 = datetime.combine(d1, t1)
+    else:
+        datetime1 = from_date
+    if to_date != '':
+        d2 = datetime.strptime(to_date, '%Y-%m-%d')
+        t2 = time(23, 59, 59)
+        datetime2 = datetime.combine(d2, t2)
+    else:
+        datetime2 = to_date
     # database connection
     conn = create_connection(database)
     with conn:
         # search graph files for a specific date range
-        search_result = graph_file_select(conn, from_date, to_date)
+        search_result = graph_file_select(conn, datetime1, datetime2)
 
     return search_result
 
@@ -344,12 +394,19 @@ def user_select(conn, fname, lname, from_date, to_date):
 def user_search(fname, lname, from_date, to_date):
     database = 'cycle.db'
 
+    d1 = datetime.strptime(from_date, '%Y-%m-%d')
+    d2 = datetime.strptime(to_date, '%Y-%m-%d')
+    t1 = time(0, 0, 0)
+    t2 = time(23, 59, 59)
+    datetime1 = datetime.combine(d1, t1)
+    datetime2 = datetime.combine(d2, t2)
+
     # database connection
     conn = create_connection(database)
     with conn:
 
         # search by user for a specific date range
-        search_result = user_select(conn, fname, lname, from_date, to_date)
+        search_result = user_select(conn, fname, lname, datetime1, datetime2)
 
     return search_result
 
