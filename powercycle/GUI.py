@@ -1,15 +1,20 @@
+from PIL import ImageTk, Image as PilImage
+# from power_chart import *
+from db_interaction import *
+from results_test import resultsT
+# from run_sensor import *
+from datetime import *
 import tkinter as tk
 from tkinter import *
-from db_interaction import *
-#from run_sensor import *
-from datetime import *
 import os
-
 
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(), "calibration_results_self": tk.Variable()}
+        self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(),
+                       "calibration_results_self": tk.Variable(), "results_page_self": tk.Variable(),
+                       "max_power": tk.StringVar(), "rpm": tk.StringVar(), "rpm_opt": tk.StringVar(),
+                       "twitch": tk.StringVar(), "path": tk.StringVar()}
         container = tk.Frame(self)
         container.pack()
         self.geometry("1200x800")
@@ -33,7 +38,7 @@ class GUI(tk.Tk):
         file_menu.add_command(label="Calibrate", command=lambda: self.show("Calibrate"))
         file_menu.add_command(label="Exit", command=self.quit)
         self.frames = {}
-        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage):
+        for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage, FinalResultsPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -63,10 +68,19 @@ class Home(tk.Frame):
         self.grid_columnconfigure(2, weight=1)
 
 
+# create final results page
+class FinalResultsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.controller.shared["results_page_self"] = self
+
+
 # create calibration page
 class Calibrate(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
         def run_script():
             os.system('python Script.py')
         title = tk.Label(self, text="Calibration", font=("Courier", 44), fg="black")
@@ -92,6 +106,7 @@ class EnterEmail(tk.Frame):
 
         def submit():
             search = email_search(e.get())
+
             if search == None:
                 form(self.controller.shared["form_self"], True)
                 controller.show("Form")
@@ -311,18 +326,31 @@ class CalibrationResultsPage(tk.Frame):
         date = tk.Label(self, text="Date", font=("Courier", 16), fg="black")
         date.grid(row=0, column=3, padx=20)
 
+
 # create run page
 class Run(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
         def run():
-            user_email = str(self.controller.shared["email"].get())
-           # power_input(user_email)
+            # user_email = str(self.controller.shared["email"].get())
+            values = resultsT()
+            self.controller.shared["max_power"].set(values[0])
+            self.controller.shared["rpm"].set(values[1])
+            self.controller.shared["rpm_opt"].set(values[2])
+            self.controller.shared["twitch"].set(values[3])
+            self.controller.shared["path"].set(values[4])
+
+            if values is not None:
+                controller.show("FinalResultsPage")
+                results_page(self.controller.shared["results_page_self"])
+
         title = tk.Label(self, text="Run Bicycle", font=("Courier", 44), fg="black")
         title.grid(row=1, column=1)
         run_button = tk.Button(self, text="Run", height=4, width=24, bg="sea green", command=run)
         run_button.grid(row=2, column=1, padx=2, pady=2)
+
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -419,6 +447,53 @@ def form(self, new):
     self.grid_columnconfigure(4, weight=1)
 
 
+def results_page(self):
+    widget_list = widgets(self)
+    if len(widget_list) != 0:
+        widget_list[0].grid_forget()
+    email = self.controller.shared["email"].get()
+    max_power = self.controller.shared["max_power"].get()
+    rpm = self.controller.shared["rpm"].get()
+    rpm_opt = self.controller.shared["rpm_opt"].get()
+    twitch = self.controller.shared["twitch"].get()
+    self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
+                          font=("Courier", 16), fg="black")
+    self.title.grid(row=0, column=1, columnspan=10, rowspan=3, pady=20)
+    self.title = tk.Label(self, text="Max Power: " + max_power, font=("Courier", 16), fg="blue")
+    self.title.grid(row=4, column=2, pady=5)
+    self.title = tk.Label(self, text="RPM : " + rpm, font=("Courier", 16), fg="red")
+    self.title.grid(row=4, column=3, pady=5)
+    self.title = tk.Label(self, text="RPM opt: " + rpm_opt, font=("Courier", 16), fg="blue")
+    self.title.grid(row=5, column=2, pady=5)
+    self.title = tk.Label(self, text="Twitch %: " + twitch, font=("Courier", 16), fg="red")
+    self.title.grid(row=5, column=3, pady=5)
+
+    path = str(self.controller.shared["path"].get())
+    load = PilImage.open(path)
+    render = ImageTk.PhotoImage(load)
+    img = Label(self, image=render)
+    img.image = render
+    img.grid(row=8, column=0, columnspan=10, rowspan=4, padx=20)
+
+    var1 = IntVar()
+    var2 = IntVar()
+    Checkbutton(self, text="Change user ?", variable=var1).grid(row=13, column=4)
+    Checkbutton(self, text="Run again ?", variable=var2).grid(row=13, column=3)
+
+    def submit():
+        if var1.get() == 1:
+            self.controller.show("EnterEmail")
+        if var2.get() == 1:
+            self.controller.show("Run")
+
+    submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="deep sky blue", command=submit)
+    submit_button.grid(row=13, column=2, padx=40)
+
+    self.grid_rowconfigure(3, weight=1)
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_columnconfigure(2, weight=1)
+
+
 def results(self, list):
     widget_list = widgets(self)
     i = len(widget_list) - 1
@@ -451,12 +526,14 @@ def results(self, list):
                 send = True
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
+
         if send:
             popup = tk.Tk()
             label = tk.Label(popup, text="Enter email")
             label.grid(row=0, column=0, pady=10)
             entry = tk.Entry(popup)
             entry.grid(row=1, column=0)
+
             def send():
                 print(entry.get())
                 popup.destroy()
@@ -502,6 +579,7 @@ def calibration_results(self, list):
                 send = True
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
+
         if send:
             popup = tk.Tk()
             label = tk.Label(popup, text="Enter email")
@@ -531,3 +609,4 @@ def message(text):
 if __name__ == "__main__":
     gui = GUI()
     gui.mainloop()
+

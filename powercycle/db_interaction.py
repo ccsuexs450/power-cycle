@@ -69,6 +69,25 @@ def create_power(conn, spreadsheet):
     cur.execute(sql, spreadsheet)
     return cur.lastrowid
 
+# create graph
+def create_graph(conn, graph):
+    sql = ''' INSERT INTO  graph(user_email,name,path,date)
+              VALUES(?,?,?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, graph)
+    return cur.lastrowid
+
+# Called from power_chart.py
+def graph_insert(user_email ,name, path, date):
+    database = 'cycle.db'
+
+    # database connection
+    conn = create_connection(database)
+    with conn:
+        # new graph
+        graph = (user_email, name, path, date)
+        graph_rid = create_power(conn, graph)
+
 # Called from power.py
 def power_insert(user_email ,name, path, date):
     database = 'cycle.db'
@@ -387,5 +406,3 @@ def user_records_search(fname, lname):
         search_result = user_records_select(conn, fname, lname)
 
     return search_result
-
-
