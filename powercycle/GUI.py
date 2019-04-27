@@ -504,7 +504,7 @@ def results_page(self):
     self.title.grid(row=5, column=3, pady=5)
 
     path = str(self.controller.shared["path"].get())
-    load = PilImage.open(path)
+    load = Image.open(path)
     render = ImageTk.PhotoImage(load)
     img = Label(self, image=render)
     img.image = render
