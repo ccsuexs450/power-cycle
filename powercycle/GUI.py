@@ -394,7 +394,10 @@ class ProcessingPage(tk.Frame):
         def cont():
             user_email = str(self.controller.shared["email"].get())
             print(user_email)
-            values = power_sheet(path_test,user_email)
+            # comment the below function call for testing
+           # values = power_sheet(path_test,user_email)
+            # comment the below function call for full functionality
+            values = resultsT(path_test, user_email)
             self.controller.shared["max_power"].set(values[0])
             self.controller.shared["rpm"].set(values[1])
             self.controller.shared["rpm_opt"].set(values[2])
@@ -419,7 +422,10 @@ class Run(tk.Frame):
 
         def run():
             user_email = str(self.controller.shared["email"].get())
-            path = test_run(user_email)
+            # comment the below function call for testing
+            #path = test_run(user_email)
+            # comment the below function call for full functionality
+            path = power_input_test(user_email)
             self.controller.shared["path_txt_test"].set(path)
             if path is not None:
                 path = None
