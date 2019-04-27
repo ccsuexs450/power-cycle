@@ -86,7 +86,7 @@ def graph_insert(user_email ,name, path, date):
     with conn:
         # new graph
         graph = (user_email, name, path, date)
-        graph_rid = create_power(conn, graph)
+        graph_rid = create_graph(conn, graph)
 
 # Called from power.py
 def power_insert(user_email ,name, path, date):
