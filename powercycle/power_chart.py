@@ -48,8 +48,6 @@ def draw_graph(datax, datay1, datay2, email):
     filename = email[0:5] + date + ".png"
     file_path = path + filename
     plt.savefig(file_path)
-    print(email[0:len(email)-1])
-    print(filename)
     graph_insert(email, filename, file_path, date)
     
     return file_path

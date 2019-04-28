@@ -15,7 +15,7 @@ def power_sheet(path, email):
     dt    = []
 
     desktop = pyoo.Desktop('localhost', 2002)
-    doc = desktop.open_spreadsheet("../docs/templates/Power_blank.ods")
+    doc = desktop.open_spreadsheet("../docs/templates/Power_template.ods")
     
     sum  = doc.sheets[0]
     power = doc.sheets[1]
@@ -40,9 +40,7 @@ def power_sheet(path, email):
    # power[1:16,0].values = lines
     
     lines.clear()
-    
-    print(lines)
-
+   
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
             line = line.rstrip('\n')
