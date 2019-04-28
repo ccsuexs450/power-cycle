@@ -563,6 +563,8 @@ def results_page(self):
     self.title.grid(row=5, column=3, pady=5)
 
     path = str(self.controller.shared["path"].get())
+    email_path = []
+    email_path.append(path)
     load = Image.open(path)
     render = ImageTk.PhotoImage(load)
     img = Label(self, image=render)
@@ -579,7 +581,7 @@ def results_page(self):
         connection = True
     except OSError:
         connection = False
-
+    popup = tk.Tk()
     label1 = tk.Label(popup, text="Enter sending email password")
     label1.grid(row=2, column=0, pady=10)
     entry = tk.Entry(popup, width=35, show="*")
@@ -591,7 +593,7 @@ def results_page(self):
         password = entry.get()
         error['bg'] = "red"
         if connection == True:
-            if sendEmail(email, password, path) == 0:
+            if sendEmail(email, password, email_path) == 0:
                 error['text'] = "Password not valid"
                 return
         else:
