@@ -35,7 +35,7 @@ def draw_graph(datax, datay1, datay2, email):
     
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
     ax2.set_xlim([50, x_sm.max() + 20])
-    ax2.set_ylim([0, 140])
+    ax2.set_ylim([0, y2_sm.max() + 10])
     color = 'tab:red'
     ax2.set_ylabel('Torque(Nm)', color=color)  # we already handled the x-label with ax1
     ax2.plot(x2_sm, p(x2_sm), '-',  color=color, linewidth = 3)
