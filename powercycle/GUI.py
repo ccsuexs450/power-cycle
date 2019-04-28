@@ -76,13 +76,20 @@ class Home(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         title = tk.Label(self, text="Cycling Performance System", font=("Open Sans", 32))
-        title.grid(row=0, column=1, padx=30, pady=30)
-        run_button = tk.Button(self, text="Run", height=4, width=20, bg="turquoise", command=lambda: controller.show("EnterEmail"))
-        run_button.grid(row=1, column=1, padx=2, pady=2)
+        title.grid(row=0, column=1, columnspan=3, padx=30, pady=30)
+        run_button = tk.Button(self, text="Run", height=6, width=30, bg="turquoise", relief="flat", command=lambda: controller.show("EnterEmail"))
+        run_button.grid(row=1, column=1, columnspan=3, padx=2, pady=2)
+        file_search = tk.Button(self, text="Search By File", height=4, width=20, bg="green yellow", relief="flat", command=lambda: controller.show("SearchFile"))
+        file_search.grid(row=3, column=1, pady=2)
+        name_search = tk.Button(self, text="Search By Name", height=4, width=20, bg="orange", relief="flat", command=lambda: controller.show("SearchName"))
+        name_search.grid(row=3, column=2, pady=2)
+        calibrate_button = tk.Button(self, text="Calibrate", height=4, width=20, bg="MediumPurple1", relief="flat", command=lambda: controller.show("Calibrate"))
+        calibrate_button.grid(row=3, column=3, pady=2)
 
-        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(2, minsize=100)
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(4, weight=1)
 
 
 # create final results page
@@ -786,7 +793,7 @@ def message(text):
     popup = tk.Tk()
     label = tk.Label(popup, text=text)
     label.grid(row=0, column=1, pady=10)
-    button = tk.Button(popup, text="Ok", height=1, width=6, bg="sea green", command=popup.destroy)
+    button = ttk.Button(popup, text="Ok", command=popup.destroy)
     button.grid(row=1, column=1)
 
     popup.grid_columnconfigure(0, weight=1, minsize=50)
