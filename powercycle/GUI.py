@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 from email_function import *
 from validate_email import validate_email
 import socket
-import automatic_email_bash
+from automatic_email_bash import *
 import time
 
 class GUI(tk.Tk):
@@ -64,6 +64,24 @@ class GUI(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show("Home")
+        if (os.path.isfile("store.txt")):
+            popup = tk.Tk()
+            label1 = tk.Label(popup, text="Enter sending email password")
+            label1.grid(row=2, column=0, pady=10)
+            password = tk.Entry(popup, width=35, show="*")
+            password.grid(row=3, column=0)
+            button = ttk.Button(popup, text="Submit", command=lambda: send(popup))
+            button.grid(row=4, column=0, pady=5)
+
+            def send(popup):
+                if sendBatch(password.get()) == 0:
+                    error['bg'] = "red"
+                    error['text'] = "Password not valid"
+                else:
+                    popup.destroy()
+
+            error = tk.Label(popup)
+            error.grid(row=6, column=0)
 
     # define show function
     def show(self, page):
