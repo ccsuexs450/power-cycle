@@ -20,7 +20,7 @@ class GUI(tk.Tk):
         self.shared = {"email": tk.StringVar(), "form_self": tk.Variable(), "results_self": tk.Variable(),
                        "calibration_results_self": tk.Variable(), "results_page_self": tk.Variable(),
                        "max_power": tk.StringVar(), "rpm": tk.StringVar(), "rpm_opt": tk.StringVar(),
-                       "twitch": tk.StringVar(), "path": tk.StringVar(), "path_txt_test": tk.StringVar(),
+                       "twitch": tk.StringVar(), "path": tk.StringVar(), "path_txt": tk.StringVar(),
                        "process_self": tk.Variable(), "password": tk.StringVar(), "email_boolean": tk.Variable()}
 
         toolbar = Frame(self, bg="gray87")
@@ -234,7 +234,7 @@ class SearchFile(tk.Frame):
                 search_graph_file_records = graph_file_records_search()
 
                 if var1.get() == "":
-                    print("please enter a file type")
+                    message("please enter a file type")
                 elif var1.get() == "text":
                     if var2.get() == "" and var3.get() == "":
                         results(self.controller.shared["results_self"], search_text_file_records)
@@ -264,7 +264,7 @@ class SearchFile(tk.Frame):
                         results(self.controller.shared["results_self"], search_graph_file)
                         controller.show("ResultsPage")
                 else:
-                    print(" the file type you have entered is not found!!!")
+                    message(" the file type you have entered is not found!!!")
 
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
         find_button.grid(row=9, column=1, padx=10, pady=10)
@@ -327,9 +327,9 @@ class SearchName(tk.Frame):
                 search_user = user_search(e1.get(), e2.get(), date1, date2)
                 records_search_user = user_records_search(e1.get(), e2.get())
                 if var1.get() == "":
-                    print("please enter the first name")
+                    message("please enter the first name")
                 elif var2.get() == "":
-                    print("please enter last name")
+                    message("please enter the last name")
                 elif var3.get() == "" and var4.get() == "":
                     results(self.controller.shared["results_self"], records_search_user)
                     controller.show("ResultsPage")
@@ -388,44 +388,12 @@ class ProcessingPage(tk.Frame):
         self.controller = controller
         self.controller.shared["process_self"] = self
 
-        explanation = '''data collection finished. It's in the path bellow, click continue to process,
-        it may take a minute or so to process, please be patient '''
-
-        title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
-        title.grid(row=0, column=1,padx=30, pady=30)
-        path_test = str(self.controller.shared["path_txt_test"].get())
-        user_email = str(self.controller.shared["email"].get())
-        self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
-        self.title.grid(row=1, column=1, pady=5)
-
-        def cont():
-            user_email = str(self.controller.shared["email"].get())
-            print(user_email)
-            # comment the below function call for testing
-           # values = power_sheet(path_test,user_email)
-            # comment the below function call for full functionality
-            values = resultsT(path_test, user_email)
-            self.controller.shared["max_power"].set(values[0])
-            self.controller.shared["rpm"].set(values[1])
-            self.controller.shared["rpm_opt"].set(values[2])
-            self.controller.shared["twitch"].set(values[3])
-            self.controller.shared["path"].set(values[4])
-
-            if values is not None:
-                values = None
-                controller.show("FinalResultsPage")
-                results_page(self.controller.shared["results_page_self"])
-
-        cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", command=cont)
-        cont_button.grid(row=2, column=1, padx=2, pady=2)
-
 
 # create run page
 class Run(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        #self.controller.shared["path_txt_test"].set(power_input_test())
 
         def run():
             user_email = str(self.controller.shared["email"].get())
@@ -433,7 +401,7 @@ class Run(tk.Frame):
             #path = test_run(user_email)
             # comment the below function call for full functionality
             path = power_input_test(user_email)
-            self.controller.shared["path_txt_test"].set(path)
+            self.controller.shared["path_txt"].set(path)
             if path is not None:
                 path = None
                 print(path)
@@ -537,15 +505,32 @@ def process(self):
     widget_list = widgets(self)
     if len(widget_list) != 0:
         widget_list[0].grid_forget()
-    explanation = '''data collection finished. It's in the path bellow, click continue to process,
-        it may take a minute or so to process, please be patient '''
+    explanation = '''data collection finished. Click continue
+    to process, it may take a minute or so'''
 
-    self.title = tk.Label(self, text=explanation, font=("Courier", 18), fg="black", )
-    self.title.grid(row=0, column=1,padx=30, pady=30)
+    self.title = tk.Label(self, text=explanation, font=("Courier", 28), fg="black", )
+    self.title.grid(row=0, column=1, padx=30, pady=30)
 
-    path_test = self.controller.shared["path_txt_test"].get()
-    self.title = tk.Label(self, text="Path: " + path_test, font=("Courier", 16), fg="blue")
-    self.title.grid(row=1, column=1, pady=5)
+    def cont():
+        path_test = self.controller.shared["path_txt"].get()
+        user_email = str(self.controller.shared["email"].get())
+        print(user_email)
+        # comment the below function call for testing
+        # values = power_sheet(path_test,user_email)
+        # comment the below function call for full functionality
+        values = resultsT(path_test, user_email)
+        self.controller.shared["max_power"].set(values[0])
+        self.controller.shared["rpm"].set(values[1])
+        self.controller.shared["rpm_opt"].set(values[2])
+        self.controller.shared["twitch"].set(values[3])
+        self.controller.shared["path"].set(values[4])
+
+        if values is not None:
+            self.controller.show("FinalResultsPage")
+            results_page(self.controller.shared["results_page_self"])
+
+    cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", command=cont)
+    cont_button.grid(row=2, column=1, padx=2, pady=2)
 
 
 def results_page(self):
