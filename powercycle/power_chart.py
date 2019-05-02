@@ -1,6 +1,7 @@
-import datetime 
+ 
 import numpy as np
 import matplotlib.pyplot as plt
+from datetime import datetime
 from scipy.interpolate import spline
 from scipy.interpolate import UnivariateSpline
 from scipy import stats
@@ -44,7 +45,7 @@ def draw_graph(datax, datay1, datay2, email):
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
   
     path = "../docs/graph/"
-    date = str(datetime.datetime.now())
+    date = str(datetime.now())
     filename = email[0:5] + date + ".png"
     file_path = path + filename
     plt.savefig(file_path)

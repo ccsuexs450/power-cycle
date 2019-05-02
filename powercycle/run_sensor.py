@@ -1,7 +1,7 @@
 
 import serial
 import io
-import datetime
+from datetime import datetime
 from db_interaction import *
 from calibrate import *
 from power import *
@@ -22,9 +22,9 @@ def calibrate_input(): #placeholder until sensor is working. Reads test input fr
 #        for line in ins:
 #            line = line.rstrip('\n')
 #            values.append(line)
-
+    
     ser = serial_conn()
-
+    
     i = 0
     while i < 900:
 
@@ -41,24 +41,28 @@ def calibrate_input(): #placeholder until sensor is working. Reads test input fr
 
 def power_input(user_email):
 
-    ser = serial_conn()
-
+    try:
+        ser = serial_conn()
+    except (serial.SerialException, FileNotFoundError) as e:
+        print("Serial connection failed. Check sensor connections")
+        raise
     i = 0
     while i < 495:
 
         input = int(ser.readline().strip())
         values.append(str(input))
         i+=1
-
+    
     path =  textwrite(user_email)
-  #  power_sheet(values, user_email)
+    #power_sheet(values, user_email)
 
     print("Files Created")
     return path
 
 def textwrite(user_email):
     emailStr = str(user_email)
-    filename = emailStr[0:5] + str(datetime.datetime.now())
+    date = str(datetime.now())
+    filename = emailStr[0:5] + date
     extension = ".txt"
     dir  = "../data/sensordata/"
     path = dir+filename+extension
@@ -69,7 +73,8 @@ def textwrite(user_email):
         outfile.write("\n")
     outfile.close()
     textfile_insert(user_email, filename, path, filename)
-    
+    values.clear()
+
     return path
 
 
