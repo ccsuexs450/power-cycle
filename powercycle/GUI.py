@@ -171,10 +171,10 @@ class EnterEmail(tk.Frame):
                     form(self.controller.shared["form_self"], False)
                     controller.show("Form")
 
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", relief="flat", command=submit)
+        find_button = tk.Button(self, text="Submit", height=2, width=8, bg="turquoise", relief="flat", command=submit)
         find_button.grid(row=3, column=1, padx=2, pady=2)
 
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(0, minsize=150)
         self.grid_rowconfigure(4, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
@@ -292,7 +292,7 @@ class SearchFile(tk.Frame):
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", relief="flat", command=find)
         find_button.grid(row=9, column=1, padx=10, pady=10)
 
-        self.grid_rowconfigure(0, weight=1, minsize=150)
+        self.grid_rowconfigure(0, minsize=150)
         self.grid_rowconfigure(3, minsize=50)
         self.grid_rowconfigure(10, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -365,7 +365,7 @@ class SearchName(tk.Frame):
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", relief="flat", command=find)
         find_button.grid(row=12, column=1, padx=10, pady=10)
 
-        self.grid_rowconfigure(0, weight=1, minsize=150)
+        self.grid_rowconfigure(0, minsize=150)
         self.grid_rowconfigure(6, minsize=50)
         self.grid_rowconfigure(13, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -552,7 +552,7 @@ def form(self, new):
     submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="turquoise", relief="flat", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), entry6.get(), s.get(), entry9.get()))
     submit_button.grid(row=10, column=1, columnspan=3, pady=20)
 
-    self.grid_rowconfigure(0, weight=1, minsize=150)
+    self.grid_rowconfigure(0, minsize=150)
     self.grid_columnconfigure(0, weight=1)
     self.grid_rowconfigure(11, weight=1)
     self.grid_columnconfigure(4, weight=1)
@@ -589,6 +589,8 @@ def process(self):
     cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", relief="flat", command=cont)
     cont_button.grid(row=2, column=1, padx=2, pady=2)
 
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_columnconfigure(2, weight=1)
 
 def results_page(self):
     widget_list = widgets(self)
@@ -601,7 +603,7 @@ def results_page(self):
     twitch = self.controller.shared["twitch"].get()
     self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
                           font=("Open Sans", 16), fg="black")
-    self.title.grid(row=0, column=1, columnspan=6, rowspan=3, pady=20)
+    self.title.grid(row=0, column=1, columnspan=5, rowspan=3, pady=20)
     self.title = tk.Label(self, text="Max Power: " + max_power, font=("Open Sans", 16), fg="blue")
     self.title.grid(row=4, column=2, pady=5)
     self.title = tk.Label(self, text="RPM : " + rpm, font=("Open Sans", 16), fg="red")
@@ -618,7 +620,7 @@ def results_page(self):
     render = ImageTk.PhotoImage(load)
     img = Label(self, image=render)
     img.image = render
-    img.grid(row=6, column=0, columnspan=6, padx=20)
+    img.grid(row=6, column=1, columnspan=5, padx=20)
 
     var1 = IntVar()
     var2 = IntVar()
@@ -668,6 +670,9 @@ def results_page(self):
     submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="turquoise", relief="flat", command=submit)
     submit_button.grid(row=13, column=3, padx=40)
 
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_columnconfigure(6, weight=1)
+
 def results(self, list):
     widget_list = widgets(self)
     i = len(widget_list) - 1
@@ -689,7 +694,7 @@ def results(self, list):
         var = IntVar()
         var1 = IntVar()
         Checkbutton(self, text="Send to Email?", variable=var).grid(row=i+1, column=7)
-        Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=8)
+        #Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=8)
         email_vars.append(var)
         open_vars.append(var1)
 
@@ -703,7 +708,7 @@ def results(self, list):
             if open_vars[i].get() == 1:
                 os.startfile(paths[i])
 
-        if send:
+        if send == True:
             try:
                 socket.create_connection(("www.google.com", 80))
                 connection = True
@@ -770,7 +775,7 @@ def calibration_results(self, list):
         var = IntVar()
         var1 = IntVar()
         Checkbutton(self, text="Send to Email?", variable=var).grid(row=i+1, column=4)
-        Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=5)
+        #Checkbutton(self, text="Open?", variable=var1).grid(row=i+1, column=5)
         email_vars.append(var)
         open_vars.append(var1)
 

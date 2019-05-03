@@ -2,7 +2,7 @@ import time
 
 
 def resultsT(path, email):
-    values = [750, 167, 125, 83.7, "../docs/graph/testGraph.png"]
+    values = [750, 167, 125, 83.7, "../docs/graph/nickp2019-05-01 19_20_44.620382.png"]
     time.sleep(1)
     return values
 
