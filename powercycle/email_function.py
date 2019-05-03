@@ -32,7 +32,10 @@ def sendEmail(receiver_email, password, filename):
         ##each of these lines is needed to attach the file,
         ##the loop must go through all these lines before repeating
         for i in range(len(filename)):
-            attachment = open(filename[i], "rb")
+            try:
+                attachment = open(filename[i], "rb")
+            except OSError:
+                return 0
             part = MIMEBase("application", "octet-stream")
             part.set_payload(attachment.read())
             encoders.encode_base64(part)
@@ -47,7 +50,7 @@ def sendEmail(receiver_email, password, filename):
                 server.login(sender_email, password)
             except smtplib.SMTPAuthenticationError:
                 print('Login failure: please reenter credential information.')
-                return 0
+                return 1
                       
             server.sendmail(sender_email, receiver_email, text) ##dont touch
             server.quit() 

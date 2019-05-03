@@ -1,7 +1,7 @@
 import os, signal
 import subprocess
-import datetime
-import time
+from datetime import datetime
+import time as t
 import pyoo
 from db_interaction import *
 from power_chart import *
@@ -11,7 +11,7 @@ def power_sheet(path, email):
 
     soffice = subprocess.Popen('startLO')
 
-    time.sleep(7)
+    t.sleep(7)
     dt    = []
 
     desktop = pyoo.Desktop('localhost', 2002)
@@ -28,10 +28,10 @@ def power_sheet(path, email):
             lines.append(line)
 
         # get sensor values
-   # with open(path, "r") as ins:
-   #     for line in ins:
-   #         line = line.rstrip('\n')
-   #         lines.append(line)
+#    with open(path, "r") as ins:
+#        for line in ins:
+#            line = line.rstrip('\n')
+#            lines.append(line)
 
 
     print(lines[0:10])
@@ -40,7 +40,7 @@ def power_sheet(path, email):
    # power[1:16,0].values = lines
     
     lines.clear()
-   
+    print(lines)
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
             line = line.rstrip('\n')
@@ -54,8 +54,9 @@ def power_sheet(path, email):
     rpm_max = power[22, 46].value
     
     # calculate fiber twitch
-    twitch = (2.0833 * rpm_opt) - 198.458
+#    twitch = (2.0833 * rpm_opt) - 198.458
     
+    twitch = 7
     # graph data
     datax  = power[1:11,32].values
     datay1 = power[1:11,33].values
@@ -70,7 +71,7 @@ def power_sheet(path, email):
 #    sum[1:9,7].values = profile
     
     path = "../docs/power/"
-    date = str(datetime.datetime.now())
+    date = str(datetime.now())
     filename = email[0:5] + date + ".ods"
     file_path = path + filename
     doc.save(file_path)

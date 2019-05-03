@@ -1,10 +1,13 @@
+
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 #from power_chart import *
+#from power import *
 from db_interaction import *
 from results_test import *
 #from run_sensor import *
+import serial
 from datetime import *
 import os
 from PIL import Image, ImageTk
@@ -210,20 +213,22 @@ class SearchFile(tk.Frame):
             try:
                 if len(e2.get()) != 0:
                     datetime.strptime(e2.get(), "%Y-%m-%d")
+                if len(e3.get()) != 0:
+                    datetime.strptime(e3.get(), "%Y-%m-%d")
+            except:
+                message("Wrong date format. Correct format is YYYY-MM-DD")
+            else:
+                if len(e2.get()) != 0:
                     date1 = e2.get()
                     if len(e3.get()) == 0:
                         date2 = str(date.today())
                 if len(e3.get()) != 0:
-                    datetime.strptime(e3.get(), "%Y-%m-%d")
                     date2 = e3.get()
                     if len(e2.get()) == 0:
-                            date1 = "2019-01-01"
+                        date1 = "2019-01-01"
                 if len(e2.get()) == 0 and len(e3.get()) == 0:
                     date1 = e2.get()
                     date2 = e3.get()
-            except:
-                message("Wrong date format. Correct format is YYYY-MM-DD")
-            else:
                 search_text_file = text_file_search(date1, date2)
                 search_power_file = power_file_search(date1, date2)
                 search_calibration_file = calibration_file_search(date1, date2)
@@ -264,7 +269,7 @@ class SearchFile(tk.Frame):
                         results(self.controller.shared["results_self"], search_graph_file)
                         controller.show("ResultsPage")
                 else:
-                    message(" the file type you have entered is not found!!!")
+                    message("The file type you have entered cannot be found")
 
         find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
         find_button.grid(row=9, column=1, padx=10, pady=10)
@@ -310,26 +315,28 @@ class SearchName(tk.Frame):
             try:
                 if len(e3.get()) != 0:
                     datetime.strptime(e3.get(), "%Y-%m-%d")
+                if len(e4.get()) != 0:
+                    datetime.strptime(e4.get(), "%Y-%m-%d")
+            except:
+                message("Wrong date format. Correct format is YYYY-MM-DD")
+            else:
+                if len(e3.get()) != 0:
                     date1 = e3.get()
                     if len(e4.get()) == 0:
                         date2 = str(date.today())
                 if len(e4.get()) != 0:
-                    datetime.strptime(e4.get(), "%Y-%m-%d")
                     date2 = e4.get()
                     if len(e3.get()) == 0:
                         date1 = "2019-01-01"
                 if len(e3.get()) == 0 and len(e4.get()) == 0:
                     date1 = e3.get()
                     date2 = e4.get()
-            except:
-                message("Wrong date format. Correct format is YYYY-MM-DD")
-            else:
                 search_user = user_search(e1.get(), e2.get(), date1, date2)
                 records_search_user = user_records_search(e1.get(), e2.get())
                 if var1.get() == "":
-                    message("please enter the first name")
+                    message("Please enter first name")
                 elif var2.get() == "":
-                    message("please enter the last name")
+                    message("Please enter last name")
                 elif var3.get() == "" and var4.get() == "":
                     results(self.controller.shared["results_self"], records_search_user)
                     controller.show("ResultsPage")
@@ -388,6 +395,35 @@ class ProcessingPage(tk.Frame):
         self.controller = controller
         self.controller.shared["process_self"] = self
 
+        explanation = '''Data collection finished. Click continue to process,
+        this will take a few moments '''
+
+        title = tk.Label(self, text=explanation, font=("Open Sans", 18), fg="black", )
+        title.grid(row=0, column=1,padx=30, pady=30)
+        path_test = str(self.controller.shared["path_txt"].get())
+        user_email = str(self.controller.shared["email"].get())
+
+        def cont():
+            user_email = str(self.controller.shared["email"].get())
+            path_test = str(self.controller.shared["path_txt"].get())
+            print(user_email)
+            # comment the below function call for testing
+            values = power_sheet(path_test,user_email)
+            # comment the below function call for full functionality
+            #values = resultsT(path_test, user_email)
+            self.controller.shared["max_power"].set(values[0])
+            self.controller.shared["rpm"].set(values[1])
+            self.controller.shared["rpm_opt"].set(values[2])
+            self.controller.shared["twitch"].set(values[3])
+            self.controller.shared["path"].set(values[4])
+
+            if values is not None:
+                values = None
+                controller.show("FinalResultsPage")
+                results_page(self.controller.shared["results_page_self"])
+
+        cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", command=cont)
+        cont_button.grid(row=2, column=1, padx=2, pady=2)
 
 # create run page
 class Run(tk.Frame):
@@ -397,8 +433,11 @@ class Run(tk.Frame):
 
         def run():
             user_email = str(self.controller.shared["email"].get())
-            # comment the below function call for testing
-            #path = test_run(user_email)
+             #comment the below function call for testing
+          #  try:
+          #      path = power_input(user_email)
+          #  except(serial.SerialException, FileNotFoundError):
+          #      print("Caught in the GUI")
             # comment the below function call for full functionality
             path = power_input_test(user_email)
             self.controller.shared["path_txt"].set(path)
@@ -432,19 +471,19 @@ def form(self, new):
     self.title = tk.Label(self, text="Email: " + email, font=("Open Sans", 28), fg="black")
     self.title.grid(row=1, columnspan=5)
     s = tk.StringVar()
-    Label(self, text="First Name", font=("Open Sans", 14)).grid(row=2, column=1, pady=2)
-    Label(self, text="Last Name", font=("Open Sans", 14)).grid(row=3, column=1, pady=2)
-    Label(self, text="Date(YYYY-MM-DD)", font=("Open Sans", 14)).grid(row=4, column=1, pady=2)
-    Label(self, text="Height(feet, inches)", font=("Open Sans", 14)).grid(row=5, column=1, pady=2)
-    Label(self, text="Weight(lbs)", font=("Open Sans", 14)).grid(row=6, column=1, pady=2)
-    Label(self, text="Sex", font=("Open Sans", 14)).grid(row=7, column=1, pady=2)
-    Label(self, text="Category", font=("Open Sans", 14)).grid(row=9, column=1, pady=2)
-    entry1 = Entry(self)
-    entry2 = Entry(self)
-    entry3 = Entry(self)
-    entry4 = Entry(self, validate='all', validatecommand=(int_check, '%P'), width=10)
-    entry5 = Entry(self, validate='all', validatecommand=(int_check, '%P'), width=10)
-    entry6 = Entry(self, validate='all', validatecommand=(float_check, '%P'))
+    tk.Label(self, text="First Name", font=("Open Sans", 14)).grid(row=2, column=1, pady=2)
+    tk.Label(self, text="Last Name", font=("Open Sans", 14)).grid(row=3, column=1, pady=2)
+    tk.Label(self, text="Date(YYYY-MM-DD)", font=("Open Sans", 14)).grid(row=4, column=1, pady=2)
+    tk.Label(self, text="Height(feet, inches)", font=("Open Sans", 14)).grid(row=5, column=1, pady=2)
+    tk.Label(self, text="Weight(lbs)", font=("Open Sans", 14)).grid(row=6, column=1, pady=2)
+    tk.Label(self, text="Gender", font=("Open Sans", 14)).grid(row=7, column=1, pady=2)
+    tk.Label(self, text="Category", font=("Open Sans", 14)).grid(row=9, column=1, pady=2)
+    entry1 = tk.Entry(self)
+    entry2 = tk.Entry(self)
+    entry3 = tk.Entry(self)
+    entry4 = tk.Entry(self, validate='all', validatecommand=(int_check, '%P'), width=10)
+    entry5 = tk.Entry(self, validate='all', validatecommand=(int_check, '%P'), width=10)
+    entry6 = tk.Entry(self, validate='all', validatecommand=(float_check, '%P'))
     entry7 = tk.Radiobutton(self, text="Male", variable=s, value="Male")
     entry8 = tk.Radiobutton(self, text="Female", variable=s, value="Female")
     entry9 = Entry(self, validate='all', validatecommand=(int_check, '%P'))
@@ -505,10 +544,10 @@ def process(self):
     widget_list = widgets(self)
     if len(widget_list) != 0:
         widget_list[0].grid_forget()
-    explanation = '''data collection finished. Click continue
+    explanation = '''Data collection finished. Click continue
     to process, it may take a minute or so'''
 
-    self.title = tk.Label(self, text=explanation, font=("Courier", 28), fg="black", )
+    self.title = tk.Label(self, text=explanation, font=("Open Sans", 28), fg="black", )
     self.title.grid(row=0, column=1, padx=30, pady=30)
 
     def cont():
@@ -543,16 +582,16 @@ def results_page(self):
     rpm_opt = self.controller.shared["rpm_opt"].get()
     twitch = self.controller.shared["twitch"].get()
     self.title = tk.Label(self, text="This is the performance results for the user with the email: " + email,
-                          font=("Courier", 16), fg="black")
-    self.title.grid(row=0, column=1, columnspan=10, rowspan=3, pady=20)
-    self.title = tk.Label(self, text="Max Power: " + max_power, font=("Courier", 16), fg="blue")
+                          font=("Open Sans", 16), fg="black")
+    self.title.grid(row=0, column=1, columnspan=6, rowspan=3, pady=20)
+    self.title = tk.Label(self, text="Max Power: " + max_power, font=("Open Sans", 16), fg="blue")
     self.title.grid(row=4, column=2, pady=5)
-    self.title = tk.Label(self, text="RPM : " + rpm, font=("Courier", 16), fg="red")
-    self.title.grid(row=4, column=3, pady=5)
-    self.title = tk.Label(self, text="RPM opt: " + rpm_opt, font=("Courier", 16), fg="blue")
+    self.title = tk.Label(self, text="RPM : " + rpm, font=("Open Sans", 16), fg="red")
+    self.title.grid(row=4, column=4, pady=5)
+    self.title = tk.Label(self, text="RPM opt: " + rpm_opt, font=("Open Sans", 16), fg="blue")
     self.title.grid(row=5, column=2, pady=5)
-    self.title = tk.Label(self, text="Twitch %: " + twitch, font=("Courier", 16), fg="red")
-    self.title.grid(row=5, column=3, pady=5)
+    self.title = tk.Label(self, text="Twitch %: " + twitch, font=("Open Sans", 16), fg="red")
+    self.title.grid(row=5, column=4, pady=5)
 
     path = str(self.controller.shared["path"].get())
     email_path = []
@@ -561,12 +600,12 @@ def results_page(self):
     render = ImageTk.PhotoImage(load)
     img = Label(self, image=render)
     img.image = render
-    img.grid(row=8, column=0, columnspan=10, rowspan=4, padx=20)
+    img.grid(row=6, column=0, columnspan=6, padx=20)
 
     var1 = IntVar()
     var2 = IntVar()
     Checkbutton(self, text="Change user ?", variable=var1).grid(row=13, column=4)
-    Checkbutton(self, text="Run again ?", variable=var2).grid(row=13, column=3)
+    Checkbutton(self, text="Run again ?", variable=var2).grid(row=14, column=4)
 
     try:
         socket.create_connection(("www.google.com", 80))
@@ -586,6 +625,9 @@ def results_page(self):
         error['bg'] = "red"
         if connection == True:
             if sendEmail(email, password, email_path) == 0:
+                error['text'] = "File does not exist"
+                return
+            if sendEmail(email, password, email_path) == 1:
                 error['text'] = "Password not valid"
                 return
         else:
@@ -593,9 +635,9 @@ def results_page(self):
             message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
         popup.destroy()
 
-    button = tk.Button(popup, text="Submit", command=lambda: send(popup))
+    button = ttk.Button(popup, text="Submit", command=lambda: send(popup))
     button.grid(row=4, column=0, pady=5)
-    button = tk.Button(popup, text="Continue without emailing", command=popup.destroy)
+    button = ttk.Button(popup, text="Continue without emailing", command=popup.destroy)
     button.grid(row=5, column=0, pady=5)
 
 
@@ -606,11 +648,8 @@ def results_page(self):
             self.controller.show("Run")
 
     submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="deep sky blue", command=submit)
-    submit_button.grid(row=13, column=2, padx=40)
+    submit_button.grid(row=13, column=3, padx=40)
 
-    self.grid_rowconfigure(3, weight=1)
-    self.grid_columnconfigure(0, weight=1)
-    self.grid_columnconfigure(2, weight=1)
 
 
 def results(self, list):
@@ -675,6 +714,9 @@ def results(self, list):
                         error['text'] = "Email not valid"
                         return
                     if sendEmail(email, password, email_paths) == 0:
+                        error['text'] = "One or more files no longer exist"
+                        return
+                    if sendEmail(email, password, email_paths) == 1:
                         error['text'] = "Password not valid"
                         return
                 else:
@@ -752,6 +794,9 @@ def calibration_results(self, list):
                         error['text'] = "Email not valid"
                         return
                     if sendEmail(email, password, email_paths) == 0:
+                        error['text'] = "One or more files no longer exist"
+                        return
+                    if sendEmail(email, password, email_paths) == 1:
                         error['text'] = "Password not valid"
                         return
                 else:
