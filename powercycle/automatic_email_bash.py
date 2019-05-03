@@ -6,11 +6,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import re
 
-def sendEmail():
+def sendBatchEmail(password):
     smtp_server = "smtp.gmail.com" ##dont touch
     port = 587 ##dont touch
     sender_email = "bicycle.email.bot@gmail.com" ##dont change
-    password = "Fjun78797bu" ##password must be manually changed by me
+    #password = "Fjun78797bu" ##password must be manually changed by me
     subject = "Bicycle Application Requested Files..."##can be changed
     body = "Here are the Files you requested..." ##can be changed
     connection = False
@@ -29,8 +29,17 @@ def sendEmail():
         connection = True
     except OSError:
         connection = False
+
     if (connection):
-        i = 0  
+        i = 0
+        context = ssl.create_default_context()  # dont touch
+        with smtplib.SMTP(smtp_server, port) as server:  # dont touch
+            server.starttls(context=context)  # dont touch
+            try:
+                server.login(sender_email, password)
+            except smtplib.SMTPAuthenticationError:
+                print('Login failure: please reenter credential information.')
+                return 0
         while (i < len(data)):
             if ('@' in data[i]):
                 receiver_email = data[i]
@@ -53,7 +62,7 @@ def sendEmail():
                 i = i + 1
                 if (i == len(data)):
                      break
-                     
+
             context = ssl.create_default_context() #dont touch
             with smtplib.SMTP(smtp_server, port) as server: #dont touch
                 server.starttls(context=context) #dont touch
@@ -64,21 +73,18 @@ def sendEmail():
                 
         print("Done!")
 
-try:
-    socket.create_connection(("www.google.com", 80))
-    connection = True
-except OSError:
-    connection = False
-        
+def sendBatch(password):
+    try:
+        socket.create_connection(("www.google.com", 80))
+        connection = True
+    except OSError:
+        connection = False
 
-if (os.path.isfile("store.txt")):
-    sendEmail()
-    os.remove("store.txt")
-    print("Stored files, successfully sent")
-elif (connection == False):
-    print ("No internet connection")
-else:
-    print("No stored files")
-    
+
+    if (os.path.isfile("store.txt")):
+        if sendBatchEmail(password) == 0:
+            return 0
+        os.remove("store.txt")
+
 
 

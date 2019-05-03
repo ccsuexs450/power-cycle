@@ -14,7 +14,7 @@ from PIL import Image, ImageTk
 from email_function import *
 from validate_email import validate_email
 import socket
-import automatic_email_bash
+from automatic_email_bash import *
 import time
 
 class GUI(tk.Tk):
@@ -67,6 +67,24 @@ class GUI(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show("Home")
+        if (os.path.isfile("store.txt")):
+            popup = tk.Tk()
+            label1 = tk.Label(popup, text="Enter sending email password")
+            label1.grid(row=2, column=0, pady=10)
+            password = tk.Entry(popup, width=35, show="*")
+            password.grid(row=3, column=0)
+            button = ttk.Button(popup, text="Submit", command=lambda: send(popup))
+            button.grid(row=4, column=0, pady=5)
+
+            def send(popup):
+                if sendBatch(password.get()) == 0:
+                    error['bg'] = "red"
+                    error['text'] = "Password not valid"
+                else:
+                    popup.destroy()
+
+            error = tk.Label(popup)
+            error.grid(row=6, column=0)
 
     # define show function
     def show(self, page):
@@ -82,9 +100,9 @@ class Home(tk.Frame):
         title.grid(row=0, column=1, columnspan=3, padx=30, pady=30)
         run_button = tk.Button(self, text="Run", height=6, width=30, bg="turquoise", relief="flat", command=lambda: controller.show("EnterEmail"))
         run_button.grid(row=1, column=1, columnspan=3, padx=2, pady=2)
-        file_search = tk.Button(self, text="Search By File", height=4, width=20, bg="green yellow", relief="flat", command=lambda: controller.show("SearchFile"))
+        file_search = tk.Button(self, text="Search Data By File", height=4, width=20, bg="green yellow", relief="flat", command=lambda: controller.show("SearchFile"))
         file_search.grid(row=3, column=1, pady=2)
-        name_search = tk.Button(self, text="Search By Name", height=4, width=20, bg="orange", relief="flat", command=lambda: controller.show("SearchName"))
+        name_search = tk.Button(self, text="Search Data By Name", height=4, width=20, bg="orange", relief="flat", command=lambda: controller.show("SearchName"))
         name_search.grid(row=3, column=2, pady=2)
         calibrate_button = tk.Button(self, text="Calibrate", height=4, width=20, bg="MediumPurple1", relief="flat", command=lambda: controller.show("Calibrate"))
         calibrate_button.grid(row=3, column=3, pady=2)
@@ -112,7 +130,7 @@ class Calibrate(tk.Frame):
             os.system('python Script.py')
         title = tk.Label(self, text="Calibration", font=("Open Sans", 44), fg="black")
         title.grid(row=1, column=1)
-        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="turquoise", command=run_script)
+        calibrate_button = tk.Button(self, text="Run Calibration", height=4, width=24, bg="turquoise", relief="flat", command=run_script)
         calibrate_button.grid(row=2, column=1, padx=2, pady=2)
 
         self.grid_rowconfigure(0, weight=1)
@@ -153,7 +171,7 @@ class EnterEmail(tk.Frame):
                     form(self.controller.shared["form_self"], False)
                     controller.show("Form")
 
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=submit)
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", relief="flat", command=submit)
         find_button.grid(row=3, column=1, padx=2, pady=2)
 
         self.grid_rowconfigure(0, weight=1)
@@ -239,7 +257,7 @@ class SearchFile(tk.Frame):
                 search_graph_file_records = graph_file_records_search()
 
                 if var1.get() == "":
-                    message("please enter a file type")
+                    message("Please enter a file type")
                 elif var1.get() == "text":
                     if var2.get() == "" and var3.get() == "":
                         results(self.controller.shared["results_self"], search_text_file_records)
@@ -271,7 +289,7 @@ class SearchFile(tk.Frame):
                 else:
                     message("The file type you have entered cannot be found")
 
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", relief="flat", command=find)
         find_button.grid(row=9, column=1, padx=10, pady=10)
 
         self.grid_rowconfigure(0, weight=1, minsize=150)
@@ -344,7 +362,7 @@ class SearchName(tk.Frame):
                     results(self.controller.shared["results_self"], search_user)
                     controller.show("ResultsPage")
 
-        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", command=find)
+        find_button = tk.Button(self, text="Find", height=2, width=8, bg="turquoise", relief="flat", command=find)
         find_button.grid(row=12, column=1, padx=10, pady=10)
 
         self.grid_rowconfigure(0, weight=1, minsize=150)
@@ -422,7 +440,7 @@ class ProcessingPage(tk.Frame):
                 controller.show("FinalResultsPage")
                 results_page(self.controller.shared["results_page_self"])
 
-        cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", command=cont)
+        cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", relief="flat", command=cont)
         cont_button.grid(row=2, column=1, padx=2, pady=2)
 
 # create run page
@@ -449,7 +467,7 @@ class Run(tk.Frame):
 
         title = tk.Label(self, text="Run Bicycle", font=("Open Sans", 44), fg="black")
         title.grid(row=1, column=1)
-        run_button = tk.Button(self, text="Run", height=4, width=24, bg="turquoise", command=run)
+        run_button = tk.Button(self, text="Run", height=4, width=24, bg="turquoise", relief="flat", command=run)
         run_button.grid(row=2, column=1, padx=2, pady=2)
 
         self.grid_rowconfigure(0, weight=1)
@@ -531,7 +549,7 @@ def form(self, new):
                     user_update(email, fname, lname, age, height, weight, gender, category, date)
                 self.controller.show("Run")
 
-    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="turquoise", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), entry6.get(), s.get(), entry9.get()))
+    submit_button = tk.Button(self, text="Submit", height=2, width=12, bg="turquoise", relief="flat", command=lambda: submit(self.controller.shared["email"].get(), entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(), entry6.get(), s.get(), entry9.get()))
     submit_button.grid(row=10, column=1, columnspan=3, pady=20)
 
     self.grid_rowconfigure(0, weight=1, minsize=150)
@@ -568,7 +586,7 @@ def process(self):
             self.controller.show("FinalResultsPage")
             results_page(self.controller.shared["results_page_self"])
 
-    cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", command=cont)
+    cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", relief="flat", command=cont)
     cont_button.grid(row=2, column=1, padx=2, pady=2)
 
 
@@ -647,10 +665,8 @@ def results_page(self):
         if var2.get() == 1:
             self.controller.show("Run")
 
-    submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="deep sky blue", command=submit)
+    submit_button = tk.Button(self, text="Submit", height=2, width=8, bg="turquoise", relief="flat", command=submit)
     submit_button.grid(row=13, column=3, padx=40)
-
-
 
 def results(self, list):
     widget_list = widgets(self)
@@ -723,10 +739,10 @@ def results(self, list):
                     sendEmail(email, password, email_paths)
                     message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
-            button = tk.Button(popup, text="Submit", command=lambda: send(popup))
+            button = ttk.Button(popup, text="Submit", command=lambda: send(popup))
             button.grid(row=4, column=0, pady=5)
 
-    button = tk.Button(self, text="Submit", height=4, width=24, bg="turquoise", command=submit)
+    button = tk.Button(self, text="Submit", height=4, width=24, bg="turquoise", relief="flat", command=submit)
     button.grid(row=count+1, columnspan=10, padx=2, pady=20)
 
     self.grid_columnconfigure(0, weight=1)
@@ -803,10 +819,10 @@ def calibration_results(self, list):
                     sendEmail(email, password, email_paths)
                     message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
-            button = tk.Button(popup, text="Submit",  command=lambda: send(popup))
+            button = ttk.Button(popup, text="Submit",  command=lambda: send(popup))
             button.grid(row=4, column=0, pady=5)
 
-    button = tk.Button(self, text="Submit", height=4, width=24, bg="turquoise", command=submit)
+    button = tk.Button(self, text="Submit", height=4, width=24, bg="turquoise", relief="flat", command=submit)
     button.grid(row=count+1, columnspan=7, padx=2, pady=20)
 
     self.grid_columnconfigure(0, weight=1)
