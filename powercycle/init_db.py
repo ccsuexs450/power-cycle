@@ -23,7 +23,7 @@ conn.execute('''CREATE TABLE text
          user_email TEXT NOT NULL REFERENCES user(email),
          name            TEXT           NOT NULL,
          path            TEXT           NOT NULL,
-         date            DATE           NOT NULL);''')
+         date            DATETIME       NOT NULL);''')
 
 print ("Table created successfully");
 
@@ -32,7 +32,7 @@ conn.execute('''CREATE TABLE powersheet
          user_email TEXT NOT NULL REFERENCES user(email),
          name            TEXT          NOT NULL,
          path            TEXT          NOT NULL,
-         date            DATE          NOT NULL);''')
+         date            DATETIME      NOT NULL);''')
 
 print ("Table created successfully");
 
@@ -40,7 +40,7 @@ conn.execute('''CREATE TABLE calibration
          (id INTEGER PRIMARY KEY NOT NULL,
          name            TEXT          NOT NULL,
          path            TEXT          NOT NULL,
-         date            DATE          NOT NULL);''')
+         date            DATETIME      NOT NULL);''')
 
 print ("Table created successfully");
 
@@ -49,7 +49,7 @@ conn.execute('''CREATE TABLE graph
          user_email TEXT NOT NULL REFERENCES user(email),
          name            TEXT          NOT NULL,
          path            TEXT          NOT NULL,
-         date            DATE          NOT NULL);''')
+         date            DATETIME      NOT NULL);''')
 
 print ("Table created successfully");
 
