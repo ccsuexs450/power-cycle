@@ -2,6 +2,7 @@ import os, signal
 import subprocess
 from datetime import datetime
 import time as t
+import math
 import pyoo
 from db_interaction import *
 from power_chart import *
@@ -49,14 +50,13 @@ def power_sheet(path, email):
     delta[1:16,1].values = dt
 
     # retrieve payload
-    max_pow = power[20, 43].value
-    rpm_opt = power[20, 46].value
-    rpm_max = power[22, 46].value
+    max_pow = round(power[20, 43].value)
+    rpm_opt = round(power[20, 46].value)
+    rpm_max = round(power[22, 46].value)
     
     # calculate fiber twitch
-#    twitch = (2.0833 * rpm_opt) - 198.458
+    twitch = (2.0833 * rpm_opt) - 198.458
     
-    twitch = 7
     # graph data
     datax  = power[1:11,32].values
     datay1 = power[1:11,33].values
