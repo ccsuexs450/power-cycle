@@ -71,8 +71,9 @@ def power_sheet(path, email):
 #    sum[1:9,7].values = profile
     
     path = "../docs/power/"
-    date = str(datetime.now())
-    filename = email[0:5] + date + ".ods"
+    date = datetime.now()
+    f_date = date.strftime('%Y-%m-%d %H.%M.%S.%f')
+    filename = email[0:5] + f_date + ".ods"
     file_path = path + filename
     doc.save(file_path)
     power_insert(email, filename, file_path, date)

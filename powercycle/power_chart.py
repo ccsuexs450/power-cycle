@@ -45,8 +45,9 @@ def draw_graph(datax, datay1, datay2, email):
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
   
     path = "../docs/graph/"
-    date = str(datetime.now())
-    filename = email[0:5] + date + ".png"
+    date = datetime.now()
+    f_date = date.strftime('%Y-%m-%d %H.%M.%S.%f')
+    filename = email[0:5] +f_date + ".png"
     file_path = path + filename
     plt.savefig(file_path)
     graph_insert(email, filename, file_path, date)

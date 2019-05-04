@@ -2,11 +2,11 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-#from power_chart import *
-#from power import *
+from power_chart import *
+from power import *
 from db_interaction import *
 from results_test import *
-#from run_sensor import *
+from run_sensor import *
 import serial
 from datetime import *
 import os
@@ -39,7 +39,7 @@ class GUI(tk.Tk):
         container.pack()
 
         self.geometry("1200x800")
-        self.title("Bicycle Application")
+        self.title("Power Cycle")
 
         menu = Menu(self)
         self.config(menu=menu)
@@ -414,7 +414,7 @@ class ProcessingPage(tk.Frame):
         self.controller.shared["process_self"] = self
 
         explanation = '''Data collection finished. Click continue to process,
-        this will take a few moments '''
+        this will take a few moments. '''
 
         title = tk.Label(self, text=explanation, font=("Open Sans", 18), fg="black", )
         title.grid(row=0, column=1,padx=30, pady=30)
@@ -452,10 +452,10 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
              #comment the below function call for testing
-          #  try:
-          #      path = power_input(user_email)
-          #  except(serial.SerialException, FileNotFoundError):
-          #      print("Caught in the GUI")
+           # try:
+           #     path = power_input(user_email)
+           # except(serial.SerialException, FileNotFoundError):
+           #     print("Caught in the GUI")
             # comment the below function call for full functionality
             path = power_input_test(user_email)
             self.controller.shared["path_txt"].set(path)
@@ -573,9 +573,9 @@ def process(self):
         user_email = str(self.controller.shared["email"].get())
         print(user_email)
         # comment the below function call for testing
-        # values = power_sheet(path_test,user_email)
+        values = power_sheet(path_test,user_email)
         # comment the below function call for full functionality
-        values = resultsT(path_test, user_email)
+        #values = resultsT(path_test, user_email)
         self.controller.shared["max_power"].set(values[0])
         self.controller.shared["rpm"].set(values[1])
         self.controller.shared["rpm_opt"].set(values[2])
