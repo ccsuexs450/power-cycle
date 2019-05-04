@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include .gitignore
+include docs/templates/*
+include docs/power/*
+include docs/calibration/*
+include docs/graph/*
+include icons/*
+include data/sensordata/*
+
