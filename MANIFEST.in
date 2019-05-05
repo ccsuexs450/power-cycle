@@ -7,4 +7,4 @@ include docs/calibration/*
 include docs/graph/*
 include icons/*
 include data/sensordata/*
-
+include powercycle/cycle.db

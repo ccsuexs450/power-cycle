@@ -10,6 +10,7 @@ lines = []
 
 def power_sheet(path, email):
 
+    
     soffice = subprocess.Popen('startLO')
 
     t.sleep(7)
