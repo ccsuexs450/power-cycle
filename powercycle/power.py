@@ -19,7 +19,7 @@ def power_sheet(path, email):
     desktop = pyoo.Desktop('localhost', 2002)
     doc = desktop.open_spreadsheet("../docs/templates/Power_template.ods")
     
-    sum  = doc.sheets[0]
+    sum   = doc.sheets[0]
     power = doc.sheets[1]
     delta = doc.sheets[2]
 
@@ -39,10 +39,8 @@ def power_sheet(path, email):
     print(lines[0:10])
     print(len(lines)) 
     power[1:496,0].values = lines
-   # power[1:16,0].values = lines
     
     lines.clear()
-    print(lines)
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
             line = line.rstrip('\n')
@@ -67,9 +65,9 @@ def power_sheet(path, email):
 
     # user search 
     profile = user_profile_search(email)
-  #  print(profile)
+    print(profile)
     
-#    sum[1:9,7].values = profile
+    sum[1:10,7].values = profile
     
     path = "../docs/power/"
     date = datetime.now()
@@ -88,7 +86,7 @@ def power_sheet(path, email):
     payload.append(twitch)
     payload.append(graph_path)
 
-   # soffice.kill()
+    soffice.kill()
 
     print("File Saved")
     

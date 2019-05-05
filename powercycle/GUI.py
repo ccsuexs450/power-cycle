@@ -2,11 +2,11 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-#from power_chart import *
-#from power import *
+from power_chart import *
+from power import *
 from db_interaction import *
 from results_test import *
-#from run_sensor import *
+from run_sensor import *
 import serial
 from datetime import *
 import os
@@ -25,7 +25,8 @@ class GUI(tk.Tk):
                        "max_power": tk.StringVar(), "rpm": tk.StringVar(), "rpm_opt": tk.StringVar(),
                        "twitch": tk.StringVar(), "path": tk.StringVar(), "path_txt": tk.StringVar(),
                        "process_self": tk.Variable(), "password": tk.StringVar(), "email_boolean": tk.Variable(),
-                       "calibrate_path": tk.StringVar(), "calibrate_final_page_self": tk.Variable()}
+                       "calibrate_path": tk.StringVar(), "calibrate_final_page_self": tk.Variable(),
+                       "calibrate_process_self": tk.Variable()}
 
         toolbar = Frame(self, bg="gray87")
         house = Image.open("../icons/Home.png")
@@ -40,7 +41,7 @@ class GUI(tk.Tk):
         container.pack()
 
         self.geometry("1200x800")
-        self.title("Bicycle Application")
+        self.title("Power Cycle")
 
         menu = Menu(self)
         self.config(menu=menu)
@@ -61,7 +62,7 @@ class GUI(tk.Tk):
 
         self.frames = {}
         for F in (Home, Calibrate, EnterEmail, Form, Run, SearchFile, SearchName, ResultsPage, CalibrationResultsPage,
-                  FinalResultsPage, ProcessingPage, CalibrationFinalPage):
+                  FinalResultsPage, ProcessingPage, CalibrateProcessingPage, CalibrationFinalPage):
             page = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page] = frame
@@ -129,13 +130,13 @@ class Calibrate(tk.Frame):
         self.controller = controller
 
         def calibrate():
-            path = calibrate_input_test()
+            path = calibrate_input()
             self.controller.shared["calibrate_path"].set(path)
             if path is not None:
-                path = None
                 print(path)
-                controller.show("CalibrationFinalPage")
-                calibrate_final_page(self.controller.shared["calibrate_final_page_self"])
+                controller.show("CalibrateProcessingPage")
+                calibrate_process(self.controller.shared["calibrate_process_self"])
+                
 
         title = tk.Label(self, text="Calibration", font=("Open Sans", 44), fg="black")
         title.grid(row=1, column=1)
@@ -455,6 +456,12 @@ class ProcessingPage(tk.Frame):
         self.controller = controller
         self.controller.shared["process_self"] = self
 
+# create calibrate  processing page
+class CalibrateProcessingPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.controller.shared["calibrate_process_self"] = self
 
 # create calibration final page
 class CalibrationFinalPage(tk.Frame):
@@ -546,6 +553,31 @@ def form(self, new):
     self.grid_rowconfigure(11, weight=1)
     self.grid_columnconfigure(4, weight=1)
 
+def calibrate_process(self):
+    widget_list = widgets(self)
+    if len(widget_list) != 0:
+        widget_list[0].grid_forget()
+    explanation = '''Data collection finished. Click continue
+    to process, it may take a minute or so'''
+
+    self.title = tk.Label(self, text=explanation, font=("Open Sans", 28), fg="black", )
+    self.title.grid(row=0, column=1, padx=30, pady=30)
+
+    def cont():
+        cal_path = self.controller.shared["calibrate_path"].get()
+        # comment the below function call for testing
+        cal_value = calibrate_sheet(cal_path)
+        # comment the below assignment when using full functionality
+        #cal_value = 1
+        if cal_value is not None:
+            self.controller.show("CalibrationFinalPage")
+            calibrate_final_page(self.controller.shared["calibrate_final_page_self"])
+
+    cont_button = tk.Button(self, text="Continue", height=4, width=24, bg="turquoise", relief="flat", command=cont)
+    cont_button.grid(row=2, column=1, padx=2, pady=2)
+
+    self.grid_columnconfigure(0, weight=1)
+    self.grid_columnconfigure(2, weight=1)
 
 def process(self):
     widget_list = widgets(self)
@@ -562,9 +594,9 @@ def process(self):
         user_email = str(self.controller.shared["email"].get())
         print(user_email)
         # comment the below function call for testing
-        # values = power_sheet(path_test,user_email)
+        values = power_sheet(path_test,user_email)
         # comment the below function call for full functionality
-        values = resultsT(path_test, user_email)
+        #values = resultsT(path_test, user_email)
         self.controller.shared["max_power"].set(values[0])
         self.controller.shared["rpm"].set(values[1])
         self.controller.shared["rpm_opt"].set(values[2])
@@ -623,7 +655,7 @@ def results_page(self):
     self.title.grid(row=4, column=4, pady=5)
     self.title = tk.Label(self, text="RPM opt: " + rpm_opt, font=("Open Sans", 16), fg="blue")
     self.title.grid(row=5, column=2, pady=5)
-    self.title = tk.Label(self, text="Twitch %: " + twitch, font=("Open Sans", 16), fg="red")
+    self.title = tk.Label(self, text="Twitch: " + twitch, font=("Open Sans", 16), fg="red")
     self.title.grid(row=5, column=4, pady=5)
 
     path = str(self.controller.shared["path"].get())
