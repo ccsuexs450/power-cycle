@@ -10,3 +10,6 @@ def power_input_test(email):
     path_test = "./data/sensordata/power.txt"
     return path_test
 
+def calibrate_input_test():
+    path_test = "./data/sensordata/calibrate.txt"
+    return path_test
