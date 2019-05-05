@@ -102,3 +102,16 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# idea
+.idea/* 
+
+# .ods
+*.ods
+!docs/templates/*.ods
+
+# .txt
+data/sensordata/*.txt
+
+# .png
+docs/graph/*.png
