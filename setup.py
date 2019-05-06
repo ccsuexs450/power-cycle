@@ -14,7 +14,7 @@ setup(name='power-cycle',
       license='MIT',
       packages=['powercycle'],
       install_requires=[
-          'serial',
+          'pyserial',
           'Pillow',
           'py3dns',
           'validate_email',
