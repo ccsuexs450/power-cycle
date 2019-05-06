@@ -597,9 +597,9 @@ def calibrate_final_page(self):
     title = tk.Label(self, text="Path:" + calibrate_path, font=("Open Sans", 18), fg="blue")
     title.grid(row=1, column=1)
 
-    # cont_button = tk.Button(self, text="Done", height=4, width=24, bg="turquoise", relief="flat",
-    #                         command=lambda self.show("Home"))
-    # cont_button.grid(row=4, column=1, padx=2, pady=2)
+    cont_button = tk.Button(self, text="Done", height=4, width=24, bg="turquoise", relief="flat",
+                            command=lambda: self.controller.show("Home"))
+    cont_button.grid(row=4, column=1, padx=2, pady=2)
 
     self.grid_columnconfigure(0, weight=1)
     self.grid_columnconfigure(2, weight=1)
