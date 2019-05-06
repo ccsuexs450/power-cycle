@@ -24,20 +24,20 @@ def calibrate_input(): #placeholder until sensor is working. Reads test input fr
             values.append(line)
 
 # comment the loop below for testing    
-#    try:
-#        ser = serial_conn()
-#    except (serial.SerialException, FileNotFoundError) as e:
-#        print("Serial connection failed. Check sensor connections")
-#        raise
-#
-#    
-#    i = 0
-#    while i < 900:
-#
-#        input = int(ser.readline().strip())
-#        values.append(str(input))
-#        i+=1
-#
+   # try:
+    ser = serial_conn()
+   # except (serial.SerialException, FileNotFoundError) as e:
+    #    print("Serial connection failed. Check sensor connections")
+    #    raise
+
+    
+    i = 0
+    while i < 900:
+
+        input = int(ser.readline().strip())
+        values.append(str(input))
+        i+=1
+
     cal_values = values.copy()
     path = textwrite("Calibration")
 #    calibrate_sheet(cal_values)
@@ -48,11 +48,11 @@ def calibrate_input(): #placeholder until sensor is working. Reads test input fr
 
 def power_input(user_email):
 
-    try:
-        ser = serial_conn()
-    except (serial.SerialException, FileNotFoundError) as e:
-        print("Serial connection failed. Check sensor connections")
-        raise
+   # try:
+    ser = serial_conn()
+   # except (serial.SerialException, FileNotFoundError) as e:
+    #    print("Serial connection failed. Check sensor connections")
+    #    raise
     i = 0
     while i < 495:
 
@@ -97,5 +97,5 @@ def test_run(user_email):
 
 #power_input("htazi@gmail.com")
 #calibrate_input()
-test_run("htazi@gmail.com")
+#test_run("htazi@gmail.com")
 

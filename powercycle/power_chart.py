@@ -15,12 +15,12 @@ def draw_graph(datax, datay1, datay2, email):
     x_sm  = np.array(datax)
     y1_sm = np.array(datay1)
     
-    p = np.poly1d(np.polyfit(x_sm, y1_sm, 3))
+    p = np.poly1d(np.polyfit(x_sm, y1_sm, 2))
     t = np.linspace(x_sm.min(), x_sm.max(), 100)
     
     color = 'k'
     ax1.set_xlim([50, x_sm.max()+20])
-    ax1.set_ylim([0, y1_sm.max() + 200])
+    ax1.set_ylim([0, y1_sm.max() + 100])
     ax1.set_xlabel('Pedaling Rate(rpm)')
     ax1.set_ylabel('Power(watts)', color=color)
     ax1.plot(t, p(t),color=color, linewidth = 3)

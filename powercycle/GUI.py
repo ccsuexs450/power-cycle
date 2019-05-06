@@ -7,7 +7,7 @@ from power import *
 from db_interaction import *
 from results_test import *
 from run_sensor import *
-import serial
+from serial import *
 from datetime import *
 import os
 from PIL import Image, ImageTk
@@ -425,10 +425,10 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
              #comment the below function call for testing
-          #  try:
-          #      path = power_input(user_email)
-          #  except(serial.SerialException, FileNotFoundError):
-          #      print("Caught in the GUI")
+           # try:
+           # path = power_input(user_email)
+           # except(serial.SerialException, FileNotFoundError):
+            #    print("Caught in the GUI")
             # comment the below function call for full functionality
             path = power_input_test(user_email)
             self.controller.shared["path_txt"].set(path)
