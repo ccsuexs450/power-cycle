@@ -5,7 +5,6 @@ import pyoo
 from db_interaction import *
 import time as t
 
-
 def calibrate_sheet(path):
     
     soffice = subprocess.Popen('startLO')
@@ -24,8 +23,16 @@ def calibrate_sheet(path):
             lines.append(line)
 
     print(lines[0:10])
+    
+    lines = list(map(int, lines))
+    
+    for idx, val in enumerate(lines):
+        double = lines[idx]/lines[idx-1]
+        if double > 1.6:
+           newlines =  lines[idx + 1 : idx + 796]
+           break
  
-    sheet[1:796,0].values = lines
+    sheet[1:796,0].values = newlines
 
     delta_theta = sheet[1:16,10].values
     
@@ -42,7 +49,9 @@ def calibrate_sheet(path):
     doc.save(file_path)
     calibrate_insert(filename, file_path, date)
     doc.close()
-
+    
+    lines.clear()
+    newlines.clear()
     soffice.kill()
 
     print("File Saved")
