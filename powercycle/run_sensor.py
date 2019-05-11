@@ -70,8 +70,8 @@ def textwrite(user_email):
     emailStr = str(user_email)
     date = datetime.now()
     f_date = date.strftime('%Y-%m-%d %H.%M.%S.%f')
-    filename = emailStr[0:5] + f_date
     extension = ".txt"
+    filename = emailStr[0:5] + f_date + extension
     dir  = "../data/sensordata/"
     path = dir+filename+extension
     
