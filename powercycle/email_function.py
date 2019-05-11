@@ -9,7 +9,6 @@ def sendEmail(receiver_email, password, filename, body):
     smtp_server = "smtp.gmail.com" ##dont touch
     port = 587 ##dont touch
     subject = "Bicycle Application Requested Files..."##can be changed
-    #body = "Here are the Files you requested..."
     sender_email = "bicycle.email.bot@gmail.com"  ##bicycle.email.bot@gmail.com"
     connection = False
    
