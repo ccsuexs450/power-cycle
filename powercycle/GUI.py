@@ -426,11 +426,11 @@ class Run(tk.Frame):
             user_email = str(self.controller.shared["email"].get())
              #comment the below function call for testing
            # try:
-           # path = power_input(user_email)
+            path = power_input(user_email)
            # except(serial.SerialException, FileNotFoundError):
             #    print("Caught in the GUI")
             # comment the below function call for full functionality
-            path = power_input_test(user_email)
+            #path = power_input_test(user_email)
             self.controller.shared["path_txt"].set(path)
             if path is not None:
                 path = None
@@ -584,7 +584,7 @@ def process(self):
     if len(widget_list) != 0:
         widget_list[0].grid_forget()
     explanation = '''Data collection finished. Click continue
-    to process, it may take a minute or so'''
+    to process, this will take a moment.'''
 
     self.title = tk.Label(self, text=explanation, font=("Open Sans", 28), fg="black", )
     self.title.grid(row=0, column=1, padx=30, pady=30)

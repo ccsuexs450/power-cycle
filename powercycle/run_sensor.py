@@ -60,13 +60,10 @@ def power_input(user_email):
         values.append(str(input))
         i+=1
     
-    # uncomment and replace the return value with path for current implementation
     path =  textwrite(user_email)
-    
-    #power_sheet(values, user_email)
-
+   
     print("Files Created")
-   # return values
+ 
     return path
 
 def textwrite(user_email):
