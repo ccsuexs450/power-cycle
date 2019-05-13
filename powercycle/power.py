@@ -55,7 +55,7 @@ def power_sheet(path, email):
     rpm_max = round(power[22, 46].value)
     
     # calculate fiber twitch
-    twitch = (2.0833 * rpm_opt) - 198.458
+    twitch = round((2.0833 * rpm_opt) - 198.458, 3)
     
     # graph data
     datax  = power[1:11,32].values
