@@ -1,6 +1,6 @@
 import time
 
-
+# this file was only used for testing. This not needed for full functionality
 def resultsT(path, email):
     values = [750, 167, 125, 83.7, "../docs/graph/nickp2019-05-01 19_20_44.620382.png"]
     time.sleep(1)

@@ -2,11 +2,11 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-#from power_chart import *
-#from power import *
+from power_chart import *
+from power import *
 from db_interaction import *
 from results_test import *
-#from run_sensor import *
+from run_sensor import *
 from datetime import *
 import os
 from PIL import Image, ImageTk

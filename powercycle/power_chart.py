@@ -13,38 +13,19 @@ def draw_graph(datax, datay1, datay2, email):
     fig, ax1 = plt.subplots()
     
       
-#    x_sm_size= np.array(datax)
-#    y1_sm_size = np.array(datay1)
-
     x_sm = np.array(datax)
     y1_sm = np.array(datay1)
-     
+  
+  # the below commented code was an attempt to generate a graph that looked 
+  # exactly like the spreadsheet graph. This functionality was not finished.
+  # 
   #  x_sm_raw = np.array(datax)
   #  y1_sm_raw = np.array(datay1)
   #  mean = np.mean(y1_sm_raw, axis=0)
   #  sd = np.std(y1_sm_raw, axis=0)
-  #  print(mean)
-  #  print(sd)
-  #  indices = [0,1,2,3,4,5,6,7,8.9]
-  #  datay1 = list(datay1)
-  #  remove_list = []
-  #  index_list  = []
-    #y1_sm = [x for ind, x in y1_sm_raw if not (x > mean + sd*.80)]
+  
   #  y1_sm_x_sm = [(x, y) for x, y in zip(y1_sm_raw, x_sm_size) if not (x>mean+sd*.8)] 
-  #  for idx, val in enumerate(datay1):
-  #      if val > mean + sd*0.8:
-  #          remove_list.append(val)
-  #          index_list.append(idx)
-    
-  #  print(remove_list)
-  #  a = set(datay1)
-  #  b = set(remove_list)
-  #  c = a - b
-  #  y1_sm = list(c)
-   
-  #  print(y1_sm_x_sm)
-   
-  #  y1_sm, x_sm = zip(y1_sm_x_sm)      
+       
    
     p = np.poly1d(np.polyfit(x_sm, y1_sm, 2))
     t = np.linspace(x_sm.min(), x_sm.max(), 100)

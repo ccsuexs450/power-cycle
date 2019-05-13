@@ -10,15 +10,17 @@ lines = []
 
 def power_sheet(path, email):
 
-    
+    # open soffice using the bash script
     soffice = subprocess.Popen('startLO')
 
     t.sleep(7)
     dt    = []
-
+    
+    # set up the libreoffice bridge 
     desktop = pyoo.Desktop('localhost', 2002)
     doc = desktop.open_spreadsheet("../docs/templates/Power_template.ods")
     
+    # name the sheets 
     sum   = doc.sheets[0]
     power = doc.sheets[1]
     delta = doc.sheets[2]
@@ -35,11 +37,10 @@ def power_sheet(path, email):
 #            line = line.rstrip('\n')
 #            lines.append(line)
 
-
-    print(lines[0:10])
-    print(len(lines)) 
+    # insert sensor values into the spreadsheet 
     power[1:496,0].values = lines
     
+    # retrieve delta theta
     lines.clear()
     with open("../docs/templates/delta_theta.txt", "r") as ins:
         for line in ins:
@@ -63,12 +64,13 @@ def power_sheet(path, email):
      
     graph_path = draw_graph(datax, datay1, datay2, email)
 
-    # user search 
+    # user search to input profile data on the first sheet 
     profile = user_profile_search(email)
     print(profile)
     
     sum[1:10,7].values = profile
     
+    # name file, insert, and save
     path = "../docs/power/"
     date = datetime.now()
     f_date = date.strftime('%Y-%m-%d %H.%M.%S.%f')
@@ -79,7 +81,8 @@ def power_sheet(path, email):
     doc.close()
     
     payload = []
-
+    
+    # create payload list to return to the results page in GUI
     payload.append(max_pow)
     payload.append(rpm_max)
     payload.append(rpm_opt)
@@ -92,4 +95,3 @@ def power_sheet(path, email):
     
     return payload
 
-#power_sheet(lines, "htazi@gmail.com")
