@@ -37,6 +37,13 @@ the raspbian desktop and change to the installation directory.
 1. "cd <install directory>"
 2. "python3 GUI.py"
 
+About the shell_scripts directory:
 
+The file named startLO located in the shell_scripts directory needs to be placed in 
+usr/local/bin. Do this after installing the program or the libreoffice functionaliy
+will not work.
+
+Move the file by using the following command:
+"sudo mv <path/to/shell_scripts/startLO usr/local/bin"
    
 
