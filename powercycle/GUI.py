@@ -7,7 +7,6 @@ from tkinter import ttk
 from db_interaction import *
 from results_test import *
 #from run_sensor import *
-import serial
 from datetime import *
 import os
 from PIL import Image, ImageTk
