@@ -27,6 +27,11 @@ Running setup.py after installation should install the dependencies needed for
 operation. If not all dependencies are installed follow the directions in the
 terminal to install the remaining needed dependencies.
 
+To run setup.py input the following command into the terminal after installation:
+
+"cd path/to/installation"
+"python3 setup.py sdist"
+
 Alternatively, Running setup.py also creates a tar.gz file that when unpacked 
 will install the program. Use the following command to unpack the tar file.
 
