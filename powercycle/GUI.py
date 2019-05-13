@@ -107,7 +107,6 @@ class Home(tk.Frame):
         name_search.grid(row=3, column=2, pady=2)
         calibrate_button = tk.Button(self, text="Calibrate", height=4, width=20, bg="MediumPurple1", relief="flat", command=lambda: controller.show("Calibrate"))
         calibrate_button.grid(row=3, column=3, pady=2)
-
         self.grid_rowconfigure(4, weight=1)
         self.grid_rowconfigure(2, minsize=100)
         self.grid_columnconfigure(0, weight=1)
@@ -687,15 +686,16 @@ def results_page(self):
     def send(popup):
         password = entry.get()
         error['bg'] = "red"
+        body = "Here are your results:\n Max Power: " + max_power + "\n RPM:  " + rpm + "\n RPM opt: " + rpm_opt + "\n Twitch: " + twitch
         if connection == True:
-            if sendEmail(email, password, email_path) == 0:
+            if sendEmail(email, password, email_path, body) == 0:
                 error['text'] = "File does not exist"
                 return
-            if sendEmail(email, password, email_path) == 1:
+            if sendEmail(email, password, email_path, body) == 1:
                 error['text'] = "Password not valid"
                 return
         else:
-            sendEmail(email, password, path)
+            sendEmail(email, password, path, body)
             message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
         popup.destroy()
 
@@ -774,18 +774,19 @@ def results(self, list):
                 email = entry.get()
                 password = passEntry.get()
                 error['bg'] = "red"
+                body = "Here are the Files you requested..."
                 if connection == True:
                     if validate(email) == 0:
                         error['text'] = "Email not valid"
                         return
-                    if sendEmail(email, password, email_paths) == 0:
+                    if sendEmail(email, password, email_paths, body) == 0:
                         error['text'] = "One or more files no longer exist"
                         return
-                    if sendEmail(email, password, email_paths) == 1:
+                    if sendEmail(email, password, email_paths, body) == 1:
                         error['text'] = "Password not valid"
                         return
                 else:
-                    sendEmail(email, password, email_paths)
+                    sendEmail(email, password, email_paths, body)
                     message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
             button = ttk.Button(popup, text="Submit", command=lambda: send(popup))
@@ -854,18 +855,19 @@ def calibration_results(self, list):
                 email = entry.get()
                 password = passEntry.get()
                 error['bg'] = "red"
+                body = "Here are the Files you requested..."
                 if connection == True:
                     if validate(email) == 0:
                         error['text'] = "Email not valid"
                         return
-                    if sendEmail(email, password, email_paths) == 0:
+                    if sendEmail(email, password, email_paths, body) == 0:
                         error['text'] = "One or more files no longer exist"
                         return
-                    if sendEmail(email, password, email_paths) == 1:
+                    if sendEmail(email, password, email_paths, body) == 1:
                         error['text'] = "Password not valid"
                         return
                 else:
-                    sendEmail(email, password, email_paths)
+                    sendEmail(email, password, email_paths, body)
                     message("There is no internet connection, files were safely stored\n Saved Email(s) & Attachment(s) will be sent next time the application is run")
                 popup.destroy()
             button = ttk.Button(popup, text="Submit",  command=lambda: send(popup))
