@@ -6,11 +6,11 @@ def readme():
         return f.read()
 
 setup(name='power-cycle',
-      version='0.1',
+      version='1.0',
       description='bicycle application',
       url='https://github.com/nep67/power-cycle',
       author='KHEN',
-      author_email='test@test.com',
+      author_email='nickpipino67@gmail.com',
       license='MIT',
       packages=['powercycle'],
       install_requires=[

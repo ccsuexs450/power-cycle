@@ -428,7 +428,7 @@ class Run(tk.Frame):
             except(serial.SerialException, FileNotFoundError):
                 message("Serial connection failed. Check sensor configuration.")
             # comment the below function call for full functionality
-            #path = power_input_test(user_email)
+           # path = power_input_test(user_email)
             self.controller.shared["path_txt"].set(path)
             if path is not None:
                 path = None
@@ -686,7 +686,7 @@ def results_page(self):
     def send(popup):
         password = entry.get()
         error['bg'] = "red"
-        body = "Here are your results:\n Max Power: " + max_power + "\n RPM:  " + rpm + "\n RPM opt: " + rpm_opt + "\n Twitch: " + twitch
+        body = "Here are your results:\n Max Power: " + max_power + "\n RPM: " + rpm + "\n RPM opt: " + rpm_opt + "\n Twitch: " + twitch
         if connection == True:
             if sendEmail(email, password, email_path, body) == 0:
                 error['text'] = "File does not exist"

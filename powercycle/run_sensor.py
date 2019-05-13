@@ -20,25 +20,25 @@ def serial_conn():
 def calibrate_input(): #placeholder until sensor is working. Reads test input from file.
     
     # this below loop is only for testing when the sensor is not plugged in
-    with open("../data/sensordata/calibrateTest.txt", "r") as ins:
-        for line in ins:
-            line = line.rstrip('\n')
-            values.append(line)
+  #  with open("../data/sensordata/calibrateTest.txt", "r") as ins:
+  #      for line in ins:
+  #          line = line.rstrip('\n')
+  #          values.append(line)
 
 # comment the loop below for testing    
-   # try:
-    #    ser = serial_conn()
-   # except (serial.SerialException, FileNotFoundError) as e:
-    #    print("Serial connection failed. Check sensor connections")
-    #    raise
+    try:
+        ser = serial_conn()
+    except (serial.SerialException, FileNotFoundError) as e:
+        print("Serial connection failed. Check sensor connections")
+        raise
 
     # retrieve 900 data points from the sensor
-#    i = 0
-#    while i < 900:
-#
-#        input = int(ser.readline().strip())
-#        values.append(str(input))
-#        i+=1
+    i = 0
+    while i < 900:
+
+        input = int(ser.readline().strip())
+        values.append(str(input))
+        i+=1
 
     # retieve the text file path this is returned to the GUI
     path = textwrite("Calibration")
@@ -62,7 +62,7 @@ def power_input(user_email):
         i+=1
     # retrieve text path and return to GUI
     path =  textwrite(user_email)
-   
+    ser.close()
     print("Files Created")
  
     return path

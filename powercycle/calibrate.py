@@ -32,10 +32,11 @@ def calibrate_sheet(path):
     # this loop locates the first double in the original list and creates
     # a new list with the values after the double
     for idx, val in enumerate(lines):
-        double = lines[idx]/lines[idx-1]
-        if double > 1.6:
-           newlines =  lines[idx + 1 : idx + 796]
-           break
+        if(idx > 0):
+            double = lines[idx]/lines[idx-1]
+            if double > 1.8:
+               newlines =  lines[idx + 1 : idx + 796]
+               break
     
     # insert the new list into the calibrate spreadsheet
     sheet[1:796,0].values = newlines

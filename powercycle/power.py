@@ -26,16 +26,16 @@ def power_sheet(path, email):
     delta = doc.sheets[2]
 
     # comment this loop when sensor is plugged in
-    with open("../data/sensordata/nickp2019-05-06 20.14.08.566792.txt", "r") as ins:
+  #  with open("../data/sensordata/power.txt", "r") as ins:
+  #      for line in ins:
+  #          line = line.rstrip('\n')
+  #          lines.append(line)
+
+        # get sensor values
+    with open(path, "r") as ins:
         for line in ins:
             line = line.rstrip('\n')
             lines.append(line)
-
-        # get sensor values
-#    with open(path, "r") as ins:
-#        for line in ins:
-#            line = line.rstrip('\n')
-#            lines.append(line)
 
     # insert sensor values into the spreadsheet 
     power[1:496,0].values = lines
