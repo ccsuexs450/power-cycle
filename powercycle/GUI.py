@@ -423,12 +423,12 @@ class Run(tk.Frame):
         def run():
             user_email = str(self.controller.shared["email"].get())
              #comment the below function call for testing
-           # try:
-           # path = power_input(user_email)
-           # except(serial.SerialException, FileNotFoundError):
-            #    print("Caught in the GUI")
+            try:
+                path = power_input(user_email)
+            except(serial.SerialException, FileNotFoundError):
+                message("Serial connection failed. Check sensor configuration.")
             # comment the below function call for full functionality
-            path = power_input_test(user_email)
+            #path = power_input_test(user_email)
             self.controller.shared["path_txt"].set(path)
             if path is not None:
                 path = None
