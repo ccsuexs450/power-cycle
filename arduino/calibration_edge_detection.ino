@@ -1,5 +1,5 @@
 const int SIZE = 901;
-const byte interruptPin = 2;
+const byte interruptPin = 2; // this is the input pin on the arduino
 volatile unsigned long rising_edges[SIZE];
 unsigned long risingTime[SIZE-1];
 volatile int count=0;
@@ -25,7 +25,8 @@ void loop(){
        risingTime[index] = (rising_edges[index+1]-rising_edges[index]);
        Serial.println(risingTime[index]); 
      }
-     count = 0;     
+     count = 0;
+     Serial.end();     
   }
   
 }
