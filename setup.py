@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='power-cycle',
-      version='1.0',
+      version='1.1',
       description='bicycle application',
       url='https://github.com/nep67/power-cycle',
       author='KHEN',
