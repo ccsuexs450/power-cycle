@@ -5,6 +5,7 @@ include docs/templates/*
 include docs/power/*
 include docs/calibration/*
 include docs/graph/*
+include shell_scripts/*
 include icons/*
 include data/sensordata/*
 include arduino/*

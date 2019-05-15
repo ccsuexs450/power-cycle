@@ -39,9 +39,10 @@ Use the following command to unpack the tar file.
 
 "sudo tar -xvzf power-cycle-1.0.tar.gz"
 
-To create the database the innit_db.py script must be ran after each new installation. 
-This only needs to be done once. After a fresh install change directories in the 
-terminal to the "powercycle" directory where the init_db.py script is located. Run 
+Unpacking the tar file should create the "cycle.db" file located in the powercycle/ directory. 
+If this file isn't installed a database will have to be manually created. To create the database 
+run the init_db.py. This only needs to be done once. After a fresh install change directories in 
+the terminal to the "powercycle/" directory where the init_db.py script is located. Run 
 the script in this location by typing into the terminal the following command:
 
 "python3 init_db.py"
