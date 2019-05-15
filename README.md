@@ -33,10 +33,11 @@ To run setup.py input the following command into the terminal after installation
 "python3 setup.py sdist"
 
 Alternatively, Running setup.py also creates a tar.gz file which is located in the 
-"dist" directory that when unpacked will install the program. Use the following 
-command to unpack the tar file.
+"dist" directory that when unpacked will install the program. The tar file can be transferred
+between computers and moved to the chosen installation directory.
+Use the following command to unpack the tar file.
 
-"tar -xvzf <tar file name>"
+"sudo tar -xvzf power-cycle-1.0.tar.gz"
 
 To create the database the innit_db.py script must be ran after each new installation. 
 This only needs to be done once. After a fresh install change directories in the 
