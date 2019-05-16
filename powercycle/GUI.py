@@ -485,7 +485,7 @@ def form(self, new):
     s = tk.StringVar()
     tk.Label(self, text="First Name", font=("Open Sans", 14)).grid(row=2, column=1, pady=2)
     tk.Label(self, text="Last Name", font=("Open Sans", 14)).grid(row=3, column=1, pady=2)
-    tk.Label(self, text="Date(YYYY-MM-DD)", font=("Open Sans", 14)).grid(row=4, column=1, pady=2)
+    tk.Label(self, text="Date of Birth(YYYY-MM-DD)", font=("Open Sans", 14)).grid(row=4, column=1, pady=2)
     tk.Label(self, text="Height(feet, inches)", font=("Open Sans", 14)).grid(row=5, column=1, pady=2)
     tk.Label(self, text="Weight(lbs)", font=("Open Sans", 14)).grid(row=6, column=1, pady=2)
     tk.Label(self, text="Gender", font=("Open Sans", 14)).grid(row=7, column=1, pady=2)
